@@ -1,0 +1,54 @@
+/* (Muitos estilos são herdados do cliente-list.css) */
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.calendar-header h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-group .btn-secondary {
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border: 1px solid var(--color-border);
+  padding: 8px 12px;
+}
+
+.btn-group .btn-secondary:hover {
+  background-color: #e2e6ea;
+}
+
+.btn-group .btn-secondary.active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary-dark);
+}
+
+.calendar-container.card {
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  padding: 1rem;
+}
+
+/* Força a altura da view da semana/dia */
+mwl-calendar-week-view,
+mwl-calendar-day-view {
+  display: block;
+  height: 600px; /* Altura fixa para o scroll funcionar */
+}

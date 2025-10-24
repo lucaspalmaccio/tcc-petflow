@@ -1,0 +1,51 @@
+<div class="admin-layout">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Petflow</h2>
+            <span class="sidebar-subtitle">Admin</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a routerLink="/admin/clientes" routerLinkActive="active">
+                <i class="icon"></i> Clientes e Pets
+            </a>
+
+            <a routerLink="/admin/servicos" routerLinkActive="active">
+                <i class="icon"></i>
+                Serviços
+            </a>
+            <a routerLink="/admin/produtos" routerLinkActive="active">
+                <i class="icon"></i>
+                Produtos
+            </a>
+
+            <a routerLink="/admin/agenda" routerLinkActive="active">
+                <i class="icon"></i>
+                Agenda
+            </a>
+
+            <a routerLink="/admin/dashboard" routerLinkActive="active">
+                <i class="icon"></i>
+                Dashboard
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="main-header">
+            <div class="header-welcome">
+                Olá, <strong>{{ userName || 'Administrador' }}</strong>
+            </div>
+            <button (click)="logout()" class="btn-logout">
+                Sair
+            </button>
+        </header>
+
+        <div class="page-content">
+            <router-outlet></router-outlet>
+        </div>
+
+    </main>
+</div>

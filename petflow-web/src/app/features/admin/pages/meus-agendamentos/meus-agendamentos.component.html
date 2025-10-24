@@ -1,0 +1,84 @@
+<!-- (Usamos o CSS do admin/cliente-list para reaproveitar os estilos) -->
+<div class="list-container">
+
+    <!-- Cabeçalho da Página -->
+    <header class="page-header">
+        <h1>Meus Agendamentos</h1>
+        <!-- UC05 (Fluxo 1) - Iniciar Agendamento -->
+        <button class="btn-primary btn-add" (click)="openAgendamentoModal()">
+            + Novo Agendamento
+        </button>
+    </header>
+
+    <!-- Estado de Loading -->
+    <div *ngIf="isLoading" class="loading-indicator">
+        Carregando...
+    </div>
+
+    <!-- Estado de Erro -->
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <!-- Tabela de Dados (UC05 - Lista de Agendamentos do Cliente) -->
+    <div *ngIf="(agendamentos$ | async) as agendamentos; else noData">
+        <table class="data-table" *ngIf="!isLoading && agendamentos.length > 0">
+            <thead>
+            <tr>
+                <th>Data / Hora</th>
+                <th>Pet</th>
+                <th>Serviços</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let ag of agendamentos">
+                <td>{{ ag.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ ag.pet.nome }}</td>
+                <td>
+                    <!-- Lista os serviços -->
+                    <span *ngFor="let s of ag.servicos; let last = last">
+              {{ s.nome }}{{ !last ? ', ' : '' }}
+            </span>
+                </td>
+                <td>{{ ag.valorTotal | currency:'BRL' }}</td>
+                <td>
+            <span class="status" [ngClass]="ag.status.toLowerCase()">
+              {{ ag.status }}
+            </span>
+                </td>
+                <td class="action-buttons">
+                    <!-- CT03.4 - Cancelar Agendamento -->
+                    <button
+                            *ngIf="ag.status === 'AGENDADO'"
+                            class="btn-delete"
+                            (click)="onCancel(ag.id, (ag.dataHora | date:'dd/MM/yyyy'))">
+                        Cancelar
+                    </button>
+                    <span *ngIf="ag.status !== 'AGENDADO'">-</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Estado de Lista Vazia -->
+        <ng-template #noData>
+            <div *ngIf="!isLoading && agendamentos.length === 0" class="no-data">
+                Você ainda não possui agendamentos.
+            </div>
+        </ng-template>
+    </div>
+
+</div>
+
+<!--
+  Modal de Novo Agendamento (UC05)
+  (Será preenchido na próxima etapa)
+-->
+<app-agendamento-modal
+        *ngIf="isModalOpen"
+        (closeModal)="closeAgendamentoModal()"
+        (saveSuccess)="handleSaveSuccess()">
+</app-agendamento-modal>

@@ -1,0 +1,52 @@
+<div class="list-container">
+    <header class="page-header">
+        <h1>Gerenciar Produtos</h1>
+        <button class="btn-primary btn-add" (click)="navigateToAdd()">
+            + Novo Produto
+        </button>
+    </header>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+        Carregando...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <div *ngIf="(produtos$ | async) as produtos; else noData">
+        <table class="data-table" *ngIf="!isLoading && produtos.length > 0">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Estoque</th>
+                <th>Preço de Custo</th>
+                <th>Preço de Venda</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let produto of produtos">
+                <td>{{ produto.nome }}</td>
+                <td>{{ produto.qtdEstoque }}</td>
+                <td>{{ produto.precoCusto | currency:'BRL' }}</td>
+                <td>{{ produto.precoVenda | currency:'BRL' }}</td>
+                <td class="action-buttons">
+                    <button class="btn-edit" (click)="navigateToEdit(produto.id)">
+                        Editar
+                    </button>
+                    <button class="btn-delete" (click)="onDelete(produto.id, produto.nome)">
+                        Excluir
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ng-template #noData>
+            <div *ngIf="!isLoading && produtos.length === 0" class="no-data">
+                Nenhum produto cadastrado ainda.
+            </div>
+        </ng-template>
+    </div>
+</div>

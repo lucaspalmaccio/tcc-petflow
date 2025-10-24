@@ -1,0 +1,99 @@
+<!-- (Usamos CSS do cliente-list e agenda.css) -->
+<div class="list-container">
+
+    <!-- Cabeçalho da Página -->
+    <header class="page-header">
+        <h1>Agenda de Agendamentos</h1>
+    </header>
+
+    <!-- Cabeçalho do Calendário (Controles) -->
+    <div class="calendar-header">
+        <!-- Botões Mês/Semana/Dia -->
+        <div class="btn-group">
+            <button
+                    class="btn-secondary"
+                    (click)="setView(CalendarView.Month)"
+                    [class.active]="view === CalendarView.Month">
+                Mês
+            </button>
+            <button
+                    class="btn-secondary"
+                    (click)="setView(CalendarView.Week)"
+                    [class.active]="view === CalendarView.Week">
+                Semana
+            </button>
+            <button
+                    class="btn-secondary"
+                    (click)="setView(CalendarView.Day)"
+                    [class.active]="view === CalendarView.Day">
+                Dia
+            </button>
+        </div>
+
+        <!-- Botões Mês Anterior/Próximo -->
+        <div class="btn-group">
+            <button
+                    class="btn-secondary"
+                    mwlCalendarPreviousView
+                    [view]="view"
+                    [(viewDate)]="viewDate"
+                    (viewDateChange)="onViewDateChange()">
+                Anterior
+            </button>
+            <button
+                    class="btn-secondary"
+                    mwlCalendarToday
+                    [(viewDate)]="viewDate"
+                    (viewDateChange)="onViewDateChange()">
+                Hoje
+            </button>
+            <button
+                    class="btn-secondary"
+                    mwlCalendarNextView
+                    [view]="view"
+                    [(viewDate)]="viewDate"
+                    (viewDateChange)="onViewDateChange()">
+                Próximo
+            </button>
+        </div>
+
+        <!-- Título (Mês e Ano) -->
+        <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</h3>
+    </div>
+
+    <!-- Estado de Loading -->
+    <div *ngIf="isLoading" class="loading-indicator">
+        Carregando agendamentos...
+    </div>
+
+    <!-- O Calendário (Visão de Mês/Semana/Dia) -->
+    <div [ngSwitch]="view" class="calendar-container card">
+        <!-- Visão de Mês -->
+        <mwl-calendar-month-view
+                *ngSwitchCase="CalendarView.Month"
+                [viewDate]="viewDate"
+                [events]="events"
+                [refresh]="refresh"
+                [locale]="locale"
+                (dayClicked)="setView(CalendarView.Day); viewDate = $event.day.date">
+        </mwl-calendar-month-view>
+
+        <!-- Visão de Semana -->
+        <mwl-calendar-week-view
+                *ngSwitchCase="CalendarView.Week"
+                [viewDate]="viewDate"
+                [events]="events"
+                [refresh]="refresh"
+                [locale]="locale">
+        </mwl-calendar-week-view>
+
+        <!-- Visão de Dia -->
+        <mwl-calendar-day-view
+                *ngSwitchCase="CalendarView.Day"
+                [viewDate]="viewDate"
+                [events]="events"
+                [refresh]="refresh"
+                [locale]="locale">
+        </mwl-calendar-day-view>
+    </div>
+</div>

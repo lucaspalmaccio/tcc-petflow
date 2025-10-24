@@ -1,0 +1,54 @@
+<div class="list-container">
+    <header class="page-header">
+        <h1>Gerenciar Clientes</h1>
+        <button class="btn-primary btn-add" (click)="navigateToAdd()">
+            + Novo Cliente
+        </button>
+    </header>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+        Carregando...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <div *ngIf="(clientes$ | async) as clientes; else noData">
+        <table class="data-table" *ngIf="!isLoading && clientes.length > 0">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Pets</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let cliente of clientes">
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.email }}</td>
+                <td>{{ cliente.cpf }}</td>
+                <td>{{ cliente.telefone }}</td>
+                <td>{{ cliente.pets.length }}</td>
+                <td class="action-buttons">
+                    <button class="btn-edit" (click)="navigateToEdit(cliente.id)">
+                        Editar
+                    </button>
+                    <button class="btn-delete" (click)="onDelete(cliente.id, cliente.nome)">
+                        Excluir
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ng-template #noData>
+            <div *ngIf="!isLoading && clientes.length === 0" class="no-data">
+                Nenhum cliente cadastrado ainda.
+            </div>
+        </ng-template>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="cliente-layout">
+
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="header-brand">
+            Petflow
+        </div>
+        <div class="header-user">
+            <span>Olá, <strong>{{ userName || 'Cliente' }}</strong></span>
+            <button (click)="logout()" class="btn-logout">
+                Sair
+            </button>
+        </div>
+    </header>
+
+    <!-- Conteúdo da Página -->
+    <main class="page-content">
+        <router-outlet></router-outlet>
+    </main>
+
+</div>

@@ -1,0 +1,40 @@
+<div class="modal-overlay" (click)="onClose()"></div>
+
+<div class="modal-container">
+    <header class="modal-header">
+        <h2>{{ isEditMode ? 'Editar Pet' : 'Adicionar Novo Pet' }}</h2>
+        <button class="btn-close" (click)="onClose()">×</button>
+    </header>
+
+    <form [formGroup]="petForm" (ngSubmit)="submitForm()">
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="pet-nome" class="form-label">Nome do Pet</label>
+                <input id="pet-nome" type="text" class="form-control" formControlName="nome">
+            </div>
+
+            <div class="form-group">
+                <label for="pet-especie" class="form-label">Espécie (ex: Cachorro, Gato)</label>
+                <input id="pet-especie" type="text" class="form-control" formControlName="especie">
+            </div>
+
+            <div class="form-group">
+                <label for="pet-raca" class="form-label">Raça (ex: SRD, Poodle)</label>
+                <input id="pet-raca" type="text" class="form-control" formControlName="raca">
+            </div>
+
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+        </div>
+
+        <footer class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="onClose()">
+                Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading || petForm.invalid">
+                {{ isLoading ? 'Salvando...' : 'Salvar Pet' }}
+            </button>
+        </footer>
+    </form>
+</div>

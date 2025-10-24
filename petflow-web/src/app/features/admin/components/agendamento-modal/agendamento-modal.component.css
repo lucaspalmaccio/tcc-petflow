@@ -1,0 +1,21 @@
+/* Este arquivo reutiliza a maior parte dos estilos de
+  'src/app/features/admin/components/pet-form-modal/pet-form-modal.component.css'
+*/
+
+/* Estilos específicos para o <select multiple> e o Resumo */
+select[multiple] {
+  height: 120px;
+}
+select[multiple] option {
+  padding: 8px;
+}
+
+.total-summary {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-align: right;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--color-border);
+}

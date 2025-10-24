@@ -1,0 +1,24 @@
+/* Reaproveita a maior parte dos estilos de
+  'src/app/features/admin/pages/clientes/cliente-list/cliente-list.component.css'
+  (list-container, page-header, data-table, etc.)
+*/
+
+/* Estilos específicos para o Status */
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-white);
+  text-transform: uppercase;
+}
+
+.status.agendado {
+  background-color: var(--color-primary);
+}
+.status.concluido {
+  background-color: var(--color-success);
+}
+.status.cancelado {
+  background-color: var(--color-secondary);
+}

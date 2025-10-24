@@ -1,0 +1,50 @@
+<div class="list-container">
+    <header class="page-header">
+        <h1>Gerenciar Serviços</h1>
+        <button class="btn-primary btn-add" (click)="navigateToAdd()">
+            + Novo Serviço
+        </button>
+    </header>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+        Carregando...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <div *ngIf="(servicos$ | async) as servicos; else noData">
+        <table class="data-table" *ngIf="!isLoading && servicos.length > 0">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let servico of servicos">
+                <td>{{ servico.nome }}</td>
+                <td>{{ servico.descricao | slice:0:100 }}{{ servico.descricao.length > 100 ? '...' : '' }}</td>
+                <td>{{ servico.preco | currency:'BRL' }}</td>
+                <td class="action-buttons">
+                    <button class="btn-edit" (click)="navigateToEdit(servico.id)">
+                        Editar
+                    </button>
+                    <button class="btn-delete" (click)="onDelete(servico.id, servico.nome)">
+                        Excluir
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ng-template #noData>
+            <div *ngIf="!isLoading && servicos.length === 0" class="no-data">
+                Nenhum serviço cadastrado ainda.
+            </div>
+        </ng-template>
+    </div>
+</div>

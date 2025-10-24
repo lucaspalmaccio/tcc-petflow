@@ -1,0 +1,89 @@
+/* Container da página */
+.list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Cabeçalho (Título + Botão) */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* Tabela de Dados */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table th {
+  background-color: var(--color-light);
+  font-weight: 600;
+}
+
+.data-table tbody tr:hover {
+  background-color: #fcfcfc;
+}
+
+/* Botões de Ação na Tabela */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons button {
+  padding: 6px 10px;
+  font-size: 0.875rem;
+}
+
+.btn-edit {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+}
+.btn-edit:hover {
+  background-color: #5a6268;
+}
+
+.btn-delete {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+}
+.btn-delete:hover {
+  background-color: #c82333;
+}
+
+/* Estados (Loading, Erro, Vazio) */
+.loading-indicator,
+.error-message,
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: var(--color-secondary);
+}
+.error-message {
+  color: var(--color-danger);
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}

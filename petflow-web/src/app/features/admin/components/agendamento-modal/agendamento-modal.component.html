@@ -1,0 +1,80 @@
+<!-- Overlay (fundo escuro) -->
+<div class="modal-overlay" (click)="onClose()"></div>
+
+<!-- Conteúdo do Modal -->
+<div class="modal-container">
+    <header class="modal-header">
+        <h2>Solicitar Novo Agendamento</h2>
+        <button class="btn-close" (click)="onClose()">×</button>
+    </header>
+
+    <form [formGroup]="agendamentoForm" (ngSubmit)="submitForm()">
+        <div class="modal-body">
+
+            <!-- UC05 [Fluxo 3] - Seleção de Pet -->
+            <div class="form-group" *ngIf="pets$ | async as pets">
+                <label for="petId" class="form-label">Selecione o Pet</label>
+                <select id="petId" class="form-control" formControlName="petId">
+                    <option [ngValue]="null" disabled>Selecione...</option>
+                    <option *ngFor="let pet of pets" [ngValue]="pet.id">
+                        {{ pet.nome }} ({{ pet.especie }})
+                    </option>
+                </select>
+            </div>
+            <div *ngIf="agendamentoForm.get('petId')?.touched && agendamentoForm.get('petId')?.hasError('required')" class="text-danger">
+                O pet é obrigatório.
+            </div>
+
+            <!-- UC05 [Fluxo 4] - Seleção de Serviços -->
+            <div class="form-group" *ngIf="servicos$ | async as servicos">
+                <label for="servicoIds" class="form-label">Selecione os Serviços</label>
+                <select
+                        id="servicoIds"
+                        class="form-control"
+                        multiple
+                        size="5"
+                        (change)="onServicoChange($event)">
+                    <option *ngFor="let servico of servicos" [value]="servico.id">
+                        {{ servico.nome }} ({{ servico.preco | currency:'BRL' }})
+                    </option>
+                </select>
+            </div>
+            <div *ngIf="agendamentoForm.get('servicoIds')?.touched && agendamentoForm.get('servicoIds')?.hasError('required')" class="text-danger">
+                Selecione ao menos um serviço.
+            </div>
+
+            <!-- UC05 [Fluxo 5/6] - Seleção de Data/Hora -->
+            <div class="form-group">
+                <label for="dataHora" class="form-label">Data e Hora</label>
+                <!-- (Este é um input simples, o ideal seria um componente de calendário real) -->
+                <input
+                        id="dataHora"
+                        type="datetime-local"
+                        class="form-control"
+                        formControlName="dataHora">
+            </div>
+            <div *ngIf="agendamentoForm.get('dataHora')?.touched && agendamentoForm.get('dataHora')?.hasError('required')" class="text-danger">
+                A data e hora são obrigatórias.
+            </div>
+
+            <!-- UC05 [Fluxo 7] - Resumo do Valor Total -->
+            <div class="total-summary" *ngIf="totalCalculado > 0">
+                <strong>Valor Total: {{ totalCalculado | currency:'BRL' }}</strong>
+            </div>
+
+            <!-- Mensagem de Erro (ex: Horário Indisponível [Fluxo 5a]) -->
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+        </div>
+
+        <footer class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="onClose()">
+                Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading || agendamentoForm.invalid">
+                {{ isLoading ? 'Solicitando...' : 'Solicitar Agendamento' }}
+            </button>
+        </footer>
+    </form>
+</div>

@@ -1,0 +1,106 @@
+:host {
+  --sidebar-width: 250px;
+  --header-height: 70px;
+}
+
+.admin-layout {
+  display: flex;
+}
+
+/* --- Barra Lateral --- */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--color-dark);
+  color: var(--color-light);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #4a5056; /* Tom mais claro que --color-dark */
+}
+.sidebar-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.sidebar-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: var(--color-light);
+  text-decoration: none;
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Estilo do link ativo (routerLinkActive) */
+.sidebar-nav a.active {
+  background-color: var(--color-primary);
+  border-left-color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+/* --- Conteúdo Principal --- */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width); /* Empurra o conteúdo para depois da sidebar */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-header {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0; /* Impede o header de encolher */
+}
+
+.header-welcome {
+  font-size: 1.1rem;
+}
+
+.btn-logout {
+  background: none;
+  border: none;
+  color: var(--color-danger);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-logout:hover {
+  text-decoration: underline;
+}
+
+.page-content {
+  flex: 1; /* Ocupa o espaço restante */
+  padding: 2rem;
+  background-color: var(--color-light);
+  overflow-y: auto; /* Permite scroll apenas no conteúdo da página */
+}
