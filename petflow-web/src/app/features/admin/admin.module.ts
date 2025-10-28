@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // ✅ Importa os dois
+import { HttpClientModule } from '@angular/common/http';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { LayoutComponent } from './layout/layout.component';
@@ -17,10 +18,12 @@ import { ServicoFormComponent } from './pages/servicos/servico-form/servico-form
 import { ProdutoListComponent } from './pages/produtos/produto-list/produto-list.component';
 import { ProdutoFormComponent } from './pages/produtos/produto-form/produto-form.component';
 
-// === INÍCIO DA ATUALIZAÇÃO SPRINT 03 ===
+// Sprint 03
 import { AgendaComponent } from './pages/agenda/agenda.component';
-import { CalendarModule } from 'angular-calendar'; // Importa o módulo do calendário AQUI
-// === FIM DA ATUALIZAÇÃO SPRINT 03 ===
+import { CalendarModule } from 'angular-calendar';
+
+// ✅ Importa o novo componente de cadastro de admin
+import { CadastrarAdminComponent } from './pages/cadastrar-admin/cadastrar-admin.component';
 
 @NgModule({
 declarations: [
@@ -35,14 +38,18 @@ ServicoFormComponent,
 ProdutoListComponent,
 ProdutoFormComponent,
 // Sprint 03
-AgendaComponent // Adicionado
+AgendaComponent,
+// ✅ Novo
+CadastrarAdminComponent
 ],
 imports: [
 CommonModule,
-AdminRoutingModule,
 RouterModule,
-ReactiveFormsModule,
-CalendarModule // Adicionado
+AdminRoutingModule,
+HttpClientModule,
+FormsModule,
+ReactiveFormsModule, // ✅ Fundamental para [formGroup]
+CalendarModule
 ]
 })
 export class AdminModule { }

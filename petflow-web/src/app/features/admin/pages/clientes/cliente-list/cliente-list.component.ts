@@ -11,8 +11,8 @@ styleUrls: ['./cliente-list.component.css']
 })
 export class ClienteListComponent implements OnInit {
 
-// Usamos Observable com 'async' pipe no template
-public clientes$: Observable<Cliente[]>;
+// Correção: Adicionado '!' (definite assignment assertion)
+public clientes$!: Observable<Cliente[]>;
 public isLoading = true;
 public error: string | null = null;
 
@@ -29,8 +29,7 @@ constructor(
     this.isLoading = true;
     this.error = null;
     this.clientes$ = this.clienteService.getAllClientes();
-
-    // Tratamento de loading/error (embora o 'async' pipe ajude)
+    
     this.clientes$.subscribe({
       next: () => this.isLoading = false,
       error: (err) => {
@@ -79,3 +78,4 @@ constructor(
     }
   }
 }
+

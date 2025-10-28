@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { NgxMaskModule } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -28,7 +28,7 @@ registerLocaleData(localePt);
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-
+    NgxMaskModule.forRoot(),
     // === INÍCIO DA ATUALIZAÇÃO SPRINT 03 (Calendário) ===
     CalendarModule.forRoot({
       provide: DateAdapter,

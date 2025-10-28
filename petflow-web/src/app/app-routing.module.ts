@@ -1,26 +1,40 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { adminAuthGuard } from './core/guards/auth.guard'; // Importa o Guarda
-
+import { adminAuthGuard } from './core/guards/auth.guard';
+import { clienteAuthGuard } from './core/guards/cliente.guard';
+import { CadastrarAdminComponent } from './features/admin/pages/cadastrar-admin/cadastrar-admin.component'; // ✅ ajuste o caminho conforme seu projeto
 const routes: Routes = [
-{
-path: '',
-redirectTo: '/admin', // Redireciona a raiz para o painel de admin
-pathMatch: 'full'
-},
-{
-// Módulo de Autenticação (Login) - Carregamento lento (lazy loading)
-path: 'auth',
-loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+  {
+    path: '',
+    redirectTo: '/auth/login',
+    pathMatch: 'full'
   },
   {
-    // Módulo de Admin (Clientes, Pets, etc.) - Carregamento lento
+    // Módulo de Autenticação (Login)
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    // Módulo de Admin (Clientes, Pets, etc.)
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule),
-    canActivate: [adminAuthGuard] // <--- A ROTA ESTÁ PROTEGIDA!
+    canActivate: [adminAuthGuard]
   },
   {
-    // Rota curinga: Se não encontrar a página, volta ao login
+    // Módulo Cliente (Agendamentos)
+    path: 'cliente',
+    loadChildren: () => import('./features/cliente/cliente.module').then(m => m.ClienteModule),
+    canActivate: [clienteAuthGuard]
+  },
+  {
+    // Tela para cadastro de admin
+    path: 'admin/cadastrar-admin',
+    component: CadastrarAdminComponent,
+    canActivate: [adminAuthGuard], // ✅ ou AuthGuard, depende do nome real
+    data: { roles: ['ADMIN'] }
+  },
+  {
+    // Rota curinga
     path: '**',
     redirectTo: '/auth/login'
   }
@@ -30,4 +44,4 @@ loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -13,6 +13,9 @@ import { ProdutoFormComponent } from './pages/produtos/produto-form/produto-form
 // Componentes Sprint 03
 import { AgendaComponent } from './pages/agenda/agenda.component';
 
+// Nova rota: Cadastro de Admin
+import { CadastrarAdminComponent } from './pages/cadastrar-admin/cadastrar-admin.component';
+import { adminAuthGuard } from '../../core/guards/auth.guard'; // Ajuste o caminho se necessário
 
 const routes: Routes = [
 {
@@ -35,7 +38,13 @@ children: [
 { path: 'produtos/novo', component: ProdutoFormComponent },
 { path: 'produtos/editar/:id', component: ProdutoFormComponent },
 
-// (Rotas da Sprint 4...)
+// Nova rota: cadastro de admin
+{
+path: 'cadastrar',
+component: CadastrarAdminComponent,
+canActivate: [adminAuthGuard],
+data: { roles: ['ADMIN'] }
+},
 
 { path: '', redirectTo: 'agenda', pathMatch: 'full' } // Admin agora começa na Agenda
 ]

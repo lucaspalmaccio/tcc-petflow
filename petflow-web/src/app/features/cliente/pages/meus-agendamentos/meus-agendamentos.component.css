@@ -1,0 +1,140 @@
+.container {
+  max-width: 900px;
+  margin: 2rem auto; /* Centraliza e adiciona margem superior/inferior */
+  padding: 0 1rem; /* Espaçamento lateral pequeno */
+}
+
+/* Cabeçalho (Título + Botão) */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* Botão Novo Agendamento com Spinner */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--color-white);
+  animation: spin 1s linear infinite;
+  display: inline-block; /* Para ficar na mesma linha do texto */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Lista de Agendamentos */
+.agendamentos-list {
+  display: grid;
+  gap: 1.5rem;
+  /* Grid responsivo (1 coluna em telas pequenas, 2 em médias, etc.) */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.agendamento-card {
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; /* Garante que a borda colorida não vaze */
+  border-left: 5px solid var(--color-secondary); /* Borda padrão */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cores da Borda por Status */
+.agendamento-card.status-agendado {
+  border-left-color: var(--color-primary);
+}
+.agendamento-card.status-concluido {
+  border-left-color: var(--color-success);
+}
+.agendamento-card.status-cancelado {
+  border-left-color: var(--color-secondary);
+  opacity: 0.8; /* Levemente esmaecido */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-light);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.status-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: var(--color-white);
+  background-color: var(--color-secondary); /* Cor padrão */
+}
+
+.status-agendado .status-badge { background-color: var(--color-primary); }
+.status-concluido .status-badge { background-color: var(--color-success); }
+.status-cancelado .status-badge { background-color: var(--color-secondary); }
+
+.card-body {
+  padding: 1rem;
+  flex-grow: 1; /* Faz o corpo ocupar o espaço disponível */
+}
+.card-body p {
+  margin-bottom: 0.5rem;
+  color: var(--color-dark);
+}
+.card-body p:last-child {
+  margin-bottom: 0;
+}
+
+.card-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--color-border);
+  text-align: right;
+}
+
+.btn-cancel {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+.btn-cancel:hover {
+  background-color: #c82333;
+}
+
+/* Estados (Loading, Erro, Vazio) */
+.loading-indicator,
+.error-message,
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: var(--color-secondary);
+}
+.error-message {
+  color: var(--color-danger);
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}
+

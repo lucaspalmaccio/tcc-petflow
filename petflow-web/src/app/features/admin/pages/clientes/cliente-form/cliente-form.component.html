@@ -1,122 +1,76 @@
-<div class="form-container">
+<div class="cliente-form-container">
+    <h2>{{ isEditMode ? 'Editar Cliente' : 'Cadastrar Novo Cliente' }}</h2>
 
-    <header class="form-header">
-        <button (click)="goBack()" class="btn-back">
-            &larr; Voltar para a Lista
+    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label>Nome</label>
+            <input type="text" formControlName="nome" maxlength="100">
+        </div>
+
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" formControlName="email" maxlength="100">
+        </div>
+
+        <div class="form-group" *ngIf="!isEditMode">
+            <label>Senha</label>
+            <input type="password" formControlName="senha" maxlength="20">
+        </div>
+
+        <div class="form-group">
+            <label>CPF</label>
+            <input
+                    type="text"
+                    formControlName="cpf"
+                    mask="000.000.000-00"
+                    maxlength="14"
+                    placeholder="000.000.000-00">
+        </div>
+
+        <div class="form-group">
+            <label>Telefone</label>
+            <input
+                    type="text"
+                    formControlName="telefone"
+                    mask="(00) 00000-0000"
+                    maxlength="15"
+                    placeholder="(00) 00000-0000">
+        </div>
+
+        <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" formControlName="endereco" maxlength="200">
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+        <button type="submit" [disabled]="isLoading">
+            {{ isLoading ? 'Salvando...' : 'Salvar Cliente' }}
         </button>
-        <h1>{{ isEditMode ? 'Editar Cliente' : 'Novo Cliente' }}</h1>
-    </header>
 
-    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()" class="card">
-        <fieldset class="form-section">
-            <legend>Dados de Acesso</legend>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="email" class="form-label">E-mail (Login)</label>
-                    <input id="email" type="email" class="form-control" formControlName="email"
-                           [readonly]="isEditMode">
-                    <div *ngIf="clienteForm.get('email')?.touched && clienteForm.get('email')?.hasError('required')" class="text-danger">
-                        E-mail é obrigatório.
-                    </div>
-                    <div *ngIf="clienteForm.get('email')?.touched && clienteForm.get('email')?.hasError('email')" class="text-danger">
-                        E-mail inválido.
-                    </div>
-                </div>
-
-                <div class="form-group" *ngIf="!isEditMode">
-                    <label for="senha" class="form-label">Senha</label>
-                    <input id="senha" type="password" class="form-control" formControlName="senha">
-                    <div *ngIf="clienteForm.get('senha')?.touched && clienteForm.get('senha')?.hasError('required')" class="text-danger">
-                        Senha é obrigatória.
-                    </div>
-                    <div *ngIf="clienteForm.get('senha')?.touched && clienteForm.get('senha')?.hasError('minlength')" class="text-danger">
-                        Senha deve ter no mínimo 6 caracteres.
-                    </div>
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset class="form-section">
-            <legend>Dados Pessoais</legend>
-
-            <div class="form-group">
-                <label for="nome" class="form-label">Nome Completo</label>
-                <input id="nome" type="text" class="form-control" formControlName="nome">
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="cpf" class="form-label">CPF</label>
-                    <input id="cpf" type="text" class="form-control" formControlName="cpf">
-                </div>
-                <div class="form-group">
-                    <label for="telefone" class="form-label">Telefone</label>
-                    <input id="telefone" type="text" class="form-control" formControlName="telefone">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="endereco" class="form-label">Endereço (Opcional)</label>
-                <input id="endereco" type="text" class="form-control" formControlName="endereco">
-            </div>
-        </fieldset>
-
-        <footer class="form-actions">
-            <div *ngIf="errorMessage" class="error-message">
-                {{ errorMessage }}
-            </div>
-            <button type="button" class="btn-secondary" (click)="goBack()">Cancelar</button>
-            <button type="submit" class="btn-primary" [disabled]="isLoading || clienteForm.invalid">
-                {{ isLoading ? 'Salvando...' : (isEditMode ? 'Salvar Alterações' : 'Cadastrar Cliente') }}
-            </button>
-        </footer>
+        <button type="button" (click)="goBack()">Voltar</button>
     </form>
 
-    <section *ngIf="isEditMode && cliente" class="card pet-section">
-        <header class="page-header">
-            <h2>Pets Cadastrados ({{ cliente.pets.length }})</h2>
-            <button class="btn-primary" (click)="openPetModal(null)">
-                + Adicionar Pet
-            </button>
-        </header>
+    <hr>
 
-        <table class="data-table" *ngIf="cliente.pets.length > 0; else noPets">
-            <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Espécie</th>
-                <th>Raça</th>
-                <th>Ações</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let pet of cliente.pets">
-                <td>{{ pet.nome }}</td>
-                <td>{{ pet.especie }}</td>
-                <td>{{ pet.raca }}</td>
-                <td class="action-buttons">
-                    <button class="btn-edit" (click)="openPetModal(pet)">Editar</button>
-                    <button class="btn-delete" (click)="onDeletePet(pet)">Excluir</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div *ngIf="cliente">
+        <h3>Pets do Cliente</h3>
+        <ul>
+            <li *ngFor="let pet of cliente?.pets">
+                {{ pet.nome }} - {{ pet.especie }}
+                <button (click)="openPetModal(pet)">Editar</button>
+                <button (click)="onDeletePet(pet)">Excluir</button>
+            </li>
+        </ul>
 
-        <ng-template #noPets>
-            <div class="no-data">
-                Este cliente ainda não possui pets cadastrados.
-            </div>
-        </ng-template>
+        <button (click)="openPetModal()">Adicionar Pet</button>
+    </div>
 
-    </section>
-
+    <app-pet-form-modal
+            *ngIf="isPetModalOpen"
+            [pet]="currentPetToEdit"
+            [clienteId]="clienteId"
+            (saveSuccess)="handlePetSave()"
+            (close)="closePetModal()">
+    </app-pet-form-modal>
 </div>
-
-<app-pet-form-modal
-        *ngIf="isPetModalOpen"
-        [clienteId]="clienteId"
-        [pet]="currentPetToEdit"
-        (closeModal)="closePetModal()"
-        (saveSuccess)="handlePetSave()">
-</app-pet-form-modal>

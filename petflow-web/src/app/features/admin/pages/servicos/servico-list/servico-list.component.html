@@ -1,4 +1,5 @@
 <div class="list-container">
+    <!-- Cabeçalho da Página -->
     <header class="page-header">
         <h1>Gerenciar Serviços</h1>
         <button class="btn-primary btn-add" (click)="navigateToAdd()">
@@ -6,15 +7,21 @@
         </button>
     </header>
 
+    <!-- Estado de Loading -->
     <div *ngIf="isLoading" class="loading-indicator">
         Carregando...
     </div>
 
+    <!-- Estado de Erro -->
     <div *ngIf="error" class="error-message">
         {{ error }}
     </div>
 
-    <div *ngIf="(servicos$ | async) as servicos; else noData">
+    <!-- Tabela de Dados (UC04) -->
+    <!--
+      Lógica do *ngIf já corrigida (sem 'else')
+    -->
+    <div *ngIf="(servicos$ | async) as servicos">
         <table class="data-table" *ngIf="!isLoading && servicos.length > 0">
             <thead>
             <tr>
@@ -27,7 +34,13 @@
             <tbody>
             <tr *ngFor="let servico of servicos">
                 <td>{{ servico.nome }}</td>
-                <td>{{ servico.descricao | slice:0:100 }}{{ servico.descricao.length > 100 ? '...' : '' }}</td>
+                <!--
+                  --- CORREÇÃO FINAL (Erro TS2532) ---
+                  Ambas as partes (antes do slice e a checagem do length)
+                  precisam ser protegidas contra 'null' ou 'undefined'.
+                  Trocado 'servico.descricao?.length' por '(servico.descricao || '').length'.
+                -->
+                <td>{{ (servico.descricao || '') | slice:0:100 }}{{ (servico.descricao || '').length > 100 ? '...' : '' }}</td>
                 <td>{{ servico.preco | currency:'BRL' }}</td>
                 <td class="action-buttons">
                     <button class="btn-edit" (click)="navigateToEdit(servico.id)">
@@ -41,10 +54,9 @@
             </tbody>
         </table>
 
-        <ng-template #noData>
-            <div *ngIf="!isLoading && servicos.length === 0" class="no-data">
-                Nenhum serviço cadastrado ainda.
-            </div>
-        </ng-template>
+        <div *ngIf="!isLoading && servicos.length === 0" class="no-data">
+            Nenhum serviço cadastrado ainda.
+        </div>
     </div>
 </div>
+

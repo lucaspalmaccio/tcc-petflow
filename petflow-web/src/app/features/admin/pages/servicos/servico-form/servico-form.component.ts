@@ -11,7 +11,7 @@ styleUrls: ['../../clientes/cliente-form/cliente-form.component.css']
 })
 export class ServicoFormComponent implements OnInit {
 
-servicoForm: FormGroup;
+servicoForm!: FormGroup; // Adicionado '!'
 isEditMode = false;
 isLoading = false;
 errorMessage: string | null = null;
@@ -23,7 +23,8 @@ constructor(
     private router: Router,
     private route: ActivatedRoute
   ) {
-    [cite_start]// UC04 [cite: 409] - Formulário com campos pertinentes
+    // Correção: Removido [cite_start]
+    // UC04 - Formulário com campos pertinentes
     this.servicoForm = this.fb.group({
       nome: ['', Validators.required],
       descricao: [''],
@@ -90,3 +91,4 @@ constructor(
     this.router.navigate(['/admin/servicos']);
   }
 }
+

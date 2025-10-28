@@ -12,7 +12,8 @@ styleUrls: ['../../clientes/cliente-list/cliente-list.component.css']
 })
 export class ServicoListComponent implements OnInit {
 
-public servicos$: Observable<Servico[]>;
+// Correção: Adicionado '!'
+public servicos$!: Observable<Servico[]>;
 public isLoading = true;
 public error: string | null = null;
 
@@ -56,7 +57,8 @@ constructor(
           this.loadServicos(); // Recarrega a lista
         },
         error: (err) => {
-          [cite_start]// Fluxo de Exceção: Item com Histórico [cite: 413]
+          // Correção: Removido comentário inválido 'cite_start'
+          // Fluxo de Exceção: Item com Histórico
           this.error = err.error?.erro || "Falha ao excluir. Verifique se o serviço está vinculado a agendamentos.";
           console.error(err);
         }
@@ -64,3 +66,4 @@ constructor(
     }
   }
 }
+

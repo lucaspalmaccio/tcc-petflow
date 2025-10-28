@@ -14,7 +14,16 @@
         {{ error }}
     </div>
 
-    <div *ngIf="(produtos$ | async) as produtos; else noData">
+    <!--
+      Correção:
+      Removido o 'else noDataTemplate' e o <ng-template>
+      para corrigir o erro de escopo da variável 'produtos' e a referência do template.
+    -->
+    <div *ngIf="(produtos$ | async) as produtos">
+        <!--
+          Correção: Removido '?' de produtos.length,
+          pois 'produtos' está garantido pelo *ngIf pai.
+        -->
         <table class="data-table" *ngIf="!isLoading && produtos.length > 0">
             <thead>
             <tr>
@@ -43,10 +52,12 @@
             </tbody>
         </table>
 
-        <ng-template #noData>
-            <div *ngIf="!isLoading && produtos.length === 0" class="no-data">
-                Nenhum produto cadastrado ainda.
-            </div>
-        </ng-template>
+        <!--
+          Correção: Mensagem "sem dados" agora usa a variável 'produtos'
+          do escopo correto.
+        -->
+        <div *ngIf="!isLoading && produtos.length === 0" class="no-data">
+            Nenhum produto cadastrado ainda.
+        </div>
     </div>
 </div>

@@ -1,0 +1,132 @@
+/* Reutiliza estilos do modal de pet, mas com ajustes */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%; /* Ajuste para ser mais responsivo */
+  max-width: 600px; /* Um pouco maior para caber mais info */
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh; /* Limita a altura em telas pequenas */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0; /* Impede o header de encolher */
+}
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--color-secondary);
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto; /* Permite scroll se o conteúdo for grande */
+  flex-grow: 1;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0; /* Impede o footer de encolher */
+}
+
+.btn-secondary {
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  border: 1px solid var(--color-border);
+}
+.btn-secondary:hover {
+  background-color: #e2e6ea;
+}
+
+.error-message {
+  color: var(--color-danger);
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Estilos específicos do formulário de agendamento */
+.form-section {
+  border: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+.form-section legend {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Lista de Serviços (Checkboxes) */
+.service-list {
+  max-height: 150px; /* Limita a altura da lista */
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.service-item input[type="checkbox"] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+.service-item label {
+  cursor: pointer;
+}
+
+/* Input de Data/Hora */
+input[type="datetime-local"] {
+  /* Estilização básica, pode variar entre navegadores */
+  padding: 8px 12px;
+}
+
+.horario-info {
+  font-size: 0.85rem;
+  color: var(--color-secondary);
+  margin-top: 0.5rem;
+}
+
+/* Resumo do Valor */
+.agendamento-resumo {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--color-border);
+  font-size: 1.1rem;
+  text-align: right;
+}
+

@@ -1,0 +1,87 @@
+<!-- Overlay (fundo escuro) -->
+<div class="modal-overlay" (click)="onClose()"></div>
+
+<!-- Conteúdo do Modal -->
+<div class="modal-container">
+    <header class="modal-header">
+        <h2>Solicitar Novo Agendamento</h2>
+        <button class="btn-close" (click)="onClose()">×</button>
+    </header>
+
+    <form [formGroup]="agendamentoForm" (ngSubmit)="submitForm()">
+        <div class="modal-body">
+
+            <!-- Etapa 1: Selecionar Pet (UC05 [329]) -->
+            <fieldset class="form-section">
+                <legend>1. Selecione o Pet</legend>
+                <div class="form-group">
+                    <label for="pet" class="form-label">Pet</label>
+                    <select id="pet" class="form-control" formControlName="petId">
+                        <option [ngValue]="null" disabled>-- Selecione um Pet --</option>
+                        <!-- Carrega os pets do cliente -->
+                        <option *ngFor="let pet of (petsCliente$ | async)" [ngValue]="pet.id">
+                            {{ pet.nome }} ({{ pet.especie }} - {{ pet.raca }})
+                        </option>
+                    </select>
+                    <div *ngIf="agendamentoForm.get('petId')?.touched && agendamentoForm.get('petId')?.hasError('required')" class="text-danger">
+                        Selecione um pet.
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Etapa 2: Selecionar Serviços (UC05 [330]) -->
+            <fieldset class="form-section">
+                <legend>2. Selecione os Serviços</legend>
+                <div class="form-group service-list">
+                    <div *ngFor="let servico of (servicosDisponiveis$ | async)" class="service-item">
+                        <input type="checkbox" [id]="'servico-' + servico.id" [value]="servico.id" (change)="onServicoChange($event)">
+                        <label [for]="'servico-' + servico.id">
+                            {{ servico.nome }} ({{ servico.preco | currency:'BRL' }})
+                        </label>
+                    </div>
+                    <div *ngIf="agendamentoForm.get('servicoIds')?.touched && agendamentoForm.get('servicoIds')?.hasError('required')" class="text-danger">
+                        Selecione pelo menos um serviço.
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Etapa 3: Selecionar Data e Hora (UC05 [331-332]) -->
+            <fieldset class="form-section">
+                <legend>3. Escolha a Data e Hora</legend>
+                <div class="form-group">
+                    <label for="dataHora" class="form-label">Data e Horário</label>
+                    <!-- (Input type datetime-local é simples, mas funciona) -->
+                    <input id="dataHora" type="datetime-local" class="form-control" formControlName="dataHora" [min]="minDate">
+                    <div *ngIf="agendamentoForm.get('dataHora')?.touched && agendamentoForm.get('dataHora')?.hasError('required')" class="text-danger">
+                        Selecione uma data e hora.
+                    </div>
+                    <div *ngIf="agendamentoForm.get('dataHora')?.touched && agendamentoForm.get('dataHora')?.hasError('min')" class="text-danger">
+                        A data deve ser no futuro.
+                    </div>
+                </div>
+                <p class="horario-info">Horário de funcionamento: Seg-Sex 9h às 18h, Sáb 9h às 14h.</p>
+            </fieldset>
+
+            <!-- Resumo e Confirmação (UC05 [333]) -->
+            <div class="agendamento-resumo" *ngIf="valorTotal > 0">
+                <strong>Valor Total Estimado:</strong> {{ valorTotal | currency:'BRL' }}
+            </div>
+
+            <!-- Mensagem de Erro Geral -->
+            <div *ngIf="errorMessage" class="error-message">
+                {{ errorMessage }}
+            </div>
+        </div>
+
+        <!-- Rodapé com Botões -->
+        <footer class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="onClose()">
+                Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading || agendamentoForm.invalid || valorTotal === 0">
+                {{ isLoading ? 'Solicitando...' : 'Confirmar Agendamento' }}
+            </button>
+        </footer>
+    </form>
+</div>
+

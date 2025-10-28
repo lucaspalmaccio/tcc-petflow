@@ -1,0 +1,30 @@
+<div class="cadastrar-admin-container">
+    <h2>Cadastrar Administrador</h2>
+
+    <form [formGroup]="form" (ngSubmit)="cadastrar()">
+        <div class="form-group">
+            <label>Nome</label>
+            <input type="text" formControlName="nome" placeholder="Nome completo" />
+            <small *ngIf="form.get('nome')?.invalid && form.get('nome')?.touched">Nome é obrigatório.</small>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" formControlName="email" placeholder="exemplo@email.com" />
+            <small *ngIf="form.get('email')?.invalid && form.get('email')?.touched">Email inválido.</small>
+        </div>
+
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" formControlName="senha" placeholder="Mínimo 6 caracteres" />
+            <small *ngIf="form.get('senha')?.invalid && form.get('senha')?.touched">Senha inválida.</small>
+        </div>
+
+        <button type="submit" [disabled]="carregando">
+            {{ carregando ? 'Cadastrando...' : 'Cadastrar' }}
+        </button>
+    </form>
+
+    <p *ngIf="sucesso" class="sucesso">✅ Administrador cadastrado com sucesso!</p>
+    <p *ngIf="erro" class="erro">❌ {{ erro }}</p>
+</div>

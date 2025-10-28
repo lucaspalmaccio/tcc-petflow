@@ -10,10 +10,10 @@ styleUrls: ['./pet-form-modal.component.css']
 })
 export class PetFormModalComponent implements OnChanges {
 // --- Entradas e Saídas ---
-@Input() clienteId: number | null = null; // ID do dono do pet
-@Input() pet: Pet | null = null;         // Pet (se for edição)
+@Input() clienteId: number | null = null;
+@Input() pet: Pet | null = null;
 @Output() closeModal = new EventEmitter<void>();
-@Output() saveSuccess = new EventEmitter<void>(); // Avisa o pai que salvou
+@Output() saveSuccess = new EventEmitter<void>();
 
 // --- Estado ---
 petForm: FormGroup;
@@ -32,25 +32,22 @@ constructor(
     });
   }
 
-  /**
-   * Detecta quando o @Input 'pet' muda (ao abrir o modal para edição).
-   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['pet'] && this.pet) {
-      // Modo Edição
+      // Modo edição
       this.isEditMode = true;
-      this.petForm.patchValue(this.pet);
+      this.petForm.patchValue({
+        nome: this.pet.nome,
+        especie: this.pet.especie,
+        raca: this.pet.raca
+      });
     } else {
-      // Modo Criação
+      // Modo criação
       this.isEditMode = false;
       this.petForm.reset();
     }
   }
 
-  /**
-   * Salva o Pet (Criação ou Edição)
-   * UC03 - Fluxo "Adicionar Pet" ou "Editar Pet"
-   */
   submitForm(): void {
     if (this.petForm.invalid || !this.clienteId) {
       this.errorMessage = "Todos os campos são obrigatórios.";
@@ -72,8 +69,8 @@ constructor(
     saveOperation.subscribe({
       next: () => {
         this.isLoading = false;
-        this.saveSuccess.emit(); // Emite o evento de sucesso
-        this.onClose();          // Fecha o modal
+        this.saveSuccess.emit();
+        this.onClose();
       },
       error: (err) => {
         this.isLoading = false;
@@ -82,9 +79,6 @@ constructor(
     });
   }
 
-  /**
-   * Emite o evento para fechar o modal.
-   */
   onClose(): void {
     this.closeModal.emit();
   }

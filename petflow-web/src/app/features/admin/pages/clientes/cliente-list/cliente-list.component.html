@@ -14,7 +14,16 @@
         {{ error }}
     </div>
 
-    <div *ngIf="(clientes$ | async) as clientes; else noData">
+    <!--
+      Correção 1: O *ngIf principal agora apenas resolve o observable.
+      O 'else noDataTemplate' foi removido.
+    -->
+    <div *ngIf="(clientes$ | async) as clientes">
+        <!--
+          Correção 2: A tabela agora checa se NÃO está carregando E se clientes.length > 0.
+          O '?' foi removido de 'clientes.length', pois a variável 'clientes'
+          está garantida pelo *ngIf pai.
+        -->
         <table class="data-table" *ngIf="!isLoading && clientes.length > 0">
             <thead>
             <tr>
@@ -32,7 +41,11 @@
                 <td>{{ cliente.email }}</td>
                 <td>{{ cliente.cpf }}</td>
                 <td>{{ cliente.telefone }}</td>
-                <td>{{ cliente.pets.length }}</td>
+                <!--
+                  Correção 3 (Warning NG8107): Removido o '?' de 'cliente.pets?.length'
+                  conforme sugestão do compilador (a propriedade 'pets' não é nula).
+                -->
+                <td>{{ cliente.pets.length || 0 }}</td>
                 <td class="action-buttons">
                     <button class="btn-edit" (click)="navigateToEdit(cliente.id)">
                         Editar
@@ -45,10 +58,13 @@
             </tbody>
         </table>
 
-        <ng-template #noData>
-            <div *ngIf="!isLoading && clientes.length === 0" class="no-data">
-                Nenhum cliente cadastrado ainda.
-            </div>
-        </ng-template>
+        <!--
+          Correção 4: A mensagem "no-data" agora é exibida no mesmo nível da tabela,
+          usando a mesma variável 'clientes' (que está definida).
+          O bloco <ng-template> foi removido por não ser mais necessário.
+        -->
+        <div *ngIf="!isLoading && clientes.length === 0" class="no-data">
+            Nenhum cliente cadastrado ainda.
+        </div>
     </div>
 </div>

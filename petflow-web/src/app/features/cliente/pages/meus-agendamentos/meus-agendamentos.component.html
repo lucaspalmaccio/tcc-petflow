@@ -1,0 +1,85 @@
+<div class="container">
+    <!-- Cabeçalho -->
+    <header class="page-header">
+        <h1>Meus Agendamentos</h1>
+        <button class="btn-primary" (click)="openAgendamentoModal()" [disabled]="isLoadingModalData">
+            <!-- Correção: Usar [class.show] ou similar para o spinner, não *ngIf direto -->
+            <span *ngIf="isLoadingModalData" class="spinner"></span>
+            {{ isLoadingModalData ? 'Carregando...' : '+ Novo Agendamento' }}
+        </button>
+    </header>
+
+    <!-- Estado de Loading da Lista -->
+    <div *ngIf="isLoadingAgendamentos" class="loading-indicator">
+        Carregando agendamentos...
+    </div>
+
+    <!-- Estado de Erro da Lista -->
+    <div *ngIf="errorAgendamentos" class="error-message">
+        {{ errorAgendamentos }}
+    </div>
+
+    <!-- Lista de Agendamentos (UC05) -->
+    <!--
+      Correção 1 (Erro TS2339):
+      Removido o 'else noAgendamentosTemplate' e o <ng-template>.
+      A lógica de exibição foi movida para dentro do *ngIf principal.
+    -->
+    <div *ngIf="(agendamentos$ | async) as agendamentos">
+        <!--
+          Correção 1 (Continuação):
+          Checagem movida para dentro, 'agendamentos.length' agora é seguro.
+        -->
+        <div class="agendamentos-list" *ngIf="!isLoadingAgendamentos && agendamentos.length > 0">
+            <div class="agendamento-card" *ngFor="let ag of agendamentos" [ngClass]="'status-' + ag.status.toLowerCase()">
+                <div class="card-header">
+                    <span class="status-badge">{{ ag.status }}</span>
+                    <!-- Correção: Usado o date pipe do Angular -->
+                    <strong>{{ ag.dataHora | date:'dd/MM/yyyy HH:mm' }}</strong>
+                </div>
+                <div class="card-body">
+                    <!-- Correção: Removido ?. pois o tipo não inclui null/undefined -->
+                    <p><strong>Pet:</strong> {{ ag.pet.nome }}</p>
+
+                    <!--
+                      Correção 2 (Erros NG5002, TS2345, TS2532):
+                      Movido para método no .ts para evitar expressões complexas no template.
+                      Agora usa getServicosString(ag) no componente.
+                    -->
+                    <p><strong>Serviços:</strong> {{ getServicosString(ag) }}</p>
+                    <p><strong>Valor:</strong> {{ ag.valorTotal | currency:'BRL' }}</p>
+                </div>
+
+                <div class="card-footer" *ngIf="ag.status === 'AGENDADO'">
+                    <!-- CT03.4 - Botão Cancelar -->
+                    <button class="btn-cancel" (click)="onCancel(ag.id, ag.dataHora)">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          Correção 1 (Continuação):
+          Template para Lista Vazia, agora usando a variável 'agendamentos' no escopo correto.
+        -->
+        <div *ngIf="!isLoadingAgendamentos && agendamentos.length === 0" class="no-data">
+            Você ainda não possui agendamentos.
+        </div>
+    </div>
+
+</div>
+
+<!-- O Modal de Novo Agendamento (UC05) -->
+<!--
+  --- CORREÇÃO (Erro NG8002) ---
+  Corrigido erro de digitação de 'servicosDisponis$' para 'servicosDisponiveis$'
+  para bater com o @Input() do componente modal.
+-->
+<app-agendamento-modal
+        *ngIf="isModalOpen"
+        [petsCliente$]="petsCliente$"
+        [servicosDisponiveis$]="servicosDisponiveis$"
+        (closeModal)="closeAgendamentoModal()"
+        (saveSuccess)="handleSaveSuccess()">
+</app-agendamento-modal>

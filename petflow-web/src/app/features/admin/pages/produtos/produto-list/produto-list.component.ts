@@ -12,7 +12,8 @@ styleUrls: ['../../clientes/cliente-list/cliente-list.component.css']
 })
 export class ProdutoListComponent implements OnInit {
 
-public produtos$: Observable<Produto[]>;
+// Correção: Adicionado '!'
+public produtos$!: Observable<Produto[]>;
 public isLoading = true;
 public error: string | null = null;
 
@@ -64,3 +65,4 @@ constructor(
     }
   }
 }
+
