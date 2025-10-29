@@ -5,6 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// === INÍCIO DA CORREÇÃO ===
+// Adiciona os imports que estavam faltando para List e ArrayList
+import java.util.List;
+import java.util.ArrayList;
+// === FIM DA CORREÇÃO ===
+
 @Entity
 @Table(name = "pets")
 @Data
@@ -14,18 +20,18 @@ public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // [cite: 82]
+    private Long id; //
 
     @Column(nullable = false)
-    private String nome; // [cite: 83]
+    private String nome; //
 
     @Column(nullable = false, length = 100)
-    private String especie; // [cite: 84]
+    private String especie; //
 
     @Column(nullable = false, length = 100)
-    private String raca; // [cite: 85]
+    private String raca; //
 
-    // Relacionamento com Cliente (Muitos pets pertencem a um cliente) [cite: 86, 87]
+    // Relacionamento com Cliente (Muitos pets pertencem a um cliente)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;

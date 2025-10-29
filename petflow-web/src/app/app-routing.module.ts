@@ -1,43 +1,26 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { adminAuthGuard } from './core/guards/auth.guard';
-import { clienteAuthGuard } from './core/guards/cliente.guard';
-import { CadastrarAdminComponent } from './features/admin/pages/cadastrar-admin/cadastrar-admin.component'; // ✅ ajuste o caminho conforme seu projeto
+import { authGuard } from './core/guards/auth.guard';
+
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: '/auth/login',
-    pathMatch: 'full'
+{ path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+{
+path: 'auth',
+loadChildren: () => import('./features/admin/auth/auth.module').then(m => m.AuthModule)
   },
   {
-    // Módulo de Autenticação (Login)
-    path: 'auth',
-    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
-  },
-  {
-    // Módulo de Admin (Clientes, Pets, etc.)
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule),
-    canActivate: [adminAuthGuard]
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN'] } // usa Perfil do enum
   },
   {
-    // Módulo Cliente (Agendamentos)
     path: 'cliente',
     loadChildren: () => import('./features/cliente/cliente.module').then(m => m.ClienteModule),
-    canActivate: [clienteAuthGuard]
+    canActivate: [authGuard],
+    data: { roles: ['CLIENTE'] }
   },
-  {
-    // Tela para cadastro de admin
-    path: 'admin/cadastrar-admin',
-    component: CadastrarAdminComponent,
-    canActivate: [adminAuthGuard], // ✅ ou AuthGuard, depende do nome real
-    data: { roles: ['ADMIN'] }
-  },
-  {
-    // Rota curinga
-    path: '**',
-    redirectTo: '/auth/login'
-  }
+  { path: '**', redirectTo: '/auth/login' }
 ];
 
 @NgModule({

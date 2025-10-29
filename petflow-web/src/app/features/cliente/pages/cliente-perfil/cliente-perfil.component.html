@@ -1,0 +1,178 @@
+<div class="container my-4">
+    <!-- Header com botão voltar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Meu Perfil</h2>
+        <button class="btn btn-outline-primary" routerLink="/cliente/meus-agendamentos">
+            <i class="bi bi-arrow-left"></i> Voltar para Agendamentos
+        </button>
+    </div>
+
+    <!-- Mensagens -->
+    <div *ngIf="mensagem" class="alert alert-success alert-dismissible fade show">
+        {{ mensagem }}
+        <button type="button" class="btn-close" (click)="mensagem = ''"></button>
+    </div>
+    <div *ngIf="erro" class="alert alert-danger alert-dismissible fade show">
+        {{ erro }}
+        <button type="button" class="btn-close" (click)="erro = ''"></button>
+    </div>
+
+    <div class="row">
+        <!-- Coluna Esquerda: Dados Pessoais e Senha -->
+        <div class="col-lg-6 mb-4">
+            <!-- Dados do Perfil -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Dados Pessoais</h5>
+                    <button *ngIf="!editandoPerfil" class="btn btn-sm btn-light" (click)="editarPerfil()">
+                        Editar
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="perfilForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nome</label>
+                            <input type="text" class="form-control" formControlName="nome"
+                                   [readonly]="!editandoPerfil">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">CPF</label>
+                            <input type="text" class="form-control" [value]="perfil?.cpf" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email</label>
+                            <input type="email" class="form-control" [value]="perfil?.email" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Telefone</label>
+                            <input type="text" class="form-control" formControlName="telefone"
+                                   [readonly]="!editandoPerfil">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Endereço</label>
+                            <input type="text" class="form-control" formControlName="endereco"
+                                   [readonly]="!editandoPerfil">
+                        </div>
+
+                        <div *ngIf="editandoPerfil" class="d-flex gap-2">
+                            <button type="button" class="btn btn-success" (click)="salvarPerfil()"
+                                    [disabled]="!perfilForm.valid">
+                                Salvar
+                            </button>
+                            <button type="button" class="btn btn-secondary" (click)="cancelarEdicaoPerfil()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Alterar Senha -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">Segurança</h5>
+                </div>
+                <div class="card-body">
+                    <button *ngIf="!editandoSenha" class="btn btn-warning w-100" (click)="abrirAlterarSenha()">
+                        Alterar Senha
+                    </button>
+
+                    <!-- Formulário Alterar Senha -->
+                    <form *ngIf="editandoSenha" [formGroup]="senhaForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Senha Atual</label>
+                            <input type="password" class="form-control" formControlName="senhaAtual">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nova Senha</label>
+                            <input type="password" class="form-control" formControlName="novaSenha">
+                            <small class="text-muted">Mínimo 6 caracteres</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Confirmar Nova Senha</label>
+                            <input type="password" class="form-control" formControlName="confirmarNovaSenha">
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-success" (click)="alterarSenha()"
+                                    [disabled]="!senhaForm.valid">
+                                Confirmar
+                            </button>
+                            <button type="button" class="btn btn-secondary" (click)="cancelarAlterarSenha()">
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: Meus Pets -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Meus Pets</h5>
+                    <button class="btn btn-sm btn-light" (click)="abrirAdicionarPet()">
+                        + Adicionar
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Lista de Pets -->
+                    <div class="row g-3">
+                        <div class="col-md-6" *ngFor="let pet of pets">
+                            <div class="card h-100 border-success">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success">{{ pet.nome }}</h6>
+                                    <p class="card-text mb-1 small"><strong>Espécie:</strong> {{ pet.especie }}</p>
+                                    <p class="card-text mb-3 small"><strong>Raça:</strong> {{ pet.raca }}</p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarPet(pet)">
+                                            Editar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" (click)="deletarPet(pet)">
+                                            Excluir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="pets.length === 0" class="col-12 text-center py-4">
+                            <p class="text-muted">Nenhum pet cadastrado ainda.</p>
+                        </div>
+                    </div>
+
+                    <!-- Formulário Adicionar/Editar Pet -->
+                    <div *ngIf="adicionandoPet" class="mt-4 border-top pt-4">
+                        <h6 class="mb-3">{{ editandoPet ? 'Editar Pet' : 'Novo Pet' }}</h6>
+                        <form [formGroup]="petForm">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nome</label>
+                                <input type="text" class="form-control" formControlName="nome">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Espécie</label>
+                                <input type="text" class="form-control" formControlName="especie"
+                                       placeholder="Ex: Cachorro, Gato">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Raça</label>
+                                <input type="text" class="form-control" formControlName="raca"
+                                       placeholder="Ex: Golden Retriever, Persa">
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-success" (click)="salvarPet()"
+                                        [disabled]="!petForm.valid">
+                                    Salvar
+                                </button>
+                                <button type="button" class="btn btn-secondary" (click)="cancelarPet()">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

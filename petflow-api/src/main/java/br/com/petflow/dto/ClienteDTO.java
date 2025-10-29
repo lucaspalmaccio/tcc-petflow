@@ -1,60 +1,61 @@
 package br.com.petflow.dto;
 
 import br.com.petflow.model.Cliente;
-import br.com.petflow.model.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * DTO para receber dados de criação e atualização de Cliente (UC02).
- * Inclui os dados de login (Usuario) conforme fluxo UC02.
- */
-public record ClienteDTO(
-        Long id,
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ClienteDTO {
 
-        // Dados do Usuário (para login)
-        @NotBlank(message = "O nome do cliente é obrigatório")
-        String nome,
+    private Long id;
 
-        @NotBlank(message = "O e-mail é obrigatório")
-        @Email(message = "Formato de e-mail inválido")
-        String email,
+    @NotBlank(message = "O nome do cliente é obrigatório")
+    private String nome;
 
-        @NotBlank(message = "A senha é obrigatória")
-        @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
-        String senha,
+    @NotBlank(message = "O e-mail é obrigatório")
+    @Email(message = "Formato de e-mail inválido")
+    private String email;
 
-        // Dados do Cliente
-        @NotBlank(message = "O CPF é obrigatório")
-        @CPF(message = "CPF inválido")
-        String cpf,
+    // Senha não é obrigatória ao atualizar perfil
+    @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
+    private String senhaNormal;
 
-        @NotBlank(message = "O telefone é obrigatório")
-        String telefone,
+    @NotBlank(message = "O CPF é obrigatório")
+    @CPF(message = "CPF inválido")
+    private String cpf;
 
-        String endereco,
+    @NotBlank(message = "O telefone é obrigatório")
+    private String telefone;
 
-        // Lista de pets (apenas para exibição)
-        List<PetDTO> pets
-) {
+    private String endereco;
+
+    private Long usuarioId;
+
+    private List<PetDTO> pets;
+
     /**
-     * Construtor para converter uma Entidade Cliente em um ClienteDTO completo.
+     * Construtor para converter Cliente em ClienteDTO
      */
     public ClienteDTO(Cliente cliente) {
-        this(
-                cliente.getId(),
-                cliente.getUsuario().getNome(),
-                cliente.getUsuario().getEmail(),
-                null, // Nunca retornar a senha
-                cliente.getCpf(),
-                cliente.getTelefone(),
-                cliente.getEndereco(),
-                cliente.getPets().stream().map(PetDTO::new).collect(Collectors.toList())
-        );
+        this.id = cliente.getId();
+        this.nome = cliente.getUsuario().getNome();
+        this.email = cliente.getUsuario().getEmail();
+        this.cpf = cliente.getCpf();
+        this.telefone = cliente.getTelefone();
+        this.endereco = cliente.getEndereco();
+        this.usuarioId = cliente.getUsuario().getId();
+        this.pets = cliente.getPets() != null
+                ? cliente.getPets().stream().map(PetDTO::new).collect(Collectors.toList())
+                : null;
     }
 }

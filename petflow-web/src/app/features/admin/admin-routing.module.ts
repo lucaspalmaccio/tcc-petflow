@@ -1,52 +1,50 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { authGuard } from '../../core/guards/auth.guard';
 
-// Componentes Sprint 01
+// Componentes Admin
 import { ClienteListComponent } from './pages/clientes/cliente-list/cliente-list.component';
 import { ClienteFormComponent } from './pages/clientes/cliente-form/cliente-form.component';
-// Componentes Sprint 02
 import { ServicoListComponent } from './pages/servicos/servico-list/servico-list.component';
 import { ServicoFormComponent } from './pages/servicos/servico-form/servico-form.component';
 import { ProdutoListComponent } from './pages/produtos/produto-list/produto-list.component';
 import { ProdutoFormComponent } from './pages/produtos/produto-form/produto-form.component';
-// Componentes Sprint 03
 import { AgendaComponent } from './pages/agenda/agenda.component';
-
-// Nova rota: Cadastro de Admin
 import { CadastrarAdminComponent } from './pages/cadastrar-admin/cadastrar-admin.component';
-import { adminAuthGuard } from '../../core/guards/auth.guard'; // Ajuste o caminho se necessário
 
 const routes: Routes = [
 {
 path: '',
 component: LayoutComponent,
 children: [
-// Rotas Sprint 03 (UC05 - Admin)
+// Agenda
 { path: 'agenda', component: AgendaComponent },
 
-// Rotas Sprint 01 (UC02/UC03)
+// Clientes
 { path: 'clientes', component: ClienteListComponent },
 { path: 'clientes/novo', component: ClienteFormComponent },
 { path: 'clientes/editar/:id', component: ClienteFormComponent },
 
-// Rotas Sprint 02 (UC04)
+// Serviços
 { path: 'servicos', component: ServicoListComponent },
 { path: 'servicos/novo', component: ServicoFormComponent },
 { path: 'servicos/editar/:id', component: ServicoFormComponent },
+
+// Produtos
 { path: 'produtos', component: ProdutoListComponent },
 { path: 'produtos/novo', component: ProdutoFormComponent },
 { path: 'produtos/editar/:id', component: ProdutoFormComponent },
 
-// Nova rota: cadastro de admin
+// Cadastro de Admin (somente ADMIN)
 {
 path: 'cadastrar',
 component: CadastrarAdminComponent,
-canActivate: [adminAuthGuard],
+canActivate: [authGuard],
 data: { roles: ['ADMIN'] }
 },
 
-{ path: '', redirectTo: 'agenda', pathMatch: 'full' } // Admin agora começa na Agenda
+{ path: '', redirectTo: 'agenda', pathMatch: 'full' }
 ]
 }
 ];
@@ -55,4 +53,4 @@ data: { roles: ['ADMIN'] }
 imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AdminRoutingModule { }
+export class AdminRoutingModule {}

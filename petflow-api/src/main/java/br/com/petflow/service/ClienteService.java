@@ -34,27 +34,29 @@ public class ClienteService {
     @Transactional
     public ClienteDTO criarCliente(ClienteDTO clienteDTO) {
         // Validação de Negócio (UC02 - Fluxos de Exceção)
-        if (usuarioRepository.existsByEmail(clienteDTO.email())) {
+        if (usuarioRepository.existsByEmail(clienteDTO.getEmail())) {
             throw new IllegalArgumentException("E-mail já cadastrado.");
         }
-        if (clienteRepository.existsByCpf(clienteDTO.cpf())) {
+        if (clienteRepository.existsByCpf(clienteDTO.getCpf())) {
             throw new IllegalArgumentException("CPF já cadastrado.");
         }
 
         // 1. Criar o Usuario
         Usuario novoUsuario = new Usuario();
-        novoUsuario.setNome(clienteDTO.nome());
-        novoUsuario.setEmail(clienteDTO.email());
-        novoUsuario.setSenha(passwordEncoder.encode(clienteDTO.senha())); // Criptografa a senha
+        novoUsuario.setNome(clienteDTO.getNome());
+        novoUsuario.setEmail(clienteDTO.getEmail());
+        // ✅ Salva senha em texto puro na coluna senha_normal (para validação na sprint atual)
+        novoUsuario.setSenhaNormal(clienteDTO.getSenhaNormal());
+        // TODO: Na última sprint, adicionar: novoUsuario.setSenha(passwordEncoder.encode(clienteDTO.getSenhaNormal()));
         novoUsuario.setPerfil(PerfilUsuario.CLIENTE); // Todo cliente tem perfil CLIENTE
 
         Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
 
         // 2. Criar o Cliente e vincular ao Usuario
         Cliente novoCliente = new Cliente();
-        novoCliente.setCpf(clienteDTO.cpf());
-        novoCliente.setTelefone(clienteDTO.telefone());
-        novoCliente.setEndereco(clienteDTO.endereco());
+        novoCliente.setCpf(clienteDTO.getCpf());
+        novoCliente.setTelefone(clienteDTO.getTelefone());
+        novoCliente.setEndereco(clienteDTO.getEndereco());
         novoCliente.setUsuario(usuarioSalvo);
 
         Cliente clienteSalvo = clienteRepository.save(novoCliente);
@@ -91,18 +93,18 @@ public class ClienteService {
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + id));
 
         // Valida CPF duplicado (se for um CPF diferente do atual)
-        if (!clienteExistente.getCpf().equals(clienteDTO.cpf()) && clienteRepository.existsByCpf(clienteDTO.cpf())) {
+        if (!clienteExistente.getCpf().equals(clienteDTO.getCpf()) && clienteRepository.existsByCpf(clienteDTO.getCpf())) {
             throw new IllegalArgumentException("CPF já cadastrado em outra conta.");
         }
 
         // Atualiza dados do Cliente
-        clienteExistente.setCpf(clienteDTO.cpf());
-        clienteExistente.setTelefone(clienteDTO.telefone());
-        clienteExistente.setEndereco(clienteDTO.endereco());
+        clienteExistente.setCpf(clienteDTO.getCpf());
+        clienteExistente.setTelefone(clienteDTO.getTelefone());
+        clienteExistente.setEndereco(clienteDTO.getEndereco());
 
         // Atualiza dados do Usuario associado
         Usuario usuario = clienteExistente.getUsuario();
-        usuario.setNome(clienteDTO.nome());
+        usuario.setNome(clienteDTO.getNome());
         // (Não atualizamos e-mail ou senha aqui para simplificar)
 
         Cliente clienteAtualizado = clienteRepository.save(clienteExistente);
@@ -122,10 +124,6 @@ public class ClienteService {
         if (agendamentoRepository.existsByCliente(cliente)) {
             throw new IllegalStateException("Não é possível excluir cliente com agendamentos vinculados.");
         }
-        // (Adicionar lógica de verificação de agendamentos aqui na Sprint 3)
-        // if (agendamentoRepository.existsByCliente(cliente)) {
-        //    throw new IllegalStateException("Não é possível excluir cliente com agendamentos.");
-        // }
 
         // Exclui o cliente (e o usuário em cascata, se configurado)
         clienteRepository.delete(cliente);

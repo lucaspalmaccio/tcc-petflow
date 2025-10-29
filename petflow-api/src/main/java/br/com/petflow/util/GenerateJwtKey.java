@@ -1,13 +1,13 @@
-public class GenerateJwtKey import io.jsonwebtoken.SignatureAlgorithm;
+package br.com.petflow.util;
+
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Base64;
+import javax.crypto.SecretKey;
 
 public class GenerateJwtKey {
     public static void main(String[] args) {
-        String key = Base64.getEncoder().encodeToString(
-                Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded()
-        );
-        System.out.println("Secure JWT Key: " + key);
+        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        System.out.println(Base64.getEncoder().encodeToString(key.getEncoded()));
     }
 }
-

@@ -3,18 +3,18 @@ const { Client } = require('pg');
 
 // Configurações do banco de dados
 const client = new Client({
-  host: 'localhost',       // host do PostgreSQL
-  port: 5432,              // porta padrão
-  user: 'postgres',        // usuário
-  password: 'senha',       // senha
-  database: 'petflow_db'   // nome do banco
+  host: 'localhost',
+  port: 5432,
+  user: 'postgres',
+  password: 'Andressa@55',
+  database: 'petflow_db'
 });
 
 // Dados do novo admin
 const email = 'novoadmin@petflow.com';
 const nome = 'Admin Novo';
-const role = 'ADMIN';
-const senha = '123456'; // senha em texto
+const perfil = 'ADMIN'; // mudou de 'role' para 'perfil'
+const senha = '123456';
 
 // Gera o hash da senha
 const saltRounds = 10;
@@ -34,10 +34,10 @@ console.log('Hash gerado:', hashSenha);
       return;
     }
 
-    const sql = `INSERT INTO usuarios (email, nome, role, senha_hash)
+    const sql = `INSERT INTO usuarios (email, nome, perfil, senha)
                  VALUES ($1, $2, $3, $4) RETURNING id`;
 
-    const res = await client.query(sql, [email, nome, role, hashSenha]);
+    const res = await client.query(sql, [email, nome, perfil, hashSenha]);
     console.log('Admin criado com sucesso! ID:', res.rows[0].id);
 
   } catch (err) {

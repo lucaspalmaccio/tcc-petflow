@@ -9,13 +9,13 @@ templateUrl: './pet-form-modal.component.html',
 styleUrls: ['./pet-form-modal.component.css']
 })
 export class PetFormModalComponent implements OnChanges {
-// --- Entradas e Saídas ---
+
 @Input() clienteId: number | null = null;
 @Input() pet: Pet | null = null;
+
 @Output() closeModal = new EventEmitter<void>();
 @Output() saveSuccess = new EventEmitter<void>();
 
-// --- Estado ---
 petForm: FormGroup;
 isEditMode = false;
 isLoading = false;
@@ -34,7 +34,6 @@ constructor(
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['pet'] && this.pet) {
-      // Modo edição
       this.isEditMode = true;
       this.petForm.patchValue({
         nome: this.pet.nome,
@@ -42,7 +41,6 @@ constructor(
         raca: this.pet.raca
       });
     } else {
-      // Modo criação
       this.isEditMode = false;
       this.petForm.reset();
     }
@@ -70,7 +68,7 @@ constructor(
       next: () => {
         this.isLoading = false;
         this.saveSuccess.emit();
-        this.onClose();
+        this.close();
       },
       error: (err) => {
         this.isLoading = false;
@@ -79,7 +77,17 @@ constructor(
     });
   }
 
-  onClose(): void {
+  /** Fecha o modal */
+  close(): void {
+    this.petForm.reset();
+    this.errorMessage = null;
+    this.isEditMode = false;
     this.closeModal.emit();
+  }
+
+  /** Fecha ao clicar no overlay */
+  onOverlayClick(event: MouseEvent): void {
+    event.stopPropagation();
+    this.close();
   }
 }

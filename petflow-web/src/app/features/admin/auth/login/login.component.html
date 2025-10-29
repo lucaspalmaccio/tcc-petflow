@@ -2,56 +2,46 @@
     <h2>Login</h2>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- E-mail -->
         <div class="form-group">
             <label for="email">E-mail</label>
-            <input id="email" type="email" formControlName="email" placeholder="Digite seu e-mail" />
-            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="error">
+            <input id="email" type="email" formControlName="email" placeholder="Digite seu e-mail">
+            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="error-message">
                 E-mail inválido.
             </div>
         </div>
 
+        <!-- Senha -->
         <div class="form-group">
-            <label for="senha">Senha</label>
-            <input id="senha" type="password" formControlName="senha" placeholder="Digite sua senha" />
-            <div *ngIf="loginForm.get('senha')?.touched && loginForm.get('senha')?.invalid" class="error">
-                A senha é obrigatória.
+            <label for="senha_normal">Senha</label>
+            <div class="password-wrapper">
+                <input
+                        id="senha_normal"
+                        [type]="showPassword ? 'text' : 'password'"
+                        formControlName="senha_normal"
+                        placeholder="Digite sua senha">
+                <button type="button" class="toggle-password" (click)="togglePassword()">
+                    {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+                </button>
+            </div>
+            <div *ngIf="loginForm.get('senha_normal')?.touched && loginForm.get('senha_normal')?.invalid" class="error-message">
+                Senha é obrigatória.
             </div>
         </div>
 
-        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <!-- Mensagem de erro geral -->
+        <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+        </div>
 
+        <!-- Botão -->
         <button type="submit" [disabled]="isLoading">
-            <span *ngIf="!isLoading">Entrar</span>
-            <span *ngIf="isLoading">Carregando...</span>
+            {{ isLoading ? 'Entrando...' : 'Entrar' }}
+        </button>
+
+        <!-- Link cadastro -->
+        <button type="button" class="btn-secondary" (click)="cadastrarCliente()">
+            Cadastrar como Cliente
         </button>
     </form>
-
-    <!-- Botão para cadastrar cliente -->
-    <button class="btn-cadastro" (click)="cadastrarCliente()">Cadastrar Cliente</button>
 </div>
-
-<style>
-    .login-container {
-        max-width: 400px;
-        margin: 50px auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-    }
-    .form-group { margin-bottom: 15px; }
-    input { width: 100%; padding: 8px; box-sizing: border-box; }
-    .error { color: red; font-size: 12px; }
-    .error-message { margin-bottom: 15px; color: red; font-weight: bold; }
-    button {
-        width: 100%;
-        padding: 10px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    button:disabled { background-color: #999; cursor: not-allowed; }
-    .btn-cadastro { background-color: #28a745; margin-top: 15px; }
-</style>

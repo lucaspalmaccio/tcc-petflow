@@ -3,61 +3,66 @@ package br.com.petflow.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private SimpleAuthFilter simpleAuthFilter;
 
+    /**
+     * Configuração de segurança principal.
+     * Adiciona o SimpleAuthFilter para autenticação sem JWT.
+     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public org.springframework.security.web.SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // desabilita CSRF
+                .cors() // habilita CORS
+                .and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        // UC01: Permite acesso público ao endpoint de login
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-
-                        // UC02 e UC03 (Sprint 01): Exigem ROLE_ADMIN
-                        .requestMatchers("/api/clientes/**").hasRole("ADMIN")
-                        .requestMatchers("/api/pets/**").hasRole("ADMIN")
-
-                        // UC04 (Sprint 02): Exigem ROLE_ADMIN
-                        .requestMatchers("/api/servicos/**").hasRole("ADMIN")
-                        .requestMatchers("/api/produtos/**").hasRole("ADMIN")
-
-                        // === INÍCIO DA ATUALIZAÇÃO SPRINT 03 ===
-                        // UC05 (Sprint 03): Exigem ROLE_ADMIN ou ROLE_CLIENTE
-                        .requestMatchers("/api/agendamentos/**").hasAnyRole("ADMIN", "CLIENTE")
-                        // === FIM DA ATUALIZAÇÃO SPRINT 03 ===
-
-                        // Exige autenticação para qualquer outra requisição
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll() // permite todas as rotas
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // ← ADICIONA O FILTRO DE AUTENTICAÇÃO
+                .addFilterBefore(simpleAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    /**
+     * PasswordEncoder para senhas em hash (BCrypt).
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configuração de CORS para permitir requisições do Angular.
+     */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // origem do Angular
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }

@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # 🐘 Banco de Dados PostgreSQL
+  db:
+    image: postgres:15
+    container_name: petflow-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: petflow_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Andressa@55
+    volumes:
+      - petflow-data:/var/lib/postgresql/data
+
+  # ☕ API Back-end (Spring Boot)
+  api:
+    build: ./petflow-api
+    container_name: petflow-api
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/petflow_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Andressa@55
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: v7AnQwQUt1BmgrRawa0XydgswWtL7HTJpkYJCeJovZY=
+      JWT_EXPIRATION_MS: 86400000
+
+  # 🌐 Front-end (Angular/React)
+  web:
+    build: ./petflow-web
+    container_name: petflow-web
+    ports:
+      - "81:81"
+    depends_on:
+      - api
+
+volumes:
+  petflow-data:

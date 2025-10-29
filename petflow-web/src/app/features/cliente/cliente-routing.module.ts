@@ -1,20 +1,31 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ClienteLayoutComponent } from './layout/cliente-layout.component';
+import { authGuard } from '../../core/guards/auth.guard';
+import { Perfil } from '../../core/services/auth.service';
+
+// Componentes existentes
 import { MeusAgendamentosComponent } from './pages/meus-agendamentos/meus-agendamentos.component';
+import { ClientePerfilComponent } from './pages/cliente-perfil/cliente-perfil.component';
 
 const routes: Routes = [
 {
 path: '',
-component: ClienteLayoutComponent, // Layout "casca" do cliente
 children: [
 {
-path: 'agendamentos',
-component: MeusAgendamentosComponent // Página principal do cliente
+path: 'meus-agendamentos',
+component: MeusAgendamentosComponent,
+canActivate: [authGuard],
+data: { roles: [Perfil.CLIENTE] }
+},
+{
+path: 'perfil',
+component: ClientePerfilComponent,
+canActivate: [authGuard],
+data: { roles: [Perfil.CLIENTE] }
 },
 {
 path: '',
-redirectTo: 'agendamentos', // Redireciona /cliente para /cliente/agendamentos
+redirectTo: 'meus-agendamentos',
 pathMatch: 'full'
 }
 ]
@@ -25,4 +36,4 @@ pathMatch: 'full'
 imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ClienteRoutingModule { }
+export class ClienteRoutingModule {}

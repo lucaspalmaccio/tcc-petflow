@@ -6,9 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-// (Importar List e ArrayList para o relacionamento com Agendamento na Sprint 3)
-// import java.util.ArrayList;
-// import java.util.List;
+// === INÍCIO DA CORREÇÃO ===
+// Adiciona os imports que estavam faltando para Set e HashSet
+import java.util.Set;
+import java.util.HashSet;
+// === FIM DA CORREÇÃO ===
 
 @Entity
 @Table(name = "servicos")
@@ -30,7 +32,7 @@ public class Servico {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco; // [cite: 218-221]
 
+    // Relacionamento com Agendamento (Um serviço está em muitos agendamentos)
     @ManyToMany(mappedBy = "servicos", fetch = FetchType.LAZY)
     private Set<Agendamento> agendamentos = new HashSet<>();
-
 }

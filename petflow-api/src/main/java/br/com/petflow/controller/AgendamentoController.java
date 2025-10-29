@@ -4,65 +4,66 @@ import br.com.petflow.dto.AgendamentoRequestDTO;
 import br.com.petflow.dto.AgendamentoResponseDTO;
 import br.com.petflow.service.AgendamentoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/agendamentos")
 public class AgendamentoController {
 
-    @Autowired
-    private AgendamentoService agendamentoService;
+    private final AgendamentoService agendamentoService;
 
-    /**
-     * UC05 - Realizar Agendamento (Atores: Admin ou Cliente)
-     */
-    @PostMapping
-    public ResponseEntity<AgendamentoResponseDTO> criarAgendamento(
-            @RequestBody @Valid AgendamentoRequestDTO agendamentoDTO,
-            @AuthenticationPrincipal UserDetails userDetails) {
-
-        AgendamentoResponseDTO novoAgendamento = agendamentoService.criarAgendamento(agendamentoDTO, userDetails);
-        return new ResponseEntity<>(novoAgendamento, HttpStatus.CREATED);
+    public AgendamentoController(AgendamentoService agendamentoService) {
+        this.agendamentoService = agendamentoService;
     }
 
     /**
-     * UC05 - Consultar Agenda (Admin) ou Meus Agendamentos (Cliente)
+     * 🟢 Criar um novo agendamento (somente CLIENTE autenticado)
+     */
+    @PostMapping
+    public ResponseEntity<AgendamentoResponseDTO> criarAgendamento(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid AgendamentoRequestDTO dto) {
+
+        String emailUsuario = userDetails.getUsername();
+
+        AgendamentoResponseDTO criado = agendamentoService.criarAgendamento(dto, emailUsuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+    }
+
+    /**
+     * 🟡 Listar todos os agendamentos do cliente logado
      */
     @GetMapping
-    public ResponseEntity<List<AgendamentoResponseDTO>> listarAgendamentos(
-            // Parâmetros para o Admin (Calendário)
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim,
+    public ResponseEntity<List<AgendamentoResponseDTO>> listarMeusAgendamentos(
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        // Se for admin e não passar data, define um padrão (ex: mês atual)
-        if (inicio == null && fim == null) {
-            inicio = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);
-            fim = LocalDateTime.now().plusMonths(1).withDayOfMonth(1).withHour(0).withMinute(0);
-        }
+        String emailUsuario = userDetails.getUsername();
 
-        List<AgendamentoResponseDTO> agendamentos = agendamentoService.listarAgendamentos(inicio, fim, userDetails);
+        List<AgendamentoResponseDTO> agendamentos =
+                agendamentoService.listarAgendamentosDoCliente(emailUsuario);
+
         return ResponseEntity.ok(agendamentos);
     }
 
     /**
-     * CT03.4 - Cancelar Agendamento (Atores: Admin ou Cliente)
+     * 🔴 Cancelar um agendamento do cliente logado
      */
     @PatchMapping("/{id}/cancelar")
     public ResponseEntity<AgendamentoResponseDTO> cancelarAgendamento(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
 
-        AgendamentoResponseDTO agendamentoCancelado = agendamentoService.cancelarAgendamento(id, userDetails);
-        return ResponseEntity.ok(agendamentoCancelado);
+        String emailUsuario = userDetails.getUsername();
+
+        AgendamentoResponseDTO cancelado =
+                agendamentoService.cancelarAgendamento(id, emailUsuario);
+
+        return ResponseEntity.ok(cancelado);
     }
 }

@@ -25,6 +25,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Captura erros de Resource Não Encontrado (customizado).
+     * Retorna 404 NOT_FOUND.
+     */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFound(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(Map.of("erro", ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    /**
      * Captura erros de Validação de DTO (@Valid).
      * Retorna 400 BAD_REQUEST.
      * Fluxo UC01 [122] e UC02 [137].
@@ -51,6 +60,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Captura erros de estado ilegal (ex: Pet com agendamentos vinculados).
+     * Retorna 409 CONFLICT.
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException ex) {
+        return new ResponseEntity<>(Map.of("erro", ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    /**
      * Captura falhas de autenticação (ex: senha errada).
      * Retorna 401 UNAUTHORIZED.
      * Fluxo UC01 [123].
@@ -61,12 +79,22 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Captura erros de acesso não autorizado (ex: cliente tentando editar pet de outro).
+     * Retorna 403 FORBIDDEN.
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnauthorizedException ex) {
+        return new ResponseEntity<>(Map.of("erro", ex.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    /**
      * Captura genérica para outros erros inesperados.
      * Retorna 500 INTERNAL_SERVER_ERROR.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
-        // Logar a exceção (ex.printStackTrace())
+        // Logar a exceção para debug
+        ex.printStackTrace();
         return new ResponseEntity<>(Map.of("erro", "Ocorreu um erro interno no servidor."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

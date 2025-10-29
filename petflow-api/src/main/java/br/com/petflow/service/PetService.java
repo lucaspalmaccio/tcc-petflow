@@ -1,6 +1,8 @@
 package br.com.petflow.service;
 
 import br.com.petflow.dto.PetDTO;
+import br.com.petflow.exception.ResourceNotFoundException;
+import br.com.petflow.exception.UnauthorizedException;
 import br.com.petflow.model.Cliente;
 import br.com.petflow.model.Pet;
 import br.com.petflow.model.Usuario;
@@ -23,18 +25,22 @@ public class PetService {
 
     @Autowired
     private PetRepository petRepository;
+
     @Autowired
     private ClienteRepository clienteRepository;
+
     @Autowired
     private AgendamentoRepository agendamentoRepository;
 
-    // === INÍCIO DA ATUALIZAÇÃO SPRINT 03 ===
     @Autowired
     private UsuarioRepository usuarioRepository;
-    // === FIM DA ATUALIZAÇÃO SPRINT 03 ===
+
+    // ============================================
+    // MÉTODOS PARA ADMIN (Endpoints /api/pets)
+    // ============================================
 
     /**
-     * UC03 (Implícito no UC02) - Adicionar Pet
+     * UC03 - Adicionar Pet (ADMIN)
      */
     @Transactional
     public PetDTO criarPet(PetDTO petDTO) {
@@ -52,7 +58,7 @@ public class PetService {
     }
 
     /**
-     * UC03 - Listar todos os pets (geralmente filtrado por cliente)
+     * UC03 - Listar todos os pets (ADMIN)
      */
     public List<PetDTO> listarTodos() {
         return petRepository.findAll().stream()
@@ -60,28 +66,8 @@ public class PetService {
                 .collect(Collectors.toList());
     }
 
-    // === INÍCIO DA ATUALIZAÇÃO SPRINT 03 ===
     /**
-     * UC05 - Busca os pets do cliente logado.
-     */
-    public List<PetDTO> listarMeusPets(UserDetails userDetails) {
-        Usuario usuario = (Usuario) usuarioRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
-
-        Cliente cliente = usuario.getCliente();
-        if (cliente == null) {
-            return Collections.emptyList();
-        }
-
-        // Busca os pets associados a este cliente
-        return petRepository.findAllByCliente(cliente).stream()
-                .map(PetDTO::new)
-                .collect(Collectors.toList());
-    }
-    // === FIM DA ATUALIZAÇÃO SPRINT 03 ===
-
-    /**
-     * UC03 - Buscar pet por ID
+     * UC03 - Buscar pet por ID (ADMIN)
      */
     public PetDTO buscarPorId(Long id) {
         Pet pet = petRepository.findById(id)
@@ -90,7 +76,7 @@ public class PetService {
     }
 
     /**
-     * UC03 - Atualizar Pet
+     * UC03 - Atualizar Pet (ADMIN)
      */
     @Transactional
     public PetDTO atualizarPet(Long id, PetDTO petDTO) {
@@ -112,13 +98,111 @@ public class PetService {
     }
 
     /**
-     * UC03 - Excluir Pet
+     * UC03 - Excluir Pet (ADMIN)
      */
     @Transactional
     public void deletarPet(Long id) {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pet não encontrado com ID: " + id));
 
+        if (agendamentoRepository.existsByPet(pet)) {
+            throw new IllegalStateException("Não é possível excluir pet com agendamentos vinculados.");
+        }
+
+        petRepository.delete(pet);
+    }
+
+    // ============================================
+    // MÉTODOS PARA CLIENTE (Endpoints /api/clientes/me/pets)
+    // ============================================
+
+    /**
+     * UC05 - Listar pets do CLIENTE logado
+     */
+    public List<PetDTO> listarMeusPets(UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado."));
+
+        Cliente cliente = clienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
+
+        return petRepository.findAllByCliente(cliente).stream()
+                .map(PetDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Criar pet para o CLIENTE logado
+     */
+    @Transactional
+    public PetDTO criarPetParaCliente(UserDetails userDetails, PetDTO petDTO) {
+        String email = userDetails.getUsername();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+
+        Cliente cliente = clienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
+
+        Pet pet = new Pet();
+        pet.setNome(petDTO.nome());
+        pet.setEspecie(petDTO.especie());
+        pet.setRaca(petDTO.raca());
+        pet.setCliente(cliente);
+
+        Pet novoPet = petRepository.save(pet);
+        return new PetDTO(novoPet);
+    }
+
+    /**
+     * Atualizar pet do CLIENTE logado
+     */
+    @Transactional
+    public PetDTO atualizarPetDoCliente(UserDetails userDetails, Long petId, PetDTO petDTO) {
+        String email = userDetails.getUsername();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+
+        Cliente cliente = clienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
+
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado"));
+
+        // Verifica se o pet pertence ao cliente logado
+        if (!pet.getCliente().getId().equals(cliente.getId())) {
+            throw new UnauthorizedException("Você não tem permissão para editar este pet");
+        }
+
+        pet.setNome(petDTO.nome());
+        pet.setEspecie(petDTO.especie());
+        pet.setRaca(petDTO.raca());
+
+        Pet atualizado = petRepository.save(pet);
+        return new PetDTO(atualizado);
+    }
+
+    /**
+     * Deletar pet do CLIENTE logado
+     */
+    @Transactional
+    public void deletarPetDoCliente(UserDetails userDetails, Long petId) {
+        String email = userDetails.getUsername();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
+
+        Cliente cliente = clienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
+
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado"));
+
+        // Verifica se o pet pertence ao cliente logado
+        if (!pet.getCliente().getId().equals(cliente.getId())) {
+            throw new UnauthorizedException("Você não tem permissão para deletar este pet");
+        }
+
+        // Verifica se há agendamentos
         if (agendamentoRepository.existsByPet(pet)) {
             throw new IllegalStateException("Não é possível excluir pet com agendamentos vinculados.");
         }

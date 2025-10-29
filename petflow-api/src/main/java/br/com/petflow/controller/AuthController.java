@@ -1,61 +1,38 @@
+// br.com.petflow.controller.AuthController.java
 package br.com.petflow.controller;
 
 import br.com.petflow.dto.LoginRequestDTO;
 import br.com.petflow.dto.LoginResponseDTO;
 import br.com.petflow.model.Usuario;
-import br.com.petflow.service.TokenService;
-import jakarta.validation.Valid;
+import br.com.petflow.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private AuthService authService;
 
-    @Autowired
-    private TokenService tokenService;
-
-    /**
-     * UC01 - Autenticar Usuário (Fluxo Principal)
-     */
     @PostMapping("/login")
-    public ResponseEntity<?> autenticar(@RequestBody @Valid LoginRequestDTO loginRequest) {
-        // Fluxo UC01 [119]: O sistema verifica as credenciais
-        var usernamePassword = new UsernamePasswordAuthenticationToken(
-                loginRequest.email(),
-                loginRequest.senha()
-        );
+    public ResponseEntity<LoginResponseDTO> autenticar(@RequestBody LoginRequestDTO loginRequest) {
+        try {
+            // ✅ Ajustei para usar senhaNormal
+            Usuario usuario = authService.autenticar(loginRequest.email(), loginRequest.senha_normal());
 
-        Authentication authentication = authenticationManager.authenticate(usernamePassword);
+            LoginResponseDTO response = new LoginResponseDTO(
+                    "fake-jwt-token", // token JWT (pode gerar um real depois)
+                    3600L, // 1 hora de expiração
+                    usuario.getNome(),
+                    usuario.getPerfil().name() // ✅ Retorna "ADMIN" ou "CLIENTE"
+            );
 
-        // Fluxo UC01 [120]: O sistema cria uma sessão (Token)
-        String token = tokenService.generateToken(authentication);
-
-        // Pós-condição UC01 [115]: Retorna o token e dados do usuário
-        Usuario usuario = (Usuario) authentication.getPrincipal();
-        String role = usuario.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_CLIENTE");
-
-        return ResponseEntity.ok(new LoginResponseDTO(
-                token,
-                tokenService.getJwtExpirationMs(),
-                usuario.getNome(),
-                role
-        ));
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).build();
+        }
     }
 }

@@ -2,10 +2,11 @@ package br.com.petflow.dto;
 
 import br.com.petflow.model.Pet;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * DTO para criar, atualizar e exibir Pets (UC03).
+ * O clienteId é opcional porque quando o cliente cria seu próprio pet,
+ * o backend já sabe quem é o cliente autenticado.
  */
 public record PetDTO(
         Long id,
@@ -19,7 +20,7 @@ public record PetDTO(
         @NotBlank(message = "A raça é obrigatória")
         String raca,
 
-        @NotNull(message = "O ID do cliente é obrigatório")
+        // Removido @NotNull - agora é opcional
         Long clienteId
 ) {
     /**
@@ -31,7 +32,7 @@ public record PetDTO(
                 pet.getNome(),
                 pet.getEspecie(),
                 pet.getRaca(),
-                pet.getCliente().getId()
+                pet.getCliente() != null ? pet.getCliente().getId() : null
         );
     }
 }

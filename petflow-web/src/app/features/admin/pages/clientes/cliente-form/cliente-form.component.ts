@@ -18,7 +18,7 @@ isLoading = false;
 errorMessage: string | null = null;
 
 public clienteId: number | null = null;
-public cliente: Cliente | null = null; // Para listar os pets
+public cliente: Cliente | null = null;
 
 public isPetModalOpen = false;
 public currentPetToEdit: Pet | null = null;
@@ -33,7 +33,7 @@ constructor(
     this.clienteForm = this.fb.group({
       nome: ['', [Validators.required, Validators.maxLength(100)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
-      senha: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]], // só obrigatório na criação
+      senha: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
       cpf: ['', [Validators.required, this.cpfValidator]],
       telefone: ['', [Validators.required, this.telefoneValidator]],
       endereco: ['', [Validators.maxLength(200)]]
@@ -90,11 +90,18 @@ constructor(
     const saveOperation = this.isEditMode
       ? this.clienteService.updateCliente(this.clienteId!, {
           nome: formValue.nome,
-          cpf: formValue.cpf,
-          telefone: formValue.telefone,
+          cpf: formValue.cpf.replace(/\D/g, ''),
+          telefone: formValue.telefone.replace(/\D/g, ''),
           endereco: formValue.endereco
         })
-      : this.clienteService.createCliente(formValue);
+      : this.clienteService.createCliente({
+          nome: formValue.nome,
+          email: formValue.email,
+          senha_normal: formValue.senha,
+          cpf: formValue.cpf.replace(/\D/g, ''),
+          telefone: formValue.telefone.replace(/\D/g, ''),
+          endereco: formValue.endereco
+        });
 
     saveOperation.subscribe({
       next: () => {
@@ -108,7 +115,6 @@ constructor(
     });
   }
 
-  // ===== Validação de CPF =====
   cpfValidator(control: AbstractControl): ValidationErrors | null {
     const cpf = control.value.replace(/\D/g, '');
     if (!cpf || cpf.length !== 11) {
@@ -117,13 +123,31 @@ constructor(
     return null;
   }
 
-  // ===== Validação de Telefone =====
   telefoneValidator(control: AbstractControl): ValidationErrors | null {
     const telefone = control.value.replace(/\D/g, '');
     if (!telefone || (telefone.length !== 10 && telefone.length !== 11)) {
       return { invalidTelefone: 'Telefone inválido. Deve conter 10 ou 11 números.' };
     }
     return null;
+  }
+
+  formatCPF(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '').slice(0, 11);
+    if (value.length > 3) value = value.replace(/^(\d{3})(\d)/, '$1.$2');
+    if (value.length > 6) value = value.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+    if (value.length > 9) value = value.replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+    input.value = value;
+    this.clienteForm.get('cpf')?.setValue(value, { emitEvent: false });
+  }
+
+  formatTelefone(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '').slice(0, 11);
+    if (value.length > 2) value = value.replace(/^(\d{2})(\d)/, '($1)$2');
+    if (value.length > 6) value = value.replace(/^(\(\d{2}\))(\d{5})(\d)/, '$1$2-$3');
+    input.value = value;
+    this.clienteForm.get('telefone')?.setValue(value, { emitEvent: false });
   }
 
   openPetModal(pet: Pet | null = null): void {
@@ -137,7 +161,7 @@ constructor(
   }
 
   handlePetSave(): void {
-    this.loadClienteData(); // Atualiza a lista de pets
+    this.loadClienteData();
   }
 
   onDeletePet(pet: Pet): void {

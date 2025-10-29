@@ -1,69 +1,82 @@
-<div class="cliente-form-container">
-    <h2>{{ isEditMode ? 'Editar Cliente' : 'Cadastrar Novo Cliente' }}</h2>
+<div class="form-container card">
+    <div class="form-header">
+        <h1>{{ isEditMode ? 'Editar Cliente' : 'Cadastrar Novo Cliente' }}</h1>
+        <button type="button" class="btn-back" (click)="goBack()">Voltar</button>
+    </div>
 
-    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-            <label>Nome</label>
-            <input type="text" formControlName="nome" maxlength="100">
+    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()" class="form-section">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" formControlName="nome" maxlength="100" placeholder="Digite o nome">
+            </div>
+
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" formControlName="email" maxlength="100" placeholder="Digite o e-mail">
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" formControlName="email" maxlength="100">
+        <div class="form-row" *ngIf="!isEditMode">
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" formControlName="senha" maxlength="20" placeholder="Digite a senha">
+            </div>
         </div>
 
-        <div class="form-group" *ngIf="!isEditMode">
-            <label>Senha</label>
-            <input type="password" formControlName="senha" maxlength="20">
-        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>CPF</label>
+                <input type="text"
+                       formControlName="cpf"
+                       maxlength="14"
+                       placeholder="000.000.000-00"
+                       (input)="formatCPF($event)">
+            </div>
 
-        <div class="form-group">
-            <label>CPF</label>
-            <input
-                    type="text"
-                    formControlName="cpf"
-                    mask="000.000.000-00"
-                    maxlength="14"
-                    placeholder="000.000.000-00">
-        </div>
-
-        <div class="form-group">
-            <label>Telefone</label>
-            <input
-                    type="text"
-                    formControlName="telefone"
-                    mask="(00) 00000-0000"
-                    maxlength="15"
-                    placeholder="(00) 00000-0000">
+            <div class="form-group">
+                <label>Telefone</label>
+                <input type="text"
+                       formControlName="telefone"
+                       maxlength="15"
+                       placeholder="(00) 00000-0000"
+                       (input)="formatTelefone($event)">
+            </div>
         </div>
 
         <div class="form-group">
             <label>Endereço</label>
-            <input type="text" formControlName="endereco" maxlength="200">
+            <input type="text" formControlName="endereco" maxlength="200" placeholder="Digite o endereço">
         </div>
 
         <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-        <button type="submit" [disabled]="isLoading">
-            {{ isLoading ? 'Salvando...' : 'Salvar Cliente' }}
-        </button>
-
-        <button type="button" (click)="goBack()">Voltar</button>
+        <div class="form-actions">
+            <button type="submit" [disabled]="isLoading" class="btn-primary">
+                {{ isLoading ? 'Salvando...' : 'Salvar Cliente' }}
+            </button>
+            <button type="button" class="btn-secondary" (click)="goBack()">Voltar</button>
+        </div>
     </form>
 
-    <hr>
-
-    <div *ngIf="cliente">
-        <h3>Pets do Cliente</h3>
-        <ul>
-            <li *ngFor="let pet of cliente?.pets">
-                {{ pet.nome }} - {{ pet.especie }}
-                <button (click)="openPetModal(pet)">Editar</button>
-                <button (click)="onDeletePet(pet)">Excluir</button>
+    <div class="pet-section" *ngIf="cliente">
+        <div class="page-header">
+            <h2>Pets do Cliente</h2>
+        </div>
+        <ul *ngIf="cliente.pets.length > 0; else noPets" class="pet-list">
+            <li *ngFor="let pet of cliente.pets" class="pet-item">
+                <span>{{ pet.nome }} - {{ pet.especie }}</span>
+                <div class="pet-actions">
+                    <button (click)="openPetModal(pet)" class="btn-edit">Editar</button>
+                    <button (click)="onDeletePet(pet)" class="btn-delete">Excluir</button>
+                </div>
             </li>
         </ul>
+        <ng-template #noPets>
+            <div class="no-data">Nenhum pet cadastrado.</div>
+        </ng-template>
 
-        <button (click)="openPetModal()">Adicionar Pet</button>
+        <button class="btn-add" (click)="openPetModal()">Adicionar Pet</button>
     </div>
 
     <app-pet-form-modal
@@ -71,6 +84,6 @@
             [pet]="currentPetToEdit"
             [clienteId]="clienteId"
             (saveSuccess)="handlePetSave()"
-            (close)="closePetModal()">
+            (closeModal)="closePetModal()">
     </app-pet-form-modal>
 </div>

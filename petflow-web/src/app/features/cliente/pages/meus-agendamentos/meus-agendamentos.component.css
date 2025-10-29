@@ -1,10 +1,58 @@
 .container {
   max-width: 900px;
-  margin: 2rem auto; /* Centraliza e adiciona margem superior/inferior */
-  padding: 0 1rem; /* Espaçamento lateral pequeno */
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
-/* Cabeçalho (Título + Botão) */
+/* ========================================
+   MENU DE NAVEGAÇÃO DO CLIENTE (NOVO)
+   ======================================== */
+.cliente-nav {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 2px solid var(--color-border, #e0e0e0);
+  margin-bottom: 2rem;
+}
+
+.cliente-nav .nav-link {
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  color: var(--color-dark, #333);
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.cliente-nav .nav-link:hover {
+  background-color: var(--color-light, #f5f5f5);
+  color: var(--color-primary, #007bff);
+}
+
+.cliente-nav .nav-link.active {
+  background-color: var(--color-primary, #007bff);
+  color: var(--color-white, white);
+  border-color: var(--color-primary, #007bff);
+}
+
+/* Responsivo para Menu */
+@media (max-width: 576px) {
+  .cliente-nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cliente-nav .nav-link {
+    text-align: center;
+  }
+}
+
+/* ========================================
+   CABEÇALHO (Título + Botão)
+   ======================================== */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -33,7 +81,7 @@
   border-radius: 50%;
   border-top-color: var(--color-white);
   animation: spin 1s linear infinite;
-  display: inline-block; /* Para ficar na mesma linha do texto */
+  display: inline-block;
 }
 
 @keyframes spin {
@@ -42,11 +90,12 @@
   }
 }
 
-/* Lista de Agendamentos */
+/* ========================================
+   LISTA DE AGENDAMENTOS
+   ======================================== */
 .agendamentos-list {
   display: grid;
   gap: 1.5rem;
-  /* Grid responsivo (1 coluna em telas pequenas, 2 em médias, etc.) */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
@@ -54,8 +103,8 @@
   background-color: var(--color-white);
   border-radius: 8px;
   box-shadow: var(--shadow-sm);
-  overflow: hidden; /* Garante que a borda colorida não vaze */
-  border-left: 5px solid var(--color-secondary); /* Borda padrão */
+  overflow: hidden;
+  border-left: 5px solid var(--color-secondary);
   display: flex;
   flex-direction: column;
 }
@@ -69,7 +118,7 @@
 }
 .agendamento-card.status-cancelado {
   border-left-color: var(--color-secondary);
-  opacity: 0.8; /* Levemente esmaecido */
+  opacity: 0.8;
 }
 
 .card-header {
@@ -87,7 +136,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   color: var(--color-white);
-  background-color: var(--color-secondary); /* Cor padrão */
+  background-color: var(--color-secondary);
 }
 
 .status-agendado .status-badge { background-color: var(--color-primary); }
@@ -96,7 +145,7 @@
 
 .card-body {
   padding: 1rem;
-  flex-grow: 1; /* Faz o corpo ocupar o espaço disponível */
+  flex-grow: 1;
 }
 .card-body p {
   margin-bottom: 0.5rem;
@@ -122,7 +171,9 @@
   background-color: #c82333;
 }
 
-/* Estados (Loading, Erro, Vazio) */
+/* ========================================
+   ESTADOS (Loading, Erro, Vazio)
+   ======================================== */
 .loading-indicator,
 .error-message,
 .no-data {
@@ -137,4 +188,3 @@
   border: 1px solid #f5c6cb;
   border-radius: 4px;
 }
-

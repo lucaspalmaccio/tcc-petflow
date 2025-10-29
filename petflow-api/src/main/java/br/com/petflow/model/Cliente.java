@@ -2,33 +2,36 @@ package br.com.petflow.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "clientes")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // [cite: 76]
+    private Long id;
 
     @Column(nullable = false, unique = true, length = 11)
-    private String cpf; // [cite: 77]
+    private String cpf;
 
     @Column(nullable = false, length = 15)
-    private String telefone; // [cite: 78]
+    private String telefone;
 
     @Column(nullable = true)
-    private String endereco; // [cite: 79]
+    private String endereco;
 
-    // Relacionamento com Usuario (para login) [cite: 80, 81]
+    // Relacionamento com Usuario (para login)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
     private Usuario usuario;
@@ -40,4 +43,18 @@ public class Cliente {
     // Relacionamento com Agendamento (Um cliente tem muitos agendamentos)
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos = new ArrayList<>();
+
+    // Corrige hashCode e equals para evitar ciclo infinito
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cliente cliente = (Cliente) o;
+        return Objects.equals(id, cliente.id) && Objects.equals(cpf, cliente.cpf);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cpf);
+    }
 }
