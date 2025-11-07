@@ -1,5 +1,8 @@
 package br.com.petflow.service;
 
+// === INÍCIO SPRINT 04 ===
+import br.com.petflow.dto.EstoqueRequestDTO;
+// === FIM SPRINT 04 ===
 import br.com.petflow.dto.ProdutoDTO;
 import br.com.petflow.model.Produto;
 import br.com.petflow.repository.ProdutoRepository;
@@ -57,7 +60,7 @@ public class ProdutoService {
     }
 
     /**
-     * UC04 - Editar Produto
+     * UC04 - Editar Produto (Dados Principais, não o estoque)
      */
     @Transactional
     public ProdutoDTO atualizarProduto(Long id, ProdutoDTO produtoDTO) {
@@ -74,7 +77,12 @@ public class ProdutoService {
         produtoExistente.setDescricao(produtoDTO.descricao());
         produtoExistente.setPrecoCusto(produtoDTO.precoCusto());
         produtoExistente.setPrecoVenda(produtoDTO.precoVenda());
-        produtoExistente.setQtdEstoque(produtoDTO.qtdEstoque());
+
+        // === ATUALIZAÇÃO SPRINT 04 ===
+        // A QtdEstoque não é mais atualizada aqui,
+        // mas sim por métodos específicos de controle de estoque.
+        // produtoExistente.setQtdEstoque(produtoDTO.qtdEstoque());
+        // === FIM SPRINT 04 ===
 
         Produto produtoAtualizado = produtoRepository.save(produtoExistente);
         return new ProdutoDTO(produtoAtualizado);
@@ -88,9 +96,51 @@ public class ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + id));
 
-        // Fluxo de Exceção[cite: 413]: Exclusão de Item com Histórico
+        // Fluxo de Exceção: Exclusão de Item com Histórico
         // (Adicionar lógica de verificação de vendas/agendamentos aqui)
 
         produtoRepository.delete(produto);
     }
+
+    // === INÍCIO SPRINT 04 (Controle de Estoque) ===
+
+    /**
+     * UC06 (CT04.2) - Adicionar itens ao estoque (Entrada Manual)
+     */
+    @Transactional
+    public ProdutoDTO adicionarEstoque(Long id, EstoqueRequestDTO dto) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + id));
+
+        if (dto.quantidade() <= 0) {
+            throw new IllegalArgumentException("A quantidade a ser adicionada deve ser positiva.");
+        }
+
+        int novoEstoque = produto.getQtdEstoque() + dto.quantidade();
+        produto.setQtdEstoque(novoEstoque);
+
+        Produto produtoAtualizado = produtoRepository.save(produto);
+        return new ProdutoDTO(produtoAtualizado);
+    }
+
+    /**
+     * UC06 (CT04.1) - Dar baixa em um item do estoque (Usado pelo AgendamentoService)
+     */
+    @Transactional
+    public void darBaixaEstoque(Long id, int quantidade) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + id + " para baixa de estoque."));
+
+        int novoEstoque = produto.getQtdEstoque() - quantidade;
+
+        // (Nota: Permitimos estoque negativo por simplicidade,
+        //  mas uma regra de negócio real poderia impedir isso.)
+        // if (novoEstoque < 0) {
+        //    throw new IllegalStateException("Estoque insuficiente para o produto: " + produto.getNome());
+        // }
+
+        produto.setQtdEstoque(novoEstoque);
+        produtoRepository.save(produto);
+    }
+    // === FIM SPRINT 04 ===
 }

@@ -6,11 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-// === INÍCIO DA CORREÇÃO ===
-// Adiciona os imports que estavam faltando para Set e HashSet
 import java.util.Set;
 import java.util.HashSet;
-// === FIM DA CORREÇÃO ===
 
 @Entity
 @Table(name = "servicos")
@@ -21,18 +18,30 @@ public class Servico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // [cite: 205-208]
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    private String nome; // [cite: 209-212]
+    private String nome;
 
     @Column(columnDefinition = "TEXT")
-    private String descricao; // [cite: 213-217]
+    private String descricao;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal preco; // [cite: 218-221]
+    private BigDecimal preco;
 
-    // Relacionamento com Agendamento (Um serviço está em muitos agendamentos)
     @ManyToMany(mappedBy = "servicos", fetch = FetchType.LAZY)
     private Set<Agendamento> agendamentos = new HashSet<>();
+
+    // === INÍCIO DA ATUALIZAÇÃO SPRINT 4 ===
+    /**
+     * Define quais produtos (e a quantidade) este serviço utiliza.
+     */
+    @OneToMany(
+            mappedBy = "servico",
+            cascade = CascadeType.ALL, // Gerencia a vida da entidade de ligação
+            orphanRemoval = true,
+            fetch = FetchType.LAZY // Carrega apenas quando necessário
+    )
+    private Set<ServicoProduto> produtosUsados = new HashSet<>();
+    // === FIM DA ATUALIZAÇÃO SPRINT 4 ===
 }

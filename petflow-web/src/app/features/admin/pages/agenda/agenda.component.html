@@ -1,14 +1,13 @@
-<!-- (Usamos CSS do cliente-list e agenda.css) -->
 <div class="list-container">
 
-    <!-- Cabeçalho da Página -->
     <header class="page-header">
         <h1>Agenda de Agendamentos</h1>
+        <button class="btn-primary btn-add" (click)="openAdminModal()">
+            + Novo Agendamento
+        </button>
     </header>
 
-    <!-- Cabeçalho do Calendário (Controles) -->
     <div class="calendar-header">
-        <!-- Botões Mês/Semana/Dia -->
         <div class="btn-group">
             <button
                     class="btn-secondary"
@@ -29,8 +28,6 @@
                 Dia
             </button>
         </div>
-
-        <!-- Botões Mês Anterior/Próximo -->
         <div class="btn-group">
             <button
                     class="btn-secondary"
@@ -56,19 +53,18 @@
                 Próximo
             </button>
         </div>
-
-        <!-- Título (Mês e Ano) -->
         <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</h3>
     </div>
 
-    <!-- Estado de Loading -->
+    <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+    </div>
+
     <div *ngIf="isLoading" class="loading-indicator">
         Carregando agendamentos...
     </div>
 
-    <!-- O Calendário (Visão de Mês/Semana/Dia) -->
     <div [ngSwitch]="view" class="calendar-container card">
-        <!-- Visão de Mês -->
         <mwl-calendar-month-view
                 *ngSwitchCase="CalendarView.Month"
                 [viewDate]="viewDate"
@@ -78,7 +74,6 @@
                 (dayClicked)="setView(CalendarView.Day); viewDate = $event.day.date">
         </mwl-calendar-month-view>
 
-        <!-- Visão de Semana -->
         <mwl-calendar-week-view
                 *ngSwitchCase="CalendarView.Week"
                 [viewDate]="viewDate"
@@ -87,7 +82,6 @@
                 [locale]="locale">
         </mwl-calendar-week-view>
 
-        <!-- Visão de Dia -->
         <mwl-calendar-day-view
                 *ngSwitchCase="CalendarView.Day"
                 [viewDate]="viewDate"
@@ -96,4 +90,71 @@
                 [locale]="locale">
         </mwl-calendar-day-view>
     </div>
+</div>
+
+
+<div *ngIf="showAdminModal" class="modal-backdrop" (click)="closeAdminModal()"></div>
+
+<div *ngIf="showAdminModal" class="modal-content">
+
+    <div class="modal-header">
+        <h2>Novo Agendamento (Admin)</h2>
+        <button class="modal-close" (click)="closeAdminModal()" [disabled]="modalLoading">&times;</button>
+    </div>
+
+    <form (ngSubmit)="onAdminSubmit()">
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label for="cliente">Cliente:</label>
+                <select id="cliente" [(ngModel)]="agendamentoForm.clienteId" name="cliente"
+                        (change)="onClienteChange($event)" required>
+                    <option value="" disabled>Selecione um cliente...</option>
+                    <option *ngFor="let cliente of (clientes$ | async)" [value]="cliente.id">
+                        {{ cliente.nome }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pet">Pet:</label>
+                <select id="pet" [(ngModel)]="agendamentoForm.petId" name="pet"
+                        [disabled]="petsDoCliente.length === 0" required>
+                    <option value="" disabled>Selecione um pet...</option>
+                    <option *ngFor="let pet of petsDoCliente" [value]="pet.id">
+                        {{ pet.nome }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="servicos">Serviços:</label>
+                <select id="servicos" [(ngModel)]="agendamentoForm.servicoIds" name="servicos"
+                        multiple required size="4">
+                    <option *ngFor="let servico of (servicos$ | async)" [value]="servico.id">
+                        {{ servico.nome }} ({{ servico.preco | currency:'BRL' }})
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dataHora">Data e Hora:</label>
+                <input type="datetime-local" id="dataHora" [(ngModel)]="agendamentoForm.dataHora"
+                       name="dataHora" required />
+            </div>
+
+            <div *ngIf="modalError" class="modal-error-message">
+                {{ modalError }}
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="closeAdminModal()" [disabled]="modalLoading">
+                Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="modalLoading || !agendamentoForm.petId || agendamentoForm.servicoIds.length === 0">
+                {{ modalLoading ? 'Salvando...' : 'Criar Agendamento' }}
+            </button>
+        </div>
+    </form>
 </div>

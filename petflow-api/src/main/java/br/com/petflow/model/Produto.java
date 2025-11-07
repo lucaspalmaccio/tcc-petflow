@@ -6,6 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+// === INÍCIO DA ATUALIZAÇÃO SPRINT 4 ===
+import java.util.Set;
+import java.util.HashSet;
+// === FIM DA ATUALIZAÇÃO SPRINT 4 ===
 
 @Entity
 @Table(name = "produtos")
@@ -16,20 +20,29 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // [cite: 224-228]
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    private String nome; // [cite: 230-233]
+    private String nome;
 
     @Column(columnDefinition = "TEXT")
-    private String descricao; // [cite: 236-239]
+    private String descricao;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal precoCusto; // [cite: 240-243]
+    private BigDecimal precoCusto;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal precoVenda; // [cite: 244-247]
+    private BigDecimal precoVenda;
 
     @Column(nullable = false)
-    private Integer qtdEstoque; // [cite: 248-251]
+    private Integer qtdEstoque;
+
+    // === INÍCIO DA ATUALIZAÇÃO SPRINT 4 ===
+    /**
+     * Relacionamento inverso para integridade referencial.
+     * Lista todos os "itens de serviço" que usam este produto.
+     */
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
+    private Set<ServicoProduto> servicosQueUsam = new HashSet<>();
+    // === FIM DA ATUALIZAÇÃO SPRINT 4 ===
 }

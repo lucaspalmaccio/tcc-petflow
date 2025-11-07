@@ -13,11 +13,25 @@ import { ProdutoFormComponent } from './pages/produtos/produto-form/produto-form
 import { AgendaComponent } from './pages/agenda/agenda.component';
 import { CadastrarAdminComponent } from './pages/cadastrar-admin/cadastrar-admin.component';
 
+// === INÍCIO SPRINT 04 (UC08) ===
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+// === FIM SPRINT 04 ===
+
 const routes: Routes = [
 {
 path: '',
 component: LayoutComponent,
 children: [
+// === INÍCIO SPRINT 04 (UC08) ===
+// Dashboard
+{
+path: 'dashboard',
+component: DashboardComponent,
+canActivate: [authGuard], // Protegendo a rota
+data: { roles: ['ADMIN'] }  // Apenas Admin pode ver
+},
+// === FIM SPRINT 04 ===
+
 // Agenda
 { path: 'agenda', component: AgendaComponent },
 
@@ -44,7 +58,8 @@ canActivate: [authGuard],
 data: { roles: ['ADMIN'] }
 },
 
-{ path: '', redirectTo: 'agenda', pathMatch: 'full' }
+// { path: '', redirectTo: 'agenda', pathMatch: 'full' } // Descomente se 'dashboard' não for o padrão
+{ path: '', redirectTo: 'dashboard', pathMatch: 'full' } // Alterei para o dashboard ser o novo padrão
 ]
 }
 ];

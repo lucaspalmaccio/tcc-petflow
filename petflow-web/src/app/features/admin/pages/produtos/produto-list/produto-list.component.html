@@ -14,22 +14,12 @@
         {{ error }}
     </div>
 
-    <!--
-      Correção:
-      Removido o 'else noDataTemplate' e o <ng-template>
-      para corrigir o erro de escopo da variável 'produtos' e a referência do template.
-    -->
     <div *ngIf="(produtos$ | async) as produtos">
-        <!--
-          Correção: Removido '?' de produtos.length,
-          pois 'produtos' está garantido pelo *ngIf pai.
-        -->
         <table class="data-table" *ngIf="!isLoading && produtos.length > 0">
             <thead>
             <tr>
                 <th>Nome</th>
-                <th>Estoque</th>
-                <th>Preço de Custo</th>
+                <th>Estoque Atual</th> <th>Preço de Custo</th>
                 <th>Preço de Venda</th>
                 <th>Ações</th>
             </tr>
@@ -37,10 +27,15 @@
             <tbody>
             <tr *ngFor="let produto of produtos">
                 <td>{{ produto.nome }}</td>
-                <td>{{ produto.qtdEstoque }}</td>
+                <td [class.low-stock]="produto.qtdEstoque <= 0">
+                    {{ produto.qtdEstoque }}
+                </td>
                 <td>{{ produto.precoCusto | currency:'BRL' }}</td>
                 <td>{{ produto.precoVenda | currency:'BRL' }}</td>
                 <td class="action-buttons">
+                    <button class="btn-stock-add" (click)="openStockModal(produto)">
+                        Adic. Estoque
+                    </button>
                     <button class="btn-edit" (click)="navigateToEdit(produto.id)">
                         Editar
                     </button>
@@ -52,12 +47,50 @@
             </tbody>
         </table>
 
-        <!--
-          Correção: Mensagem "sem dados" agora usa a variável 'produtos'
-          do escopo correto.
-        -->
         <div *ngIf="!isLoading && produtos.length === 0" class="no-data">
             Nenhum produto cadastrado ainda.
         </div>
     </div>
+</div>
+
+<div *ngIf="showStockModal" class="modal-backdrop" (click)="closeStockModal()"></div>
+
+<div *ngIf="showStockModal && selectedProduto" class="modal-content">
+
+    <div class="modal-header">
+        <h2>Adicionar Estoque</h2>
+        <button class="modal-close" (click)="closeStockModal()" [disabled]="modalLoading">&times;</button>
+    </div>
+
+    <form (ngSubmit)="onStockSubmit()">
+        <div class="modal-body">
+            <p>Produto: <strong>{{ selectedProduto.nome }}</strong></p>
+            <p>Estoque Atual: <strong>{{ selectedProduto.qtdEstoque }}</strong></p>
+
+            <div class="form-group">
+                <label for="quantidade">Quantidade a Adicionar:</label>
+                <input
+                        type="number"
+                        id="quantidade"
+                        [(ngModel)]="quantidadeEstoque"
+                        name="quantidade"
+                        min="1"
+                        required
+                />
+            </div>
+
+            <div *ngIf="modalError" class="modal-error-message">
+                {{ modalError }}
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="closeStockModal()" [disabled]="modalLoading">
+                Cancelar
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="modalLoading">
+                {{ modalLoading ? 'Salvando...' : 'Salvar' }}
+            </button>
+        </div>
+    </form>
 </div>

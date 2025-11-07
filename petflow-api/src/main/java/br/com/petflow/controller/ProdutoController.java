@@ -1,5 +1,8 @@
 package br.com.petflow.controller;
 
+// === INÍCIO SPRINT 04 ===
+import br.com.petflow.dto.EstoqueRequestDTO;
+// === FIM SPRINT 04 ===
 import br.com.petflow.dto.ProdutoDTO;
 import br.com.petflow.service.ProdutoService;
 import jakarta.validation.Valid;
@@ -43,11 +46,13 @@ public class ProdutoController {
     }
 
     /**
-     * UC04 - Editar Produto
+     * UC04 - Editar Produto (Dados Principais, não o estoque)
      */
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoDTO> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoDTO produtoDTO) {
-        return ResponseEntity.ok(produtoService.atualizarProduto(id, produtoDTO));
+        // Este endpoint agora atualiza apenas dados cadastrais (nome, preço)
+        ProdutoDTO produtoAtualizado = produtoService.atualizarProduto(id, produtoDTO);
+        return ResponseEntity.ok(produtoAtualizado);
     }
 
     /**
@@ -58,4 +63,19 @@ public class ProdutoController {
         produtoService.deletarProduto(id);
         return ResponseEntity.noContent().build();
     }
+
+    // === INÍCIO SPRINT 04 (Controle de Estoque) ===
+
+    /**
+     * UC06 (CT04.2) - Adicionar itens ao estoque (Entrada Manual)
+     */
+    @PatchMapping("/{id}/adicionar-estoque")
+    public ResponseEntity<ProdutoDTO> adicionarEstoque(
+            @PathVariable Long id,
+            @RequestBody @Valid EstoqueRequestDTO dto) {
+
+        ProdutoDTO produtoAtualizado = produtoService.adicionarEstoque(id, dto);
+        return ResponseEntity.ok(produtoAtualizado);
+    }
+    // === FIM SPRINT 04 ===
 }

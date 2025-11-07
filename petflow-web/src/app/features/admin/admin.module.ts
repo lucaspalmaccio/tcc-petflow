@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // ✅ Importa os dois
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AdminRoutingModule } from './admin-routing.module';
@@ -21,9 +21,11 @@ import { ProdutoFormComponent } from './pages/produtos/produto-form/produto-form
 // Sprint 03
 import { AgendaComponent } from './pages/agenda/agenda.component';
 import { CalendarModule } from 'angular-calendar';
-
-// ✅ Importa o novo componente de cadastro de admin
 import { CadastrarAdminComponent } from './pages/cadastrar-admin/cadastrar-admin.component';
+
+// === INÍCIO SPRINT 04 (UC08 - CORREÇÃO) ===
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+// === FIM SPRINT 04 ===
 
 @NgModule({
 declarations: [
@@ -39,8 +41,11 @@ ProdutoListComponent,
 ProdutoFormComponent,
 // Sprint 03
 AgendaComponent,
-// ✅ Novo
-CadastrarAdminComponent
+CadastrarAdminComponent,
+
+// === INÍCIO SPRINT 04 (UC08 - CORREÇÃO) ===
+DashboardComponent // <-- Adicione o componente aqui
+// === FIM SPRINT 04 ===
 ],
 imports: [
 CommonModule,
@@ -48,7 +53,7 @@ RouterModule,
 AdminRoutingModule,
 HttpClientModule,
 FormsModule,
-ReactiveFormsModule, // ✅ Fundamental para [formGroup]
+ReactiveFormsModule,
 CalendarModule
 ]
 })

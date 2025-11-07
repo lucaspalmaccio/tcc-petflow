@@ -41,4 +41,23 @@ constructor(private http: HttpClient) { }
   cancelarAgendamento(id: number): Observable<AgendamentoResponse> {
     return this.http.patch<AgendamentoResponse>(`${this.apiUrl}/${id}/cancelar`, {});
   }
+
+  // === INÍCIO SPRINT 04 (UC05 - Concluir Agendamento) ===
+
+  /**
+   * UC05 - Marca um agendamento como 'CONCLUÍDO'
+   * (Consome PATCH /api/agendamentos/{id}/concluir)
+   *
+   * @param id O ID do agendamento a ser concluído.
+   * @returns Um Observable com o agendamento atualizado.
+   */
+  concluirAgendamento(id: number): Observable<AgendamentoResponse> {
+    // O Interceptor de Autenticação (se houver) já deve adicionar
+    // o token de ADMIN automaticamente.
+    return this.http.patch<AgendamentoResponse>(
+      `${this.apiUrl}/${id}/concluir`,
+      {} // Envia um corpo vazio, pois é um PATCH sem dados
+    );
+  }
+  // === FIM SPRINT 04 ===
 }
