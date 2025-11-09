@@ -1,5 +1,6 @@
-package br.com.petflow.dto;
+package br.com.petflow.dto; // <-- CORREÇÃO 1: Adiciona o pacote
 
+// --- CORREÇÃO 2: Adiciona os imports necessários ---
 import br.com.petflow.model.Cliente;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 import java.util.stream.Collectors;
+// --- Fim das Correções ---
 
 @Data
 @NoArgsConstructor

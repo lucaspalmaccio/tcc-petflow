@@ -9,5 +9,5 @@ public record LoginRequestDTO(
         String email,
 
         @NotBlank(message = "A senha é obrigatória")
-        String senha_normal
+        String senha
 ) {}

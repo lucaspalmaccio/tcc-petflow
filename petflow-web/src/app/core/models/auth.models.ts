@@ -9,5 +9,5 @@ userRole: Perfil;
 
 export interface LoginRequest {
 email: string;
-senhaNormal: string;
+senha: string;
 }

@@ -13,7 +13,7 @@ pets: Pet[];
 export interface CreateClienteDTO {
 nome: string;
 email: string;
-senha_normal: string;
+senha: string;
 cpf: string;
 telefone: string;
 endereco?: string;

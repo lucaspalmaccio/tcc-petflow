@@ -5,42 +5,66 @@
         <!-- E-mail -->
         <div class="form-group">
             <label for="email">E-mail</label>
-            <input id="email" type="email" formControlName="email" placeholder="Digite seu e-mail">
-            <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="error-message">
+            <input
+                    id="email"
+                    type="email"
+                    formControlName="email"
+                    placeholder="Digite seu e-mail"
+                    [class.error]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
+            >
+            <div
+                    *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
+                    class="error-message"
+            >
                 E-mail inválido.
             </div>
         </div>
 
         <!-- Senha -->
         <div class="form-group">
-            <label for="senha_normal">Senha</label>
+            <label for="senha">Senha</label>
             <div class="password-wrapper">
                 <input
-                        id="senha_normal"
+                        id="senha"
                         [type]="showPassword ? 'text' : 'password'"
-                        formControlName="senha_normal"
-                        placeholder="Digite sua senha">
+                        formControlName="senha"
+                        placeholder="Digite sua senha"
+                        [class.error]="loginForm.get('senha')?.touched && loginForm.get('senha')?.invalid"
+                >
                 <button type="button" class="toggle-password" (click)="togglePassword()">
                     {{ showPassword ? 'Ocultar' : 'Mostrar' }}
                 </button>
             </div>
-            <div *ngIf="loginForm.get('senha_normal')?.touched && loginForm.get('senha_normal')?.invalid" class="error-message">
+            <div
+                    *ngIf="loginForm.get('senha')?.touched && loginForm.get('senha')?.invalid"
+                    class="error-message"
+            >
                 Senha é obrigatória.
             </div>
         </div>
 
         <!-- Mensagem de erro geral -->
-        <div *ngIf="errorMessage" class="error-message">
+        <div *ngIf="errorMessage" class="error-message alert alert-error">
             {{ errorMessage }}
         </div>
 
-        <!-- Botão -->
-        <button type="submit" [disabled]="isLoading">
-            {{ isLoading ? 'Entrando...' : 'Entrar' }}
+        <!-- Botão Submit -->
+        <button
+                type="submit"
+                [disabled]="loginForm.invalid || isLoading"
+                class="btn-primary"
+        >
+            <span *ngIf="!isLoading">Entrar</span>
+            <span *ngIf="isLoading">Carregando...</span>
         </button>
 
         <!-- Link cadastro -->
-        <button type="button" class="btn-secondary" (click)="cadastrarCliente()">
+        <button
+                type="button"
+                class="btn-secondary"
+                (click)="cadastrarCliente()"
+                [disabled]="isLoading"
+        >
             Cadastrar como Cliente
         </button>
     </form>

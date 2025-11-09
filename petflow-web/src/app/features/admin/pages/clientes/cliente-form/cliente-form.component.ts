@@ -97,7 +97,7 @@ constructor(
       : this.clienteService.createCliente({
           nome: formValue.nome,
           email: formValue.email,
-          senha_normal: formValue.senha,
+          senha: formValue.senha,
           cpf: formValue.cpf.replace(/\D/g, ''),
           telefone: formValue.telefone.replace(/\D/g, ''),
           endereco: formValue.endereco

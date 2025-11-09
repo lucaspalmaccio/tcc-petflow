@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,37 +20,34 @@ public class Agendamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // [cite: 252-256]
+    private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime dataHora; // [cite: 257-260]
+    private LocalDateTime dataHora;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private StatusAgendamento status; // [cite: 261-264, 299]
+    private StatusAgendamento status;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal valorTotal; // [cite: 266-269]
+    private BigDecimal valorTotal;
 
     // --- Relacionamentos ---
+    // CORREÇÃO: Mudamos para EAGER nos relacionamentos necessários para a resposta
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente; // [cite: 270-273]
+    private Cliente cliente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pet_id", nullable = false)
-    private Pet pet; // [cite: 274-278]
+    private Pet pet;
 
-    /**
-     * Relacionamento Muitos-para-Muitos com Servico.
-     * A tabela 'agendamento_servicos' [cite: 279] é gerenciada pelo JPA.
-     */
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "agendamento_servicos",
-            joinColumns = @JoinColumn(name = "agendamento_id"), // [cite: 280]
-            inverseJoinColumns = @JoinColumn(name = "servico_id") // [cite: 284]
+            joinColumns = @JoinColumn(name = "agendamento_id"),
+            inverseJoinColumns = @JoinColumn(name = "servico_id")
     )
     private Set<Servico> servicos = new HashSet<>();
 }

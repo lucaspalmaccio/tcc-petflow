@@ -15,29 +15,25 @@ import java.util.List;
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 
     /**
-     * Busca agendamentos dentro de um intervalo de datas com fetch dos relacionamentos
-     * ATUALIZADO: Removemos o fetch de 'c.usuario' e 'a.servicos'.
+     * CORREÇÃO: Query simplificada sem múltiplos fetch em coleções
+     * O fetch será feito por EAGER nos relacionamentos necessários
      */
-    @Query("SELECT a FROM Agendamento a " +
-            "LEFT JOIN FETCH a.cliente c " +
-            // "LEFT JOIN FETCH c.usuario " + // <-- CORREÇÃO: LINHA REMOVIDA
+    @Query("SELECT DISTINCT a FROM Agendamento a " +
+            "LEFT JOIN FETCH a.cliente " +
             "LEFT JOIN FETCH a.pet " +
-            // "LEFT JOIN FETCH a.servicos " + // <-- CORREÇÃO: LINHA REMOVIDA
-            "WHERE a.dataHora BETWEEN :inicio AND :fim")
+            "WHERE a.dataHora BETWEEN :inicio AND :fim " +
+            "ORDER BY a.dataHora")
     List<Agendamento> findAllByDataHoraBetween(
             @Param("inicio") LocalDateTime inicio,
             @Param("fim") LocalDateTime fim);
 
     /**
-     * Busca todos os agendamentos de um cliente específico (email do usuário) com fetch.
-     * ATUALIZADO: Removemos o fetch de 'c.usuario' e 'a.servicos', e ajustamos o WHERE.
+     * CORREÇÃO: Query simplificada para buscar agendamentos do cliente
      */
-    @Query("SELECT a FROM Agendamento a " +
+    @Query("SELECT DISTINCT a FROM Agendamento a " +
             "LEFT JOIN FETCH a.cliente c " +
-            // "LEFT JOIN FETCH c.usuario u " + // <-- CORREÇÃO: LINHA REMOVIDA
             "LEFT JOIN FETCH a.pet " +
-            // "LEFT JOIN FETCH a.servicos " + // <-- CORREÇÃO: LINHA REMOVIDA
-            "WHERE c.usuario.email = :email " + // <-- ATUALIZADO: busca direta
+            "WHERE c.usuario.email = :email " +
             "ORDER BY a.dataHora DESC")
     List<Agendamento> findAllByClienteUsuarioEmailOrderByDataHoraDesc(@Param("email") String email);
 
@@ -65,7 +61,6 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
 
     /**
      * Busca todos os agendamentos por um status específico.
-     * Necessário para o Dashboard Financeiro.
      */
     List<Agendamento> findAllByStatus(StatusAgendamento status);
 }

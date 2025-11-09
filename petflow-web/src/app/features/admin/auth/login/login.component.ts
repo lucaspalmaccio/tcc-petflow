@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService, Perfil } from '../../../../core/services/auth.service';
+import { AuthService, Perfil, LoginResponse } from '../../../../core/services/auth.service';
 
 @Component({
 selector: 'app-login',
@@ -11,7 +11,7 @@ styleUrls: ['./login.component.css']
 export class LoginComponent implements OnInit {
 
 loginForm: FormGroup;
-errorMessage: string | null = null;
+errorMessage: string = '';
 isLoading = false;
 showPassword = false;
 
@@ -22,7 +22,7 @@ constructor(
     ) {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
-            senha_normal: ['', [Validators.required]]
+            senha: ['', [Validators.required]]
         });
     }
 
@@ -40,25 +40,30 @@ constructor(
         }
 
         this.isLoading = true;
-        this.errorMessage = null;
+        this.errorMessage = '';
 
-        const { email, senha_normal } = this.loginForm.value;
+        const credentials = {
+            email: this.loginForm.value.email,
+            senha: this.loginForm.value.senha
+        };
 
-        this.authService.login(email, senha_normal).subscribe({
-            next: (response) => {
-                console.log('1. Response completa:', response);
-                console.log('2. UserRole:', response.userRole);
-                console.log('3. Tipo do userRole:', typeof response.userRole);
+        console.log('📤 LoginComponent enviando:', credentials);
+
+        this.authService.login(credentials).subscribe({
+            next: (response: LoginResponse) => {
+                console.log('✅ Response completa:', response);
+                console.log('✅ UserRole:', response.userRole);
 
                 this.isLoading = false;
                 if (response.userRole) {
-                    console.log('4. Vai redirecionar para:', response.userRole);
+                    console.log('✅ Vai redirecionar para:', response.userRole);
                     this.redirectUser(response.userRole);
                 } else {
                     this.errorMessage = "E-mail ou senha inválidos.";
                 }
             },
-            error: () => {
+            error: (err: any) => {
+                console.error('❌ Erro no login:', err);
                 this.isLoading = false;
                 this.errorMessage = "E-mail ou senha inválidos.";
             }
@@ -73,29 +78,20 @@ constructor(
         this.showPassword = !this.showPassword;
     }
 
-    private redirectUser(perfil: Perfil | null): void {
-        console.log('5. redirectUser chamado com:', perfil);
-
-        if (!perfil) {
-            this.errorMessage = "Perfil de usuário não reconhecido.";
-            this.authService.logout();
-            return;
-        }
-
-        console.log('6. Perfil.CLIENTE =', Perfil.CLIENTE);
-        console.log('7. perfil === Perfil.CLIENTE?', perfil === Perfil.CLIENTE);
+    private redirectUser(perfil: Perfil): void {
+        console.log('🔀 redirectUser chamado com:', perfil);
 
         switch (perfil) {
             case Perfil.ADMIN:
-                console.log('8. Redirecionando para admin');
+                console.log('→ Redirecionando para admin');
                 this.router.navigate(['/admin/clientes']);
                 break;
             case Perfil.CLIENTE:
-                console.log('9. Redirecionando para cliente');
-                this.router.navigate(['/cliente/meus-agendamentos']);  // ← CORRIGIDO AQUI
+                console.log('→ Redirecionando para cliente');
+                this.router.navigate(['/cliente/meus-agendamentos']);
                 break;
             default:
-                console.log('10. Caiu no default!');
+                console.log('❌ Perfil não reconhecido!');
                 this.errorMessage = "Perfil de usuário não reconhecido.";
                 this.authService.logout();
                 break;

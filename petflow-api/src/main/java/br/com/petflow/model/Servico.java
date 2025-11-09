@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -29,19 +30,20 @@ public class Servico {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
+    // CORREÇÃO: Adicione @JsonIgnore para evitar loop infinito na serialização
     @ManyToMany(mappedBy = "servicos", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Agendamento> agendamentos = new HashSet<>();
 
-    // === INÍCIO DA ATUALIZAÇÃO SPRINT 4 ===
     /**
      * Define quais produtos (e a quantidade) este serviço utiliza.
      */
     @OneToMany(
             mappedBy = "servico",
-            cascade = CascadeType.ALL, // Gerencia a vida da entidade de ligação
+            cascade = CascadeType.ALL,
             orphanRemoval = true,
-            fetch = FetchType.LAZY // Carrega apenas quando necessário
+            fetch = FetchType.LAZY
     )
+    @JsonIgnore // Evita carregar produtos desnecessariamente
     private Set<ServicoProduto> produtosUsados = new HashSet<>();
-    // === FIM DA ATUALIZAÇÃO SPRINT 4 ===
 }

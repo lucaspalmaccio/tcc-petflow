@@ -28,7 +28,7 @@ public class UsuarioController {
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(dto.nome());
         novoUsuario.setEmail(dto.email());
-        novoUsuario.setSenha(passwordEncoder.encode(dto.senha_normal())); // senha_normal usada
+        novoUsuario.setSenha(passwordEncoder.encode(dto.senha())); // senha usada
         novoUsuario.setPerfil(PerfilUsuario.valueOf(dto.perfil().toUpperCase())); // ADMIN ou CLIENTE
 
         usuarioRepository.save(novoUsuario);

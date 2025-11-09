@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// === INÍCIO ATUALIZAÇÃO ADMIN ===
-import java.time.LocalDateTime; // Para os RequestParams
-import br.com.petflow.model.PerfilUsuario; // Para checar o perfil
-// === FIM ATUALIZAÇÃO ADMIN ===
+// === CORREÇÃO: Importações para lidar com datas ISO ===
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime; // <-- NOVO
+import br.com.petflow.model.PerfilUsuario;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,28 +37,23 @@ public class AgendamentoController {
 
     /**
      * 🟢 Criar um novo agendamento (CLIENTE ou ADMIN)
-     * ATUALIZADO: O service vai tratar a lógica de perfil.
      */
     @PostMapping
     @Operation(summary = "Cria um novo agendamento (Cliente ou Admin)")
     @ApiResponse(responseCode = "201", description = "Agendamento criado com sucesso")
-    @SecurityRequirement(name = "bearer-key") // Protegido por JWT
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<AgendamentoResponseDTO> criarAgendamento(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody @Valid AgendamentoRequestDTO dto) {
 
         String emailUsuario = userDetails.getUsername();
-
-        // O Service (criarAgendamento) agora contém a lógica para
-        // diferenciar ADMIN (usando dto.clienteId) de CLIENTE (usando emailUsuario)
         AgendamentoResponseDTO criado = agendamentoService.criarAgendamento(dto, emailUsuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
     /**
      * 🟡 Listar agendamentos (CLIENTE ou ADMIN)
-     * ATUALIZADO: Retorna TODOS se for ADMIN (para o calendário)
-     * ou SÓ OS DO CLIENTE se for CLIENTE.
+     * CORREÇÃO: Aceita String e converte para LocalDateTime
      */
     @GetMapping
     @Operation(summary = "Lista agendamentos (Admin ou Cliente)",
@@ -68,22 +63,41 @@ public class AgendamentoController {
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<List<AgendamentoResponseDTO>> listarAgendamentos(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam(required = false) LocalDateTime inicio,
-            @RequestParam(required = false) LocalDateTime fim) {
+            @RequestParam(required = false) String inicio, // <-- MUDOU para String
+            @RequestParam(required = false) String fim) {   // <-- MUDOU para String
 
         String emailUsuario = userDetails.getUsername();
 
-        // Verifica se o usuário tem a ROLE_ADMIN
         boolean isAdmin = userDetails.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         List<AgendamentoResponseDTO> agendamentos;
 
         if (isAdmin) {
-            // ADMIN: Retorna todos os agendamentos (para o calendário)
-            agendamentos = agendamentoService.listarAgendamentos(inicio, fim);
+            // CORREÇÃO: Converte as strings ISO para LocalDateTime
+            LocalDateTime inicioDateTime = null;
+            LocalDateTime fimDateTime = null;
+
+            if (inicio != null && !inicio.isEmpty()) {
+                // Aceita tanto ISO com Z (2025-10-26T03:00:00.000Z)
+                // quanto sem Z (2025-10-26T03:00:00)
+                if (inicio.endsWith("Z")) {
+                    inicioDateTime = ZonedDateTime.parse(inicio).toLocalDateTime();
+                } else {
+                    inicioDateTime = LocalDateTime.parse(inicio);
+                }
+            }
+
+            if (fim != null && !fim.isEmpty()) {
+                if (fim.endsWith("Z")) {
+                    fimDateTime = ZonedDateTime.parse(fim).toLocalDateTime();
+                } else {
+                    fimDateTime = LocalDateTime.parse(fim);
+                }
+            }
+
+            agendamentos = agendamentoService.listarAgendamentos(inicioDateTime, fimDateTime);
         } else {
-            // CLIENTE: Retorna apenas os agendamentos do cliente logado
             agendamentos = agendamentoService.listarAgendamentosDoCliente(emailUsuario);
         }
 
@@ -92,7 +106,6 @@ public class AgendamentoController {
 
     /**
      * 🔴 Cancelar um agendamento (CLIENTE ou ADMIN)
-     * ATUALIZADO: O service vai tratar a lógica de perfil.
      */
     @PatchMapping("/{id}/cancelar")
     @Operation(summary = "Cancela um agendamento (Cliente ou Admin)")
@@ -103,9 +116,6 @@ public class AgendamentoController {
             @PathVariable Long id) {
 
         String emailUsuario = userDetails.getUsername();
-
-        // O Service (cancelarAgendamento) agora contém a lógica
-        // para permitir que o ADMIN cancele qualquer agendamento
         AgendamentoResponseDTO cancelado =
                 agendamentoService.cancelarAgendamento(id, emailUsuario);
 
@@ -114,7 +124,6 @@ public class AgendamentoController {
 
     /**
      * ⚪ Concluir um agendamento (somente ADMIN)
-     * (Método original - sem alteração)
      */
     @PatchMapping("/{id}/concluir")
     @PreAuthorize("hasRole('ADMIN')")

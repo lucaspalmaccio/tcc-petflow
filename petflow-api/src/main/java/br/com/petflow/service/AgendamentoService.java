@@ -6,7 +6,7 @@ import br.com.petflow.model.*;
 import br.com.petflow.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // <-- IMPORT NECESSÁRIO
+import org.springframework.transaction.annotation.Transactional; // <-- Import necessário
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -45,32 +45,29 @@ public class AgendamentoService {
 
     /**
      * Cria um novo agendamento.
-     * (Este método já é @Transactional, está correto)
      */
-    @Transactional
+    @Transactional // (Correto, pois este método *escreve*)
     public AgendamentoResponseDTO criarAgendamento(AgendamentoRequestDTO dto, String emailUsuarioLogado) {
 
-        // 1. Busca o usuário que está fazendo a requisição
+        // 1. Busca o usuário
         Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário logado não encontrado com email: " + emailUsuarioLogado));
 
         Cliente cliente;
 
-        // 2. Determina qual cliente está associado ao agendamento
+        // 2. Determina o cliente
         if (usuarioLogado.getPerfil() == PerfilUsuario.ADMIN) {
-            // Se for ADMIN, busca o cliente pelo ID enviado no DTO
             if (dto.clienteId() == null) {
                 throw new IllegalArgumentException("O clienteId é obrigatório para o Admin criar agendamentos.");
             }
             cliente = clienteRepository.findById(dto.clienteId())
                     .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + dto.clienteId()));
         } else {
-            // Se for CLIENTE, busca o cliente vinculado ao usuário logado
             cliente = clienteRepository.findByUsuario(usuarioLogado)
                     .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado para o usuário: " + emailUsuarioLogado));
         }
 
-        // 3. Busca o Pet e valida se pertence ao cliente correto
+        // 3. Busca o Pet e valida
         Pet pet = petRepository.findById(dto.petId())
                 .orElseThrow(() -> new EntityNotFoundException("Pet não encontrado com ID: " + dto.petId()));
 
@@ -109,7 +106,7 @@ public class AgendamentoService {
     /**
      * Lista TODOS os agendamentos (Usado pelo Admin no calendário)
      */
-    @Transactional(readOnly = true) // <-- CORREÇÃO ADICIONADA
+    @Transactional(readOnly = true) // <-- CORREÇÃO: Adicionada anotação
     public List<AgendamentoResponseDTO> listarAgendamentos(LocalDateTime inicio, LocalDateTime fim) {
         List<Agendamento> agendamentos = agendamentoRepository.findAllByDataHoraBetween(inicio, fim);
         return agendamentos.stream()
@@ -120,7 +117,7 @@ public class AgendamentoService {
     /**
      * Lista agendamentos de um cliente específico (Usado pelo Cliente)
      */
-    @Transactional(readOnly = true) // <-- CORREÇÃO ADICIONADA
+    @Transactional(readOnly = true) // <-- CORREÇÃO: Adicionada anotação
     public List<AgendamentoResponseDTO> listarAgendamentosDoCliente(String emailCliente) {
         List<Agendamento> agendamentos = agendamentoRepository
                 .findAllByClienteUsuarioEmailOrderByDataHoraDesc(emailCliente);
@@ -132,9 +129,8 @@ public class AgendamentoService {
 
     /**
      * Cancela um agendamento.
-     * (Este método já é @Transactional, está correto)
      */
-    @Transactional
+    @Transactional // (Correto, pois este método *escreve*)
     public AgendamentoResponseDTO cancelarAgendamento(Long id, String emailUsuarioLogado) {
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado com ID: " + id));
@@ -142,7 +138,7 @@ public class AgendamentoService {
         Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário logado não encontrado"));
 
-        // Se o usuário for CLIENTE, checa se ele é o dono do agendamento
+        // Regra de permissão
         if (usuarioLogado.getPerfil() == PerfilUsuario.CLIENTE) {
             boolean pertenceAoCliente = agendamento.getCliente() != null &&
                     agendamento.getCliente().getUsuario() != null &&
@@ -152,9 +148,8 @@ public class AgendamentoService {
                 throw new IllegalStateException("Você não tem permissão para cancelar este agendamento.");
             }
         }
-        // Se for ADMIN, a checagem acima é pulada
 
-        // Regra de Negócio: Não pode cancelar o que já foi concluído
+        // Regra de Negócio
         if (agendamento.getStatus() == StatusAgendamento.CONCLUIDO) {
             throw new IllegalStateException("Não é possível cancelar um agendamento já concluído.");
         }
@@ -167,9 +162,8 @@ public class AgendamentoService {
 
     /**
      * UC05 - Concluir um Agendamento (Admin)
-     * (Este método já é @Transactional, está correto)
      */
-    @Transactional
+    @Transactional // (Correto, pois este método *escreve*)
     public AgendamentoResponseDTO concluirAgendamento(Long id) {
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado com ID: " + id));
@@ -178,6 +172,7 @@ public class AgendamentoService {
             throw new IllegalStateException("Apenas agendamentos com status 'AGENDADO' podem ser concluídos.");
         }
 
+        // Lógica de baixa de estoque (Sprint 4)
         Set<Servico> servicosDoAgendamento = agendamento.getServicos();
         for (Servico servico : servicosDoAgendamento) {
             Set<ServicoProduto> produtosUsados = servico.getProdutosUsados();

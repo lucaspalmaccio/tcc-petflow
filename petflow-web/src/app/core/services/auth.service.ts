@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 
 // Enum de perfis
 export enum Perfil {
@@ -10,13 +10,21 @@ ADMIN = 'ADMIN',
 CLIENTE = 'CLIENTE'
 }
 
-// Interface da resposta do backend
+// Interface da resposta do BACKEND (como vem da API)
+interface BackendLoginResponse {
+token: string;
+expiresIn: number;
+email: string;
+perfil: string;  // Backend retorna "perfil", não "userRole"
+}
+
+// Interface da resposta TRATADA (para o componente)
 export interface LoginResponse {
 token: string | null;
 expiresIn: number | null;
 userName: string | null;
 userRole: Perfil | null;
-email?: string | null;  // ← ADICIONAR email na resposta
+email?: string | null;
 }
 
 @Injectable({
@@ -33,7 +41,6 @@ private currentUserNameSubject: BehaviorSubject<string | null>;
 public currentUserName$: Observable<string | null>;
 
 constructor(private router: Router, private http: HttpClient) {
-        // Inicializa os BehaviorSubjects com os dados do localStorage
         this.currentUserRoleSubject = new BehaviorSubject<Perfil | null>(this.getUserRoleFromStorage());
         this.currentUserNameSubject = new BehaviorSubject<string | null>(this.getUserNameFromStorage());
 
@@ -41,50 +48,61 @@ constructor(private router: Router, private http: HttpClient) {
         this.currentUserName$ = this.currentUserNameSubject.asObservable();
     }
 
-    // Método de login usando snake_case 'senha_normal' para match com o backend
-    login(email: string, senha_normal: string): Observable<LoginResponse> {
-        // Envia 'senha_normal' em snake_case
-        return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, senha_normal })
+    // ✅ CORRIGIDO: Recebe um objeto com { email, senha }
+    login(credentials: { email: string; senha: string }): Observable<LoginResponse> {
+        console.log('📤 AuthService enviando:', credentials);
+
+        return this.http.post<BackendLoginResponse>(`${this.apiUrl}/login`, credentials)
             .pipe(
+                map(response => {
+                    console.log('📥 Backend respondeu:', response);
+
+                    // ✅ Transforma "perfil" em "userRole"
+                    const transformedResponse: LoginResponse = {
+                        token: response.token,
+                        expiresIn: response.expiresIn,
+                        email: response.email,
+                        userName: response.email.split('@')[0], // Usa email como userName
+                        userRole: response.perfil as Perfil  // ✅ CONVERTE "perfil" → "userRole"
+                    };
+
+                    console.log('✅ Response transformada:', transformedResponse);
+                    return transformedResponse;
+                }),
                 tap(response => {
                     if (!response.userRole) {
                         throw new Error('Usuário ou senha inválidos');
                     }
-                    // ← SALVA O EMAIL TAMBÉM
-                    this.setSession(response, email);
+                    this.setSession(response);
                 }),
                 catchError(err => {
-                    console.error('Erro no login', err);
+                    console.error('❌ Erro no login', err);
                     return throwError(() => new Error('Usuário ou senha inválidos'));
                 })
             );
     }
 
-    // ← MODIFICADO: Agora recebe o email como parâmetro
-    private setSession(authResponse: LoginResponse, email: string): void {
-        // ← SALVA O EMAIL COMO TOKEN (solução temporária sem JWT)
-        localStorage.setItem('petflow_auth_token', email);
-        localStorage.setItem('petflow_user_email', email);
+    // ✅ SIMPLIFICADO: Não precisa mais do parâmetro email
+    private setSession(authResponse: LoginResponse): void {
+        localStorage.setItem('petflow_auth_token', authResponse.token ?? '');
+        localStorage.setItem('petflow_user_email', authResponse.email ?? '');
         localStorage.setItem('petflow_user_role', authResponse.userRole ?? '');
         localStorage.setItem('petflow_user_name', authResponse.userName ?? '');
 
         if (authResponse.expiresIn) {
-            const expiresAt = Date.now() + authResponse.expiresIn * 1000;
+            const expiresAt = Date.now() + authResponse.expiresIn;
             localStorage.setItem('petflow_token_expires', expiresAt.toString());
         }
 
-        // Notifica os assinantes sobre a mudança de estado
+        // Notifica os assinantes
         this.currentUserRoleSubject.next(authResponse.userRole);
         this.currentUserNameSubject.next(authResponse.userName);
     }
 
     logout(): void {
         localStorage.clear();
-
-        // Notifica os assinantes sobre o logout
         this.currentUserRoleSubject.next(null);
         this.currentUserNameSubject.next(null);
-
         this.router.navigate(['/auth/login']);
     }
 
@@ -92,27 +110,22 @@ constructor(private router: Router, private http: HttpClient) {
         return localStorage.getItem('petflow_auth_token');
     }
 
-    // ← NOVO: Método para pegar o email
     getUserEmail(): string | null {
         return localStorage.getItem('petflow_user_email');
     }
 
-    // Renomeado para evitar confusão com o getter público
     private getUserRoleFromStorage(): Perfil | null {
         return localStorage.getItem('petflow_user_role') as Perfil;
     }
 
-    // Renomeado para evitar confusão
     private getUserNameFromStorage(): string | null {
         return localStorage.getItem('petflow_user_name');
     }
 
-    // Getter público para o valor atual (não reativo)
     public getUserRole(): Perfil | null {
         return this.currentUserRoleSubject.value;
     }
 
-    // Getter público para o valor atual (não reativo)
     public getUserName(): string | null {
         return this.currentUserNameSubject.value;
     }
@@ -121,12 +134,10 @@ constructor(private router: Router, private http: HttpClient) {
         const token = this.getToken();
         const expires = localStorage.getItem('petflow_token_expires');
         if (!token) return false;
-
-        // Se não houver tempo de expiração, considere válido (embora não seja ideal)
         if (!expires) return true;
 
         if (Date.now() > Number(expires)) {
-            this.logout(); // Limpa a sessão expirada
+            this.logout();
             return false;
         }
         return true;

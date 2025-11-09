@@ -35,7 +35,7 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
-    // Senha em texto puro para testes (Sprint 3)
+    // Senha em texto puro APENAS para debug (não use em produção!)
     @Column(name = "senha_normal")
     private String senhaNormal;
 
@@ -48,18 +48,21 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Usando o enum PerfilUsuario diretamente sem "ROLE_*"
+        // CORREÇÃO: Adiciona "ROLE_" prefix (necessário para @PreAuthorize)
         if (this.perfil == PerfilUsuario.ADMIN) {
-            return List.of(new SimpleGrantedAuthority("ADMIN"), new SimpleGrantedAuthority("CLIENTE"));
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_CLIENTE")
+            );
         } else {
-            return List.of(new SimpleGrantedAuthority("CLIENTE"));
+            return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
         }
     }
 
     @Override
     public String getPassword() {
-        // Retorna a senha normal para testes, não a hash
-        return this.senhaNormal;
+        // CORREÇÃO: Retorna a senha HASH (não a senha_normal!)
+        return this.senha;
     }
 
     @Override
@@ -87,7 +90,6 @@ public class Usuario implements UserDetails {
         return true;
     }
 
-    // Corrige hashCode e equals para evitar ciclo infinito
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
