@@ -11,7 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // <-- Import necessário
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,9 +31,9 @@ public class ClienteService {
     @Autowired
     private AgendamentoRepository agendamentoRepository;
 
-    @Transactional // (Correto, pois este método *escreve*)
+    @Transactional
     public ClienteDTO criarCliente(ClienteDTO clienteDTO) {
-        // Validação de Negócio (UC02 - Fluxos de Exceção)
+        // Validação de Negócio
         if (usuarioRepository.existsByEmail(clienteDTO.getEmail())) {
             throw new IllegalArgumentException("E-mail já cadastrado.");
         }
@@ -41,11 +41,17 @@ public class ClienteService {
             throw new IllegalArgumentException("CPF já cadastrado.");
         }
 
-        // 1. Criar o Usuario
+        // ✅ CORREÇÃO: Cria o Usuario COM SENHA CRIPTOGRAFADA
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(clienteDTO.getNome());
         novoUsuario.setEmail(clienteDTO.getEmail());
-        novoUsuario.setSenhaNormal(clienteDTO.getSenhaNormal());
+
+        // ✅ CRITICAL: Criptografa a senha antes de salvar
+        novoUsuario.setSenha(passwordEncoder.encode(clienteDTO.getSenha()));
+
+        // ⚠️ OPCIONAL: Se ainda quiser manter senha_normal para debug (NÃO RECOMENDADO EM PRODUÇÃO)
+        novoUsuario.setSenhaNormal(clienteDTO.getSenha());
+
         novoUsuario.setPerfil(PerfilUsuario.CLIENTE);
 
         Usuario usuarioSalvo = usuarioRepository.save(novoUsuario);
@@ -59,13 +65,14 @@ public class ClienteService {
 
         Cliente clienteSalvo = clienteRepository.save(novoCliente);
 
+        System.out.println("✅ Cliente cadastrado com sucesso!");
+        System.out.println("   Email: " + usuarioSalvo.getEmail());
+        System.out.println("   Senha hash: " + usuarioSalvo.getSenha().substring(0, 20) + "...");
+
         return new ClienteDTO(clienteSalvo);
     }
 
-    /**
-     * UC02 - Fluxo Principal: Consultar Clientes
-     */
-    @Transactional(readOnly = true) // <-- CORREÇÃO: Adicionada anotação
+    @Transactional(readOnly = true)
     public List<ClienteDTO> listarTodos() {
         return clienteRepository.findAll()
                 .stream()
@@ -73,20 +80,14 @@ public class ClienteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * UC02 - Fluxo Principal: Gerenciar Cliente Existente (Consulta por ID)
-     */
-    @Transactional(readOnly = true) // <-- CORREÇÃO: Adicionada anotação
+    @Transactional(readOnly = true)
     public ClienteDTO buscarPorId(Long id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + id));
         return new ClienteDTO(cliente);
     }
 
-    /**
-     * UC02 - Fluxo Principal: Editar Cliente
-     */
-    @Transactional // (Correto, pois este método *escreve*)
+    @Transactional
     public ClienteDTO atualizarCliente(Long id, ClienteDTO clienteDTO) {
         Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + id));
@@ -109,15 +110,11 @@ public class ClienteService {
         return new ClienteDTO(clienteAtualizado);
     }
 
-    /**
-     * UC02 - Fluxo Principal: Excluir Cliente
-     */
-    @Transactional // (Correto, pois este método *escreve*)
+    @Transactional
     public void deletarCliente(Long id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + id));
 
-        // UC02 - Fluxo de Exceção: Exclusão de Cliente com Histórico
         if (agendamentoRepository.existsByCliente(cliente)) {
             throw new IllegalStateException("Não é possível excluir cliente com agendamentos vinculados.");
         }

@@ -26,9 +26,6 @@ public class ClientePerfilService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /**
-     * Busca o cliente logado pelo email (username)
-     */
     private Cliente buscarClientePorEmail(UserDetails userDetails) {
         String email = userDetails.getUsername();
         Usuario usuario = usuarioRepository.findByEmail(email)
@@ -38,26 +35,18 @@ public class ClientePerfilService {
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado para o usuário: " + email));
     }
 
-    /**
-     * 1. Buscar perfil do cliente logado
-     */
     public ClienteDTO buscarPerfilCliente(UserDetails userDetails) {
         Cliente cliente = buscarClientePorEmail(userDetails);
         return convertToDTO(cliente);
     }
 
-    /**
-     * 2. Atualizar perfil do cliente logado
-     */
     @Transactional
     public ClienteDTO atualizarPerfilCliente(UserDetails userDetails, ClienteDTO clienteDTO) {
         Cliente cliente = buscarClientePorEmail(userDetails);
 
-        // Atualiza apenas os campos permitidos (não permite alterar CPF)
         cliente.setTelefone(clienteDTO.getTelefone());
         cliente.setEndereco(clienteDTO.getEndereco());
 
-        // Atualiza nome no usuário
         Usuario usuario = cliente.getUsuario();
         usuario.setNome(clienteDTO.getNome());
         usuarioRepository.save(usuario);
@@ -67,16 +56,15 @@ public class ClientePerfilService {
     }
 
     /**
-     * 3. Alterar senha do cliente logado
-     * CORRIGIDO: Verifica senha_normal em vez de senha criptografada
+     * ✅ CORRIGIDO: Usa BCrypt para validar senha atual
      */
     @Transactional
     public void alterarSenha(UserDetails userDetails, AlterarSenhaDTO dto) {
         Cliente cliente = buscarClientePorEmail(userDetails);
         Usuario usuario = cliente.getUsuario();
 
-        // CORREÇÃO: Valida senha atual usando senha_normal (texto puro)
-        if (!dto.getSenhaAtual().equals(usuario.getSenhaNormal())) {
+        // ✅ CORREÇÃO: Valida senha atual usando BCrypt
+        if (!passwordEncoder.matches(dto.getSenhaAtual(), usuario.getSenha())) {
             throw new UnauthorizedException("Senha atual incorreta");
         }
 
@@ -85,17 +73,12 @@ public class ClientePerfilService {
             throw new IllegalArgumentException("As senhas não coincidem");
         }
 
-        // CORREÇÃO: Atualiza senha_normal (texto puro)
-        usuario.setSenhaNormal(dto.getNovaSenha());
-        // TODO: Na última sprint, criptografar a senha:
-        // usuario.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
+        // ✅ CORREÇÃO: Atualiza senha criptografada
+        usuario.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
 
         usuarioRepository.save(usuario);
     }
 
-    /**
-     * Converte Cliente para DTO
-     */
     private ClienteDTO convertToDTO(Cliente cliente) {
         ClienteDTO dto = new ClienteDTO();
         dto.setId(cliente.getId());

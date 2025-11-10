@@ -1,0 +1,111 @@
+/* ======= LAYOUT GERAL ======= */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ======= CARDS ======= */
+.card {
+  border: none;
+  border-radius: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ======= CABEÇALHOS ======= */
+.card-header {
+  border-radius: 16px 16px 0 0 !important;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.25rem;
+}
+
+.bg-primary {
+  background: linear-gradient(135deg, #007bff, #00a3ff) !important;
+}
+
+.bg-success {
+  background: linear-gradient(135deg, #00b37a, #00e093) !important;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #f7b733, #fc4a1a) !important;
+  color: #fff;
+}
+
+/* ======= FORMULÁRIOS ======= */
+.form-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #00b37a;
+  box-shadow: 0 0 0 0.2rem rgba(0, 179, 122, 0.25);
+}
+
+/* ======= BOTÕES ======= */
+button {
+  border-radius: 8px !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #00a26d;
+  color: #fff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* ======= ALERTAS ======= */
+.alert {
+  border-radius: 10px;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ======= LISTA DE PETS ======= */
+.card.border-success {
+  border: 2px solid #00b37a !important;
+  border-radius: 12px;
+}
+
+.card.border-success:hover {
+  background-color: rgba(0, 179, 122, 0.05);
+}
+
+/* ======= RESPONSIVIDADE ======= */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+}

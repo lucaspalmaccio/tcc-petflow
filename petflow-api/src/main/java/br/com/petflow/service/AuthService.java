@@ -5,6 +5,7 @@ import br.com.petflow.dto.LoginRequestDTO;
 import br.com.petflow.dto.LoginResponseDTO;
 import br.com.petflow.model.Usuario;
 import br.com.petflow.repository.UsuarioRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -35,26 +35,48 @@ public class AuthService {
     }
 
     /**
-     * Login com senha HASH (Seguro)
+     * 🧪 TESTE AUTOMÁTICO AO INICIAR A APLICAÇÃO
+     */
+    @PostConstruct
+    public void gerarHashDefinitivo() {
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("🔐 GERANDO HASH BCRYPT DEFINITIVO");
+        System.out.println("=".repeat(60));
+
+        String senhaTexto = "123456";
+
+        // Gera 3 hashes diferentes para testar
+        for (int i = 1; i <= 3; i++) {
+            String hash = passwordEncoder.encode(senhaTexto);
+            boolean valido = passwordEncoder.matches(senhaTexto, hash);
+
+            System.out.println("\nHash #" + i + ":");
+            System.out.println("  " + hash);
+            System.out.println("  Válido? " + valido);
+        }
+
+        //System.out.println("\n📋 ESCOLHA UM DOS HASHES ACIMA E EXECUTE:");
+        //System.out.println("UPDATE usuarios SET senha = 'COLE_O_HASH_AQUI'");
+        //System.out.println("WHERE email = 'admin@petflow.com';");
+        //System.out.println("=".repeat(60) + "\n");
+    }
+
+
+    /**
+     * Login com autenticação via Spring Security
      */
     public LoginResponseDTO login(LoginRequestDTO loginRequest) {
-        System.out.println("=== LOGIN DEBUG ===");
-        System.out.println("Email recebido: " + loginRequest.email());
-        System.out.println("Senha recebida (length): " + loginRequest.senha().length());
+        System.out.println("\n=== INÍCIO LOGIN ===");
+        System.out.println("📧 Email: " + loginRequest.email());
 
         try {
-            // Busca o usuário
             Usuario usuario = usuarioRepository.findByEmail(loginRequest.email())
-                    .orElseThrow(() -> {
-                        System.out.println("❌ Usuário não encontrado!");
-                        return new BadCredentialsException("Credenciais inválidas");
-                    });
+                    .orElseThrow(() -> new BadCredentialsException("Credenciais inválidas"));
 
             System.out.println("✅ Usuário encontrado: " + usuario.getEmail());
-            System.out.println("Perfil: " + usuario.getPerfil());
-            System.out.println("Senha hash no banco começa com: " + usuario.getSenha().substring(0, 10));
+            System.out.println("✅ Perfil: " + usuario.getPerfil());
 
-            // Autentica usando o AuthenticationManager (valida a senha automaticamente)
+            // Autentica
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.email(),
@@ -64,44 +86,25 @@ public class AuthService {
 
             System.out.println("✅ Autenticação bem-sucedida!");
 
-            // Gera o token JWT
+            // Gera o token
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtUtil.generateToken(userDetails);
-            System.out.println("✅ Token JWT gerado!");
-            System.out.println("=== FIM LOGIN DEBUG ===");
 
+            //System.out.println("✅ Token gerado!");
+            System.out.println("=== FIM LOGIN ===\n");
+
+            // ✅ RETORNA COM EMAIL
             return new LoginResponseDTO(
                     token,
-                    86400000L, // 24 horas em milissegundos (deve corresponder ao jwt.expiration.ms)
-                    usuario.getEmail(),
+                    86400000L,
+                    usuario.getEmail(),  // ✅ ADICIONE ESTE CAMPO
                     usuario.getPerfil().name()
             );
 
         } catch (BadCredentialsException e) {
-            System.out.println("❌ SENHA INCORRETA ou USUÁRIO INVÁLIDO!");
-            System.out.println("=== FIM LOGIN DEBUG ===");
+            System.err.println("❌ SENHA INCORRETA!");
+            System.err.println("=== FIM LOGIN ===\n");
             throw new RuntimeException("Credenciais inválidas");
-        } catch (Exception e) {
-            System.out.println("❌ ERRO INESPERADO: " + e.getMessage());
-            e.printStackTrace();
-            System.out.println("=== FIM LOGIN DEBUG ===");
-            throw new RuntimeException("Erro ao realizar login: " + e.getMessage());
         }
-    }
-
-    /**
-     * Método antigo - mantido para compatibilidade
-     * @deprecated Use login(LoginRequestDTO) instead
-     */
-    @Deprecated
-    public Usuario autenticar(String email, String senha) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos"));
-
-        if (!passwordEncoder.matches(senha, usuario.getSenha())) {
-            throw new RuntimeException("Usuário ou senha inválidos");
-        }
-
-        return usuario;
     }
 }

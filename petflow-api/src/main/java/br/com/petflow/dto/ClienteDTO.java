@@ -30,7 +30,7 @@ public class ClienteDTO {
 
     // Senha não é obrigatória ao atualizar perfil
     @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
-    private String senhaNormal;
+    private String senha;
 
     @NotBlank(message = "O CPF é obrigatório")
     @CPF(message = "CPF inválido")
