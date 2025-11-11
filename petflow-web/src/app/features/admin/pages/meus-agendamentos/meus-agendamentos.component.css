@@ -1,7 +1,40 @@
-/* Reaproveita a maior parte dos estilos de
-  'src/app/features/admin/pages/clientes/cliente-list/cliente-list.component.css'
-  (list-container, page-header, data-table, etc.)
-*/
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: darken(var(--color-primary), 10%);
+}
+
+.btn-secondary.logout-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-secondary.logout-btn:hover {
+  background-color: #d32f2f;
+}
 
 /* Estilos específicos para o Status */
 .status {

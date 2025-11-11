@@ -31,11 +31,9 @@ public class Usuario implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    // Senha hash para autenticação real (Spring Security)
     @Column(nullable = false)
     private String senha;
 
-    // Senha em texto puro APENAS para debug (não use em produção!)
     @Column(name = "senha_normal")
     private String senhaNormal;
 
@@ -48,20 +46,21 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // CORREÇÃO: Adiciona "ROLE_" prefix (necessário para @PreAuthorize)
+        // ✅ CORRIGIDO: SEM prefixo "ROLE_" - apenas o valor do enum (ADMIN ou CLIENTE)
         if (this.perfil == PerfilUsuario.ADMIN) {
+            // Admin tem acesso às duas authorities
             return List.of(
-                    new SimpleGrantedAuthority("ROLE_ADMIN"),
-                    new SimpleGrantedAuthority("ROLE_CLIENTE")
+                    new SimpleGrantedAuthority("ADMIN"),
+                    new SimpleGrantedAuthority("CLIENTE")
             );
         } else {
-            return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
+            // Cliente tem apenas authority CLIENTE
+            return List.of(new SimpleGrantedAuthority("CLIENTE"));
         }
     }
 
     @Override
     public String getPassword() {
-        // CORREÇÃO: Retorna a senha HASH (não a senha_normal!)
         return this.senha;
     }
 

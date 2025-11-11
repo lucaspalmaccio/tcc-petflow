@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from '../../core/guards/auth.guard';
 import { Perfil } from '../../core/services/auth.service';
-
-// Componentes existentes
 import { MeusAgendamentosComponent } from './pages/meus-agendamentos/meus-agendamentos.component';
 import { ClientePerfilComponent } from './pages/cliente-perfil/cliente-perfil.component';
 
@@ -23,11 +21,7 @@ component: ClientePerfilComponent,
 canActivate: [authGuard],
 data: { roles: [Perfil.CLIENTE] }
 },
-{
-path: '',
-redirectTo: 'meus-agendamentos',
-pathMatch: 'full'
-}
+{ path: '', redirectTo: 'meus-agendamentos', pathMatch: 'full' }
 ]
 }
 ];
@@ -36,4 +30,4 @@ pathMatch: 'full'
 imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ClienteRoutingModule {}
+export class ClienteRoutingModule { }

@@ -1,67 +1,56 @@
 <div class="container">
-    <!-- Menu de Navegação do Cliente -->
-    <nav class="cliente-nav mb-4">
-        <a routerLink="/cliente/meus-agendamentos"
-           routerLinkActive="active"
-           class="nav-link">
-            📅 Meus Agendamentos
-        </a>
-        <a routerLink="/cliente/perfil"
-           routerLinkActive="active"
-           class="nav-link">
-            👤 Meu Perfil
-        </a>
-    </nav>
-
     <!-- Cabeçalho -->
     <header class="page-header">
         <h1>Meus Agendamentos</h1>
-        <button class="btn-primary" (click)="openAgendamentoModal()" [disabled]="isLoadingModalData">
-            <span *ngIf="isLoadingModalData" class="spinner"></span>
-            {{ isLoadingModalData ? 'Carregando...' : '+ Novo Agendamento' }}
-        </button>
+        <div class="header-actions">
+            <button class="btn-primary" (click)="openAgendamentoModal()" [disabled]="isLoadingModalData">
+                {{ isLoadingModalData ? 'Carregando...' : '+ Novo Agendamento' }}
+            </button>
+            <button class="btn-secondary" (click)="logout()">Sair</button>
+        </div>
     </header>
 
-    <!-- Estado de Loading da Lista -->
+    <!-- Estado de Loading -->
     <div *ngIf="isLoadingAgendamentos" class="loading-indicator">
         Carregando agendamentos...
     </div>
 
-    <!-- Estado de Erro da Lista -->
+    <!-- Estado de Erro -->
     <div *ngIf="errorAgendamentos" class="error-message">
         {{ errorAgendamentos }}
     </div>
 
-    <!-- Lista de Agendamentos (UC05) -->
-    <div *ngIf="(agendamentos$ | async) as agendamentos">
+    <!-- Lista de Agendamentos -->
+    <div *ngIf="(agendamentos$ | async) as agendamentos; else noAgendamentosTemplate">
         <div class="agendamentos-list" *ngIf="!isLoadingAgendamentos && agendamentos.length > 0">
             <div class="agendamento-card" *ngFor="let ag of agendamentos" [ngClass]="'status-' + ag.status.toLowerCase()">
                 <div class="card-header">
                     <span class="status-badge">{{ ag.status }}</span>
-                    <strong>{{ ag.dataHora | date:'dd/MM/yyyy HH:mm' }}</strong>
+                    <strong>{{ formatDate(ag.dataHora) }}</strong>
                 </div>
                 <div class="card-body">
                     <p><strong>Pet:</strong> {{ ag.pet.nome }}</p>
                     <p><strong>Serviços:</strong> {{ getServicosString(ag) }}</p>
                     <p><strong>Valor:</strong> {{ ag.valorTotal | currency:'BRL' }}</p>
                 </div>
-
                 <div class="card-footer" *ngIf="ag.status === 'AGENDADO'">
-                    <button class="btn-cancel" (click)="onCancel(ag.id, ag.dataHora)">
+                    <button class="btn-cancel" (click)="onCancel(ag.id, formatDate(ag.dataHora))">
                         Cancelar
                     </button>
                 </div>
             </div>
         </div>
-
-        <div *ngIf="!isLoadingAgendamentos && agendamentos.length === 0" class="no-data">
-            Você ainda não possui agendamentos.
-        </div>
     </div>
 
+    <!-- Template para Lista Vazia -->
+    <ng-template #noAgendamentosTemplate>
+        <div *ngIf="!isLoadingAgendamentos" class="no-data">
+            Você ainda não possui agendamentos.
+        </div>
+    </ng-template>
 </div>
 
-<!-- O Modal de Novo Agendamento (UC05) -->
+<!-- Modal de Novo Agendamento -->
 <app-agendamento-modal
         *ngIf="isModalOpen"
         [petsCliente$]="petsCliente$"

@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,30 +19,31 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // ✅ CHAVE SEGURA: Mínimo 256 bits (32 caracteres)
-    @Value("${jwt.secret:minhaSuperChaveSecretaParaJWT123456789012345678901234567890}")
-    private String SECRET_KEY;
+    // TEMPORÁRIO: Chave hardcoded para teste
+    private String SECRET_KEY = "minhachavesupersecretajwtparaopetflowsistema2024muitoseguraabcdef123456";
 
-    @Value("${jwt.expiration:86400000}") // 24 horas em ms
+    @Value("${jwt.expiration:86400000}")
     private Long EXPIRATION_TIME;
 
-    /**
-     * Gera a chave segura a partir da SECRET_KEY
-     */
-    private SecretKey getSigningKey() {
-        // Se a chave for curta, usa Keys.secretKeyFor()
-        if (SECRET_KEY.length() < 32) {
-            System.err.println("⚠️ Chave JWT muito curta! Usando chave gerada automaticamente.");
-            return Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        }
+    private SecretKey signingKey;
 
-        // Usa a chave do application.properties (deve ter >= 32 caracteres)
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    @PostConstruct
+    public void init() {
+        System.out.println("\n================ JWT CONFIG (HARDCODED) ================");
+        System.out.println("⚠️  USANDO CHAVE HARDCODED PARA TESTE!");
+        System.out.println("🔑 Chave: " + SECRET_KEY.substring(0, 10) + "... (" + SECRET_KEY.length() + " chars)");
+
+        this.signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
+        System.out.println("✅ Chave JWT inicializada!");
+        System.out.println("⏳ Expiração: " + EXPIRATION_TIME + " ms");
+        System.out.println("======================================================\n");
     }
 
-    /**
-     * Gera o token JWT
-     */
+    private SecretKey getSigningKey() {
+        return signingKey;
+    }
+
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", userDetails.getUsername());
@@ -55,24 +57,15 @@ public class JwtUtil {
                 .compact();
     }
 
-    /**
-     * Extrai o username (email) do token
-     */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    /**
-     * Extrai uma claim específica
-     */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    /**
-     * Extrai todas as claims
-     */
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -81,23 +74,14 @@ public class JwtUtil {
                 .getBody();
     }
 
-    /**
-     * Verifica se o token está expirado
-     */
     public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    /**
-     * Extrai a data de expiração
-     */
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    /**
-     * Valida o token
-     */
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

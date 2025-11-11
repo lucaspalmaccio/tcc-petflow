@@ -42,6 +42,11 @@ constructor(private http: HttpClient) { }
     return this.http.patch<AgendamentoResponse>(`${this.apiUrl}/${id}/cancelar`, {});
   }
 
+
+getAgendamentosCliente(): Observable<AgendamentoResponse[]> {
+  return this.http.get<AgendamentoResponse[]>('http://localhost:8081/api/clientes/me/agendamentos');
+}
+
   // === INÍCIO SPRINT 04 (UC05 - Concluir Agendamento) ===
 
   /**

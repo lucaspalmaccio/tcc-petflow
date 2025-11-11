@@ -85,17 +85,61 @@ button {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* ======= LISTA DE PETS ======= */
+/* ======= LISTA DE PETS - CORRIGIDO ======= */
 .card.border-success {
   border: 2px solid #00b37a !important;
   border-radius: 12px;
+  min-height: 180px; /* Garante altura mínima */
+}
+
+.card.border-success .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.card.border-success .card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  word-wrap: break-word; /* Quebra palavras longas */
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.card.border-success .card-text {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
 }
 
 .card.border-success:hover {
   background-color: rgba(0, 179, 122, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Garante que os botões fiquem sempre no final do card */
+.card.border-success .d-flex.gap-2 {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+/* Grid responsivo para pets */
+.row.g-3 {
+  margin-bottom: 1rem;
 }
 
 /* ======= RESPONSIVIDADE ======= */
+@media (max-width: 992px) {
+  /* Em tablets, mostra 1 pet por linha */
+  .col-md-6 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
@@ -107,5 +151,40 @@ button {
 
   h2 {
     font-size: 1.5rem;
+  }
+
+  /* Cards de pets em telas pequenas */
+  .card.border-success {
+    min-height: 160px;
+  }
+
+  .card.border-success .card-title {
+    font-size: 1rem;
+  }
+
+  .card.border-success .card-text {
+    font-size: 0.85rem;
+  }
+
+  /* Botões menores em mobile */
+  .btn-sm {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Em celulares, ajusta ainda mais */
+  .card.border-success {
+    min-height: 150px;
+  }
+
+  .d-flex.gap-2 {
+    flex-wrap: wrap;
+  }
+
+  .d-flex.gap-2 button {
+    flex: 1;
+    min-width: 100px;
   }
 }

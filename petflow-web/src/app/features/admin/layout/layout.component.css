@@ -25,14 +25,39 @@
   text-align: center;
   border-bottom: 1px solid #4a5056; /* Tom mais claro que --color-dark */
 }
+
+/* --- Estilos do Logo --- */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sidebar-logo {
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  filter: brightness(1.1);
+}
+
+.sidebar-logo:hover {
+  transform: scale(1.05);
+}
+/* --- Fim Estilos do Logo --- */
+
 .sidebar-title {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--color-primary);
+  margin: 0.5rem 0 0.25rem 0;
 }
+
 .sidebar-subtitle {
   font-size: 0.9rem;
   color: var(--color-secondary);
+  display: block;
 }
 
 .sidebar-nav {
@@ -94,6 +119,7 @@
   font-weight: 600;
   cursor: pointer;
 }
+
 .btn-logout:hover {
   text-decoration: underline;
 }
@@ -103,4 +129,15 @@
   padding: 2rem;
   background-color: var(--color-light);
   overflow-y: auto; /* Permite scroll apenas no conteúdo da página */
+}
+
+/* --- Responsivo --- */
+@media (max-width: 768px) {
+  .sidebar-logo {
+    max-width: 70px;
+  }
+
+  .sidebar-title {
+    font-size: 1.5rem;
+  }
 }

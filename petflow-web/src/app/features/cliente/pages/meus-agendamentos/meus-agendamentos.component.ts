@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subject, switchMap, catchError, of, tap } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
 import { AgendamentoService } from '../../../admin/services/agendamento.service';
 import { AgendamentoResponse } from '../../../admin/models/agendamento.model';
-import { PetService } from '../../../admin/services/pet.service';
-import { ServicoService } from '../../../admin/services/servico.service';
-import { Pet } from '../../../admin/models/pet.model';
-import { Servico } from '../../../admin/models/servico.model';
+import { AuthService } from '../../../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
 selector: 'app-meus-agendamentos',
@@ -14,126 +13,137 @@ styleUrls: ['./meus-agendamentos.component.css']
 })
 export class MeusAgendamentosComponent implements OnInit {
 
-// Agendamentos existentes
-public agendamentos$!: Observable<AgendamentoResponse[]>;
+// ✅ CORRIGIDO: Inicializado com of([])
+public agendamentos$: Observable<AgendamentoResponse[]> = of([]);
 public isLoadingAgendamentos = true;
 public errorAgendamentos: string | null = null;
 
-// Troca BehaviorSubject por Subject (sem valor inicial)
-private refreshAgendamentos = new Subject<void>(); // Para recarregar a lista
-
-// Dados para o modal
-public petsCliente$!: Observable<Pet[]>;
-public servicosDisponiveis$!: Observable<Servico[]>;
+// Modal de novo agendamento
+public isModalOpen = false;
 public isLoadingModalData = false;
 
-// Estado do Modal
-public isModalOpen = false;
+// ✅ ADICIONADO: Observables necessários para o modal
+public petsCliente$: Observable<any[]> = of([]);
+public servicosDisponiveis$: Observable<any[]> = of([]);
 
 constructor(
     private agendamentoService: AgendamentoService,
-    private petService: PetService,
-    private servicoService: ServicoService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Carrega a lista de agendamentos e reage a atualizações
-    this.agendamentos$ = this.refreshAgendamentos.pipe(
-      switchMap(() => {
-        this.isLoadingAgendamentos = true;
-        this.errorAgendamentos = null;
-        return this.agendamentoService.getAgendamentos().pipe(
-          catchError((err) => {
-            this.isLoadingAgendamentos = false;
-            this.errorAgendamentos = "Falha ao carregar seus agendamentos.";
-            console.error(err);
-            return of([]); // Retorna array vazio em caso de erro
-          })
-        );
-      }),
-      tap(() => this.isLoadingAgendamentos = false)
-    );
-
-    // Dispara o primeiro carregamento manualmente
+    console.log('🚀 Componente MeusAgendamentos inicializado');
     this.loadAgendamentos();
-
-    // Carrega dados do modal apenas uma vez
-    this.loadModalData();
   }
 
-  /** UC05 - Carrega a lista de agendamentos do cliente logado. */
+  /**
+   * Carrega agendamentos do cliente logado
+   */
   loadAgendamentos(): void {
-    this.refreshAgendamentos.next(); // Emite para recarregar a lista
-  }
+    console.log('📋 Carregando agendamentos...');
 
-  /** Carrega os dados necessários para o modal (pets e serviços) */
-  loadModalData(): void {
-    this.isLoadingModalData = true;
+    this.isLoadingAgendamentos = true;
+    this.errorAgendamentos = null;
 
-    this.petsCliente$ = this.petService.getMeusPets().pipe(
-      catchError(err => {
-        console.error("Erro ao buscar pets:", err);
-        return of([]);
+    this.agendamentos$ = this.agendamentoService.getAgendamentosCliente().pipe(
+      tap({
+        next: (agendamentos) => {
+          console.log('✅ Agendamentos carregados com sucesso:', agendamentos);
+          console.log('📊 Total:', agendamentos.length);
+
+          if (agendamentos.length === 0) {
+            console.log('⚠️ Nenhum agendamento encontrado');
+          } else {
+            agendamentos.forEach((ag, index) => {
+              console.log(`   ${index + 1}. ID: ${ag.id} | Data: ${ag.dataHora} | Status: ${ag.status}`);
+            });
+          }
+        },
+        error: (err) => {
+          console.error('❌ Erro ao carregar agendamentos:', err);
+          console.error('Status:', err.status);
+          console.error('Mensagem:', err.message);
+          console.error('URL:', err.url);
+        }
+      }),
+      catchError((err) => {
+        this.errorAgendamentos = 'Erro ao carregar agendamentos. Tente novamente.';
+        console.error('💥 Erro capturado:', err);
+        return of([]); // Retorna array vazio em caso de erro
+      }),
+      finalize(() => {
+        this.isLoadingAgendamentos = false;
+        console.log('🏁 Finalizado carregamento de agendamentos');
       })
     );
-
-    this.servicosDisponiveis$ = this.servicoService.getAllServicos().pipe(
-      catchError(err => {
-        console.error("Erro ao buscar serviços:", err);
-        return of([]);
-      }),
-      tap(() => this.isLoadingModalData = false)
-    );
-
-    // Apenas dispara para iniciar os requests
-    this.petsCliente$.subscribe();
-    this.servicosDisponiveis$.subscribe();
   }
 
-  /** CT03.4 - Cancelar Agendamento */
-  onCancel(id: number, data: string): void {
-    const dataFormatada = new Date(data).toLocaleDateString('pt-BR', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
+  /**
+   * ✅ ADICIONADO: Método para formatar serviços
+   * Retorna string com nomes dos serviços separados por vírgula
+   */
+  getServicosString(agendamento: AgendamentoResponse): string {
+    if (!agendamento.servicos || agendamento.servicos.length === 0) {
+      return 'Nenhum serviço';
+    }
+    return agendamento.servicos.map(s => s.nome).join(', ');
+  }
 
-    if (confirm(`Tem certeza que deseja cancelar o agendamento do dia ${dataFormatada}?`)) {
+  /** Abre modal de novo agendamento */
+  openAgendamentoModal(): void {
+    console.log('🔓 Abrindo modal de novo agendamento');
+    this.isModalOpen = true;
+  }
+
+  /** Fecha modal */
+  closeAgendamentoModal(): void {
+    console.log('🔒 Fechando modal');
+    this.isModalOpen = false;
+  }
+
+  /** Após salvar novo agendamento */
+  handleSaveSuccess(): void {
+    console.log('💾 Agendamento salvo! Recarregando lista...');
+    this.isModalOpen = false;
+    this.loadAgendamentos();
+  }
+
+  /** Cancelar agendamento */
+  onCancel(id: number, data: string): void {
+    if (confirm(`Tem certeza que deseja cancelar o agendamento do dia ${data}?`)) {
+      console.log(`🗑️ Cancelando agendamento ID: ${id}`);
+
       this.agendamentoService.cancelarAgendamento(id).subscribe({
-        next: () => this.loadAgendamentos(),
-        error: (err) => alert("Erro ao cancelar agendamento: " + (err.error?.erro || err.message))
+        next: () => {
+          console.log('✅ Agendamento cancelado com sucesso');
+          this.loadAgendamentos();
+        },
+        error: (err) => {
+          console.error('❌ Erro ao cancelar:', err);
+          alert('Erro ao cancelar agendamento.');
+        }
       });
     }
   }
 
-  /** UC05 - Abre o modal de novo agendamento */
-  openAgendamentoModal(): void {
-    this.loadModalData();
-    this.isModalOpen = true;
+  /** Formata a data para exibição */
+  formatDate(dataHora: string): string {
+    try {
+      return new Date(dataHora).toLocaleString('pt-BR', {
+        dateStyle: 'short',
+        timeStyle: 'short'
+      });
+    } catch (error) {
+      console.error('Erro ao formatar data:', error);
+      return dataHora;
+    }
   }
 
-  closeAgendamentoModal(): void {
-    this.isModalOpen = false;
-  }
-
-  /** Evento emitido pelo modal quando o agendamento é salvo com sucesso */
-  handleSaveSuccess(): void {
-    this.isModalOpen = false;
-    this.loadAgendamentos();
-  }
-
-  /** Helper para formatar data no template */
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
-  }
-
-  /** Helper para exibir lista de serviços em formato de string */
-  getServicosString(ag: AgendamentoResponse): string {
-    return (ag.servicos || [])
-      .filter(s => !!s)
-      .map(s => s.nome)
-      .join(', ') || 'Nenhum';
+  /** Logout do cliente */
+  logout(): void {
+    console.log('👋 Fazendo logout...');
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
   }
 }
