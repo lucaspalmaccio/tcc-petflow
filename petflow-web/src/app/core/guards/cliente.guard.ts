@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 /**
-* Guarda funcional para proteger as rotas do Cliente (Sprint 03).
+* Guarda funcional para proteger as rotas do Cliente.
 */
 export const clienteAuthGuard: CanActivateFn = (route, state) => {
 const authService = inject(AuthService);

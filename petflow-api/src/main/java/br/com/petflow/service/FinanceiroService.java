@@ -23,13 +23,13 @@ public class FinanceiroService {
     }
 
     /**
-     * UC08 - Visualizar Dashboard Financeiro [cite: 83]
+     * UC08 - Visualizar Dashboard Financeiro
      * Calcula os principais KPIs financeiros baseados apenas em agendamentos concluídos.
      */
     @Transactional(readOnly = true) // Boa prática para métodos de leitura
     public DashboardResponseDTO getDashboard() {
 
-        // 1. Busca APENAS os agendamentos com status "CONCLUÍDO" [cite: 197]
+        // 1. Busca APENAS os agendamentos com status "CONCLUÍDO"
         List<Agendamento> concluidos = agendamentoRepository
                 .findAllByStatus(StatusAgendamento.CONCLUIDO);
 
@@ -39,10 +39,10 @@ public class FinanceiroService {
         // 2. Itera por eles para calcular os valores
         for (Agendamento ag : concluidos) {
 
-            // 2a. Soma o Faturamento (Preço de Venda do Agendamento) [cite: 198]
+            // 2a. Soma o Faturamento (Preço de Venda do Agendamento)
             faturamentoTotal = faturamentoTotal.add(ag.getValorTotal());
 
-            // 2b. Soma o Custo (Preço de Custo dos Produtos) [cite: 199]
+            // 2b. Soma o Custo (Preço de Custo dos Produtos)
             Set<Servico> servicos = ag.getServicos();
             for (Servico s : servicos) {
                 // Pega a "receita" de produtos do serviço
@@ -50,7 +50,7 @@ public class FinanceiroService {
 
                 for (ServicoProduto sp : produtosUsados) {
 
-                    // Pega o preço de custo de cada produto [cite: 199]
+                    // Pega o preço de custo de cada produto
                     BigDecimal precoCustoProduto = sp.getProduto().getPrecoCusto();
                     BigDecimal quantidade = new BigDecimal(sp.getQuantidade());
 
@@ -60,7 +60,7 @@ public class FinanceiroService {
             }
         }
 
-        // 3. Calcula o Lucro (Faturamento - Custo) [cite: 200]
+        // 3. Calcula o Lucro (Faturamento - Custo)
         BigDecimal lucroTotal = faturamentoTotal.subtract(custoTotal);
 
         // 4. Retorna o DTO

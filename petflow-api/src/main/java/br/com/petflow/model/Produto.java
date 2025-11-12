@@ -37,12 +37,10 @@ public class Produto {
     @Column(nullable = false)
     private Integer qtdEstoque;
 
-    // === INÍCIO DA ATUALIZAÇÃO SPRINT 4 ===
     /**
      * Relacionamento inverso para integridade referencial.
      * Lista todos os "itens de serviço" que usam este produto.
      */
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
     private Set<ServicoProduto> servicosQueUsam = new HashSet<>();
-    // === FIM DA ATUALIZAÇÃO SPRINT 4 ===
 }

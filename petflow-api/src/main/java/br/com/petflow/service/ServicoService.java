@@ -88,8 +88,7 @@ public class ServicoService {
         Servico servico = servicoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado com ID: " + id));
 
-        // === INÍCIO DA ATUALIZAÇÃO SPRINT 03 ===
-        // UC04 - Fluxo de Exceção: Exclusão de Item com Histórico [cite: 413]
+        // UC04 - Fluxo de Exceção: Exclusão de Item com Histórico
         if (agendamentoRepository.existsByServico(servico)) {
             throw new IllegalStateException("Não é possível excluir serviço vinculado a agendamentos.");
         }

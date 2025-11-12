@@ -46,7 +46,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // ✅ CORRIGIDO: SEM prefixo "ROLE_" - apenas o valor do enum (ADMIN ou CLIENTE)
         if (this.perfil == PerfilUsuario.ADMIN) {
             // Admin tem acesso às duas authorities
             return List.of(

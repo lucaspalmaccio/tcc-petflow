@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * DTO para a requisição de entrada manual de estoque (CT04.2).
+ * DTO para a requisição de entrada manual de estoque
  */
 public record EstoqueRequestDTO(
         @NotNull(message = "A quantidade é obrigatória")

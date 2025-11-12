@@ -11,7 +11,6 @@ styleUrls: ['./cliente-list.component.css']
 })
 export class ClienteListComponent implements OnInit {
 
-// Correção: Adicionado '!' (definite assignment assertion)
 public clientes$!: Observable<Cliente[]>;
 public isLoading = true;
 public error: string | null = null;
@@ -77,5 +76,46 @@ constructor(
       });
     }
   }
-}
 
+  // =======================================================
+  //         👇 FUNÇÕES DE FORMATAÇÃO ADICIONADAS 👇
+  // =======================================================
+
+  /**
+   * Formata um CPF no padrão 000.000.000-00
+   * @param cpf O CPF (apenas dígitos)
+   */
+  formatarCPF(cpf: string): string {
+    if (!cpf) return '';
+
+    let valorFormatado = cpf.replace(/\D/g, ''); // Remove não-dígitos
+
+    if (valorFormatado.length === 11) {
+      return valorFormatado.replace(
+        /(\d{3})(\d{3})(\d{3})(\d{2})/,
+        '$1.$2.$3-$4'
+      );
+    }
+
+    return cpf; // Retorna original se não tiver 11 dígitos
+  }
+
+  /**
+   * Formata um Telefone no padrão (00) 0000-0000 ou (00) 00000-0000
+   * @param telefone O telefone (apenas dígitos)
+   */
+  formatarTelefone(telefone: string): string {
+    if (!telefone) return '';
+
+    let valorFormatado = telefone.replace(/\D/g, ''); // Remove não-dígitos
+
+    if (valorFormatado.length === 10) {
+      return valorFormatado.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
+    else if (valorFormatado.length === 11) {
+      return valorFormatado.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
+
+    return telefone; // Retorna original se o tamanho for inválido
+  }
+}

@@ -8,7 +8,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     /**
      * Verifica se já existe um cliente com este CPF.
-     * Usado na validação do UC02[cite: 130].
+     * Usado na validação do UC02.
      */
     Optional<Cliente> findByUsuario(Usuario usuario);
     boolean existsByCpf(String cpf);

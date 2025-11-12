@@ -1,0 +1,218 @@
+/* =======================================
+   Layout Principal e Cabeçalho
+   ======================================= */
+
+.form-container {
+  max-width: 900px; /* Largura máxima do formulário */
+  margin: 2rem auto; /* Centraliza e adiciona espaço */
+  padding: 0 1rem; /* Espaçamento lateral em telas pequenas */
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #222;
+}
+
+/* =======================================
+   Estilo do Card do Formulário
+   ======================================= */
+
+form.card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Garante que nada vaze */
+}
+
+/* =======================================
+   Seções do Formulário (Fieldset)
+   ======================================= */
+
+fieldset.form-section {
+  border: none;
+  padding: 2rem; /* Espaçamento interno principal */
+  margin: 0;
+}
+
+legend {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding: 0;
+}
+
+/* =======================================
+   Campos do Formulário (Inputs, Labels)
+   ======================================= */
+
+.form-group {
+  margin-bottom: 1.25rem; /* Espaço entre os campos */
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #555;
+  font-size: 0.875rem;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box; /* Essencial para o padding funcionar com width 100% */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+/* Ajustes para inputs numéricos */
+input[type="number"] {
+  -moz-appearance: textfield; /* Remove setas no Firefox */
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; /* Remove setas no Chrome, Safari, Edge */
+  margin: 0;
+}
+
+/* Ajuste para Textarea */
+textarea.form-control {
+  resize: vertical; /* Permite redimensionar apenas verticalmente */
+  min-height: 100px;
+}
+
+/* =======================================
+   Layout em Linha (Form Row)
+   ======================================= */
+
+.form-row {
+  display: grid;
+  /* Cria 3 colunas de tamanhos iguais */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem; /* Espaço entre as colunas */
+}
+
+/* =======================================
+   Rodapé e Ações do Formulário
+   ======================================= */
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+  justify-content: flex-end; /* Alinha botões à direita */
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #f9f9f9;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #eee;
+}
+
+.error-message {
+  flex-grow: 1; /* Faz a mensagem de erro ocupar o espaço à esquerda */
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+/* =======================================
+   Estilos de Botões
+   ======================================= */
+
+/* Botão de Voltar no Cabeçalho */
+.btn-back {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: color 0.2s;
+}
+.btn-back:hover {
+  color: #0056b3;
+}
+
+/* Botões de Ação no Rodapé */
+button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+.btn-primary:disabled {
+  background-color: #007bff;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+
+/* =======================================
+   Responsividade (Telas Pequenas)
+   ======================================= */
+
+@media (max-width: 768px) {
+  .form-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .form-row {
+    /* Faz as colunas virarem linhas (uma em cima da outra) */
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch; /* Estica os botões */
+  }
+
+  .error-message {
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+}

@@ -6,8 +6,7 @@ import { ProdutoService } from '../../../services/produto.service';
 @Component({
 selector: 'app-produto-form',
 templateUrl: './produto-form.component.html',
-// Reutilizando o CSS do formulário de cliente
-styleUrls: ['../../clientes/cliente-form/cliente-form.component.css']
+styleUrls: ['./produto-form.component.css']
 })
 export class ProdutoFormComponent implements OnInit {
 

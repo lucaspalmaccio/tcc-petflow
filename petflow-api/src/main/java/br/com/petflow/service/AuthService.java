@@ -35,7 +35,7 @@ public class AuthService {
     }
 
     /**
-     * 🧪 TESTE AUTOMÁTICO AO INICIAR A APLICAÇÃO
+     * TESTE AUTOMÁTICO AO INICIAR A APLICAÇÃO
      */
     @PostConstruct
     public void gerarHashDefinitivo() {

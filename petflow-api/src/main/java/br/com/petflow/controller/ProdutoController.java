@@ -64,8 +64,6 @@ public class ProdutoController {
         return ResponseEntity.noContent().build();
     }
 
-    // === INÍCIO SPRINT 04 (Controle de Estoque) ===
-
     /**
      * UC06 (CT04.2) - Adicionar itens ao estoque (Entrada Manual)
      */
@@ -77,5 +75,5 @@ public class ProdutoController {
         ProdutoDTO produtoAtualizado = produtoService.adicionarEstoque(id, dto);
         return ResponseEntity.ok(produtoAtualizado);
     }
-    // === FIM SPRINT 04 ===
+
 }

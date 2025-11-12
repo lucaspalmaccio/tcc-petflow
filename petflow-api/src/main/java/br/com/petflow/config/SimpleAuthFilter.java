@@ -73,7 +73,7 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = User.builder()
                     .username(usuario.getEmail())
-                    .password("") // senha não é necessária aqui
+                    .password("")
                     .authorities(Collections.singletonList(
                             new SimpleGrantedAuthority("ROLE_" + usuario.getPerfil().name())
                     ))

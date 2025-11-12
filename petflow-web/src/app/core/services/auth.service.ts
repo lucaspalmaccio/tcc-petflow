@@ -57,13 +57,13 @@ constructor(private router: Router, private http: HttpClient) {
                 map(response => {
                     console.log('📥 Backend respondeu:', response);
 
-                    // ✅ Transforma "perfil" em "userRole"
+                    // Transforma "perfil" em "userRole"
                     const transformedResponse: LoginResponse = {
                         token: response.token,
                         expiresIn: response.expiresIn,
                         email: response.email,
                         userName: response.email.split('@')[0], // Usa email como userName
-                        userRole: response.perfil as Perfil  // ✅ CONVERTE "perfil" → "userRole"
+                        userRole: response.perfil as Perfil  // CONVERTE "perfil" → "userRole"
                     };
 
                     console.log('✅ Response transformada:', transformedResponse);
@@ -82,7 +82,7 @@ constructor(private router: Router, private http: HttpClient) {
             );
     }
 
-    // ✅ SIMPLIFICADO: Não precisa mais do parâmetro email
+    // Não precisa mais do parâmetro email
     private setSession(authResponse: LoginResponse): void {
         localStorage.setItem('petflow_auth_token', authResponse.token ?? '');
         localStorage.setItem('petflow_user_email', authResponse.email ?? '');

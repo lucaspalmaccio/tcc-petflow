@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 /**
  * DTO para criar, atualizar e exibir Serviços (UC04).
- * Baseado na entidade Servico [cite: 69, 202-221].
+ * Baseado na entidade Servico
  */
 public record ServicoDTO(
         Long id,

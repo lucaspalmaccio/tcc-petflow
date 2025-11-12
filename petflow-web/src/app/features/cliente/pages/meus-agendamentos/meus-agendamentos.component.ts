@@ -3,6 +3,8 @@ import { Observable, of } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
 import { AgendamentoService } from '../../../admin/services/agendamento.service';
 import { AgendamentoResponse } from '../../../admin/models/agendamento.model';
+import { PetService } from '../../../admin/services/pet.service';
+import { ServicoService } from '../../../admin/services/servico.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Router } from '@angular/router';
 
@@ -13,24 +15,26 @@ styleUrls: ['./meus-agendamentos.component.css']
 })
 export class MeusAgendamentosComponent implements OnInit {
 
-// ✅ CORRIGIDO: Inicializado com of([])
+// Observables
 public agendamentos$: Observable<AgendamentoResponse[]> = of([]);
-public isLoadingAgendamentos = true;
-public errorAgendamentos: string | null = null;
-
-// Modal de novo agendamento
-public isModalOpen = false;
-public isLoadingModalData = false;
-
-// ✅ ADICIONADO: Observables necessários para o modal
 public petsCliente$: Observable<any[]> = of([]);
 public servicosDisponiveis$: Observable<any[]> = of([]);
 
+// Estados
+public isLoadingAgendamentos = true;
+public errorAgendamentos: string | null = null;
+public isModalOpen = false;
+public isLoadingModalData = false;
+
 constructor(
     private agendamentoService: AgendamentoService,
+    private petService: PetService,
+    private servicoService: ServicoService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) {
+    console.log('🏗️ MeusAgendamentosComponent construído');
+  }
 
   ngOnInit(): void {
     console.log('🚀 Componente MeusAgendamentos inicializado');
@@ -70,7 +74,7 @@ constructor(
       catchError((err) => {
         this.errorAgendamentos = 'Erro ao carregar agendamentos. Tente novamente.';
         console.error('💥 Erro capturado:', err);
-        return of([]); // Retorna array vazio em caso de erro
+        return of([]);
       }),
       finalize(() => {
         this.isLoadingAgendamentos = false;
@@ -80,8 +84,7 @@ constructor(
   }
 
   /**
-   * ✅ ADICIONADO: Método para formatar serviços
-   * Retorna string com nomes dos serviços separados por vírgula
+   * Método para formatar serviços
    */
   getServicosString(agendamento: AgendamentoResponse): string {
     if (!agendamento.servicos || agendamento.servicos.length === 0) {
@@ -90,10 +93,51 @@ constructor(
     return agendamento.servicos.map(s => s.nome).join(', ');
   }
 
-  /** Abre modal de novo agendamento */
+  /**
+   * Navega para a página de Meu Perfil
+   */
+  irParaPerfil(): void {
+    console.log('👤 Navegando para Meu Perfil');
+    this.router.navigate(['/cliente/perfil']);
+  }
+
+  /**
+   * Abre modal de novo agendamento
+   */
   openAgendamentoModal(): void {
-    console.log('🔓 Abrindo modal de novo agendamento');
+    console.log('🔓 Preparando para abrir modal de novo agendamento');
+    this.isLoadingModalData = true;
+
+    // Carrega os pets do cliente
+    this.petsCliente$ = this.petService.getMeusPets().pipe(
+      tap((pets: any[]) => {
+        console.log('🐾 Pets carregados:', pets);
+        console.log('📊 Total de pets:', pets.length);
+      }),
+      catchError(err => {
+        console.error('❌ Erro ao carregar pets:', err);
+        alert('Erro ao carregar seus pets. Verifique se você tem pets cadastrados no seu perfil.');
+        return of([]);
+      })
+    );
+
+    // Carrega os serviços disponíveis
+    this.servicosDisponiveis$ = this.servicoService.getAllServicos().pipe(
+      tap((servicos: any[]) => {
+        console.log('💼 Serviços carregados:', servicos);
+        console.log('📊 Total de serviços:', servicos.length);
+      }),
+      catchError(err => {
+        console.error('❌ Erro ao carregar serviços:', err);
+        alert('Erro ao carregar serviços disponíveis.');
+        return of([]);
+      })
+    );
+
+    // Abre o modal
+    this.isLoadingModalData = false;
     this.isModalOpen = true;
+    console.log('✅ Modal aberto');
   }
 
   /** Fecha modal */

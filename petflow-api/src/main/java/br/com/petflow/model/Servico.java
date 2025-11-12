@@ -30,7 +30,6 @@ public class Servico {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal preco;
 
-    // CORREÇÃO: Adicione @JsonIgnore para evitar loop infinito na serialização
     @ManyToMany(mappedBy = "servicos", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Agendamento> agendamentos = new HashSet<>();
@@ -44,6 +43,6 @@ public class Servico {
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
-    @JsonIgnore // Evita carregar produtos desnecessariamente
+    @JsonIgnore
     private Set<ServicoProduto> produtosUsados = new HashSet<>();
 }

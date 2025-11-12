@@ -56,14 +56,14 @@ public class ClientePerfilService {
     }
 
     /**
-     * ✅ CORRIGIDO: Usa BCrypt para validar senha atual
+     * BCrypt para validar senha atual
      */
     @Transactional
     public void alterarSenha(UserDetails userDetails, AlterarSenhaDTO dto) {
         Cliente cliente = buscarClientePorEmail(userDetails);
         Usuario usuario = cliente.getUsuario();
 
-        // ✅ CORREÇÃO: Valida senha atual usando BCrypt
+        // Valida senha atual usando BCrypt
         if (!passwordEncoder.matches(dto.getSenhaAtual(), usuario.getSenha())) {
             throw new UnauthorizedException("Senha atual incorreta");
         }
@@ -73,7 +73,7 @@ public class ClientePerfilService {
             throw new IllegalArgumentException("As senhas não coincidem");
         }
 
-        // ✅ CORREÇÃO: Atualiza senha criptografada
+        // Atualiza senha criptografada
         usuario.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
 
         usuarioRepository.save(usuario);

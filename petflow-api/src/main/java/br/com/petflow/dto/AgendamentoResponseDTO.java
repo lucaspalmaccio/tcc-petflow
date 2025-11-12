@@ -35,12 +35,6 @@ public record AgendamentoResponseDTO(
      * Construtor para converter a Entidade Agendamento completa.
      * ATUALIZADO: Agora é "à prova de falhas" (Null-safe).
      */
-// Em AgendamentoResponseDTO.java
-
-    /**
-     * Construtor para converter a Entidade Agendamento completa.
-     * ATUALIZADO: Agora é "à prova de falhas" (Null-safe).
-     */
     public AgendamentoResponseDTO(Agendamento agendamento) {
         this(
                 agendamento.getId(),

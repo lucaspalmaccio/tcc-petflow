@@ -3,10 +3,15 @@
     <header class="page-header">
         <h1>Meus Agendamentos</h1>
         <div class="header-actions">
+            <button class="btn-secondary" (click)="irParaPerfil()">
+                👤 Meu Perfil
+            </button>
             <button class="btn-primary" (click)="openAgendamentoModal()" [disabled]="isLoadingModalData">
                 {{ isLoadingModalData ? 'Carregando...' : '+ Novo Agendamento' }}
             </button>
-            <button class="btn-secondary" (click)="logout()">Sair</button>
+            <button class="btn-danger" (click)="logout()">
+                Sair
+            </button>
         </div>
     </header>
 

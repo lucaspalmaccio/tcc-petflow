@@ -85,7 +85,7 @@ public class SecurityConfig {
     }
 
     /**
-     * ✅ CRÍTICO: DaoAuthenticationProvider para validar senha com BCrypt
+     * DaoAuthenticationProvider para validar senha com BCrypt
      * SEM ISSO, o AuthenticationManager NÃO FUNCIONA!
      */
     @Bean
@@ -97,7 +97,7 @@ public class SecurityConfig {
     }
 
     /**
-     * AuthenticationManager para validar credenciais (usado no AuthService).
+     * AuthenticationManager para validar credenciais (usado no AuthService)
      */
     @Bean
     public AuthenticationManager authenticationManager(

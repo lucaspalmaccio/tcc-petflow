@@ -19,17 +19,14 @@ public class PetController {
     @Autowired
     private PetService petService;
 
-    // === INÍCIO DA ATUALIZAÇÃO SPRINT 03 ===
     /**
      * Endpoint para o CLIENTE logado buscar seus próprios pets.
-     * (Fluxo UC05 - "permite a seleção de um de seus Pets cadastrados")
      */
     @GetMapping("/meus-pets")
     public ResponseEntity<List<PetDTO>> listarMeusPets(
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(petService.listarMeusPets(userDetails));
     }
-    // === FIM DA ATUALIZAÇÃO SPRINT 03 ===
 
     /**
      * UC03 - Adicionar Pet (Apenas Admin)

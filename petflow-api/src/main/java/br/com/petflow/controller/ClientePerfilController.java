@@ -3,8 +3,10 @@ package br.com.petflow.controller;
 import br.com.petflow.dto.ClienteDTO;
 import br.com.petflow.dto.PetDTO;
 import br.com.petflow.dto.AlterarSenhaDTO;
+import br.com.petflow.dto.AgendamentoResponseDTO;
 import br.com.petflow.service.ClientePerfilService;
 import br.com.petflow.service.PetService;
+import br.com.petflow.service.AgendamentoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,8 +31,11 @@ public class ClientePerfilController {
     @Autowired
     private PetService petService;
 
+    @Autowired
+    private AgendamentoService agendamentoService;
+
     /**
-     * 1. GET /api/clientes/me - Cliente busca seus próprios dados
+     * Cliente busca seus próprios dados
      */
     @GetMapping
     public ResponseEntity<ClienteDTO> buscarMeuPerfil(
@@ -40,7 +45,7 @@ public class ClientePerfilController {
     }
 
     /**
-     * 2. PUT /api/clientes/me - Cliente atualiza seus próprios dados
+     * Cliente atualiza seus próprios dados
      */
     @PutMapping
     public ResponseEntity<ClienteDTO> atualizarMeuPerfil(
@@ -51,7 +56,7 @@ public class ClientePerfilController {
     }
 
     /**
-     * 3. PUT /api/clientes/me/senha - Cliente altera sua senha
+     * Cliente altera sua senha
      */
     @PutMapping("/senha")
     public ResponseEntity<Void> alterarMinhaSenha(
@@ -62,7 +67,7 @@ public class ClientePerfilController {
     }
 
     /**
-     * 4. POST /api/clientes/me/pets - Cliente cria seus próprios pets
+     * Cliente cria seus próprios pets
      */
     @PostMapping("/pets")
     public ResponseEntity<PetDTO> criarMeuPet(
@@ -73,7 +78,7 @@ public class ClientePerfilController {
     }
 
     /**
-     * 5. PUT /api/clientes/me/pets/{id} - Cliente edita seus pets
+     * Cliente edita seus pets
      */
     @PutMapping("/pets/{id}")
     public ResponseEntity<PetDTO> atualizarMeuPet(
@@ -85,7 +90,7 @@ public class ClientePerfilController {
     }
 
     /**
-     * 6. DELETE /api/clientes/me/pets/{id} - Cliente deleta seus pets
+     * Cliente deleta seus pets
      */
     @DeleteMapping("/pets/{id}")
     public ResponseEntity<Void> deletarMeuPet(
@@ -96,12 +101,44 @@ public class ClientePerfilController {
     }
 
     /**
-     * BÔNUS: GET /api/clientes/me/pets - Listar pets do cliente
-     * (Já existe em PetController como /api/pets/meus-pets, mas pode duplicar aqui para consistência)
+     * Listar pets do cliente
      */
     @GetMapping("/pets")
     public ResponseEntity<List<PetDTO>> listarMeusPets(
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(petService.listarMeusPets(userDetails));
+    }
+
+    /**
+     * ✨ Cliente lista seus próprios agendamentos ✨
+     */
+    @GetMapping("/agendamentos")
+    public ResponseEntity<List<AgendamentoResponseDTO>> listarMeusAgendamentos(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        String emailCliente = userDetails.getUsername();
+
+        System.out.println("========================================");
+        System.out.println("🔍 LISTANDO AGENDAMENTOS DO CLIENTE");
+        System.out.println("📧 Email: " + emailCliente);
+        System.out.println("🔑 Authorities: " + userDetails.getAuthorities());
+        System.out.println("========================================");
+
+        List<AgendamentoResponseDTO> agendamentos = agendamentoService.listarAgendamentosDoCliente(emailCliente);
+
+        System.out.println("📊 Total de agendamentos encontrados: " + agendamentos.size());
+
+        if (agendamentos.isEmpty()) {
+            System.out.println("⚠️ Nenhum agendamento encontrado para este cliente!");
+        } else {
+            System.out.println("✅ Agendamentos carregados com sucesso:");
+            agendamentos.forEach(ag ->
+                    System.out.println("   - ID: " + ag.id() + " | Data: " + ag.dataHora() + " | Status: " + ag.status())
+            );
+        }
+
+        System.out.println("========================================\n");
+
+        return ResponseEntity.ok(agendamentos);
     }
 }

@@ -36,7 +36,7 @@ public class AgendamentoController {
     }
 
     /**
-     * 🟢 Criar um novo agendamento (CLIENTE ou ADMIN)
+     * Criar um novo agendamento (CLIENTE ou ADMIN)
      */
     @PostMapping
     @Operation(summary = "Cria um novo agendamento (Cliente ou Admin)")
@@ -52,8 +52,7 @@ public class AgendamentoController {
     }
 
     /**
-     * 🟡 Listar agendamentos (CLIENTE ou ADMIN)
-     * CORREÇÃO: Aceita String e converte para LocalDateTime
+     * Listar agendamentos (CLIENTE ou ADMIN)
      */
     @GetMapping
     @Operation(summary = "Lista agendamentos (Admin ou Cliente)",
@@ -74,13 +73,10 @@ public class AgendamentoController {
         List<AgendamentoResponseDTO> agendamentos;
 
         if (isAdmin) {
-            // CORREÇÃO: Converte as strings ISO para LocalDateTime
             LocalDateTime inicioDateTime = null;
             LocalDateTime fimDateTime = null;
 
             if (inicio != null && !inicio.isEmpty()) {
-                // Aceita tanto ISO com Z (2025-10-26T03:00:00.000Z)
-                // quanto sem Z (2025-10-26T03:00:00)
                 if (inicio.endsWith("Z")) {
                     inicioDateTime = ZonedDateTime.parse(inicio).toLocalDateTime();
                 } else {
@@ -105,7 +101,7 @@ public class AgendamentoController {
     }
 
     /**
-     * 🔴 Cancelar um agendamento (CLIENTE ou ADMIN)
+     * Cancelar um agendamento (CLIENTE ou ADMIN)
      */
     @PatchMapping("/{id}/cancelar")
     @Operation(summary = "Cancela um agendamento (Cliente ou Admin)")
@@ -123,7 +119,7 @@ public class AgendamentoController {
     }
 
     /**
-     * ⚪ Concluir um agendamento (somente ADMIN)
+     * Concluir um agendamento (somente ADMIN)
      */
     @PatchMapping("/{id}/concluir")
     @PreAuthorize("hasRole('ADMIN')")

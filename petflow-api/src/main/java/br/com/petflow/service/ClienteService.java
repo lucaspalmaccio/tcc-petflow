@@ -41,16 +41,15 @@ public class ClienteService {
             throw new IllegalArgumentException("CPF já cadastrado.");
         }
 
-        // ✅ CORREÇÃO: Cria o Usuario COM SENHA CRIPTOGRAFADA
+        // Cria o Usuario COM SENHA CRIPTOGRAFADA
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(clienteDTO.getNome());
         novoUsuario.setEmail(clienteDTO.getEmail());
 
-        // ✅ CRITICAL: Criptografa a senha antes de salvar
+        // Criptografa a senha antes de salvar
         novoUsuario.setSenha(passwordEncoder.encode(clienteDTO.getSenha()));
 
-        // ⚠️ OPCIONAL: Se ainda quiser manter senha_normal para debug (NÃO RECOMENDADO EM PRODUÇÃO)
-        novoUsuario.setSenhaNormal(clienteDTO.getSenha());
+        //novoUsuario.setSenhaNormal(clienteDTO.getSenha());
 
         novoUsuario.setPerfil(PerfilUsuario.CLIENTE);
 

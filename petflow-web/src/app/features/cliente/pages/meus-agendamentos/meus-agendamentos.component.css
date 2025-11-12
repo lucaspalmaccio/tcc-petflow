@@ -1,190 +1,252 @@
+/* ======= LAYOUT GERAL ======= */
 .container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 2rem auto;
-  padding: 0 1rem;
+  padding: 0 2rem;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* ========================================
-   MENU DE NAVEGAÇÃO DO CLIENTE (NOVO)
-   ======================================== */
-.cliente-nav {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 2px solid var(--color-border, #e0e0e0);
-  margin-bottom: 2rem;
-}
-
-.cliente-nav .nav-link {
-  padding: 0.75rem 1.5rem;
-  text-decoration: none;
-  color: var(--color-dark, #333);
-  font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  background-color: transparent;
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.cliente-nav .nav-link:hover {
-  background-color: var(--color-light, #f5f5f5);
-  color: var(--color-primary, #007bff);
-}
-
-.cliente-nav .nav-link.active {
-  background-color: var(--color-primary, #007bff);
-  color: var(--color-white, white);
-  border-color: var(--color-primary, #007bff);
-}
-
-/* Responsivo para Menu */
-@media (max-width: 576px) {
-  .cliente-nav {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .cliente-nav .nav-link {
-    text-align: center;
-  }
-}
-
-/* ========================================
-   CABEÇALHO (Título + Botão)
-   ======================================== */
+/* ======= CABEÇALHO ======= */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 2px solid #e0e0e0;
 }
 
 .page-header h1 {
   font-size: 2rem;
   font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
 }
 
-/* Botão Novo Agendamento com Spinner */
-.btn-primary {
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* ======= BOTÕES ======= */
+button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.spinner {
-  width: 1em;
-  height: 1em;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: var(--color-white);
-  animation: spin 1s linear infinite;
-  display: inline-block;
+.btn-primary {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0056b3, #003d82);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
-/* ========================================
-   LISTA DE AGENDAMENTOS
-   ======================================== */
-.agendamentos-list {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.btn-primary:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-.agendamento-card {
-  background-color: var(--color-white);
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  border-left: 5px solid var(--color-secondary);
-  display: flex;
-  flex-direction: column;
+.btn-secondary {
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: white;
 }
 
-/* Cores da Borda por Status */
-.agendamento-card.status-agendado {
-  border-left-color: var(--color-primary);
-}
-.agendamento-card.status-concluido {
-  border-left-color: var(--color-success);
-}
-.agendamento-card.status-cancelado {
-  border-left-color: var(--color-secondary);
-  opacity: 0.8;
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #5a6268, #343a40);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background-color: var(--color-light);
-  border-bottom: 1px solid var(--color-border);
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
 }
 
-.status-badge {
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  color: var(--color-white);
-  background-color: var(--color-secondary);
-}
-
-.status-agendado .status-badge { background-color: var(--color-primary); }
-.status-concluido .status-badge { background-color: var(--color-success); }
-.status-cancelado .status-badge { background-color: var(--color-secondary); }
-
-.card-body {
-  padding: 1rem;
-  flex-grow: 1;
-}
-.card-body p {
-  margin-bottom: 0.5rem;
-  color: var(--color-dark);
-}
-.card-body p:last-child {
-  margin-bottom: 0;
-}
-
-.card-footer {
-  padding: 0.75rem 1rem;
-  border-top: 1px solid var(--color-border);
-  text-align: right;
+.btn-danger:hover {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 .btn-cancel {
-  background-color: var(--color-danger);
-  color: var(--color-white);
-  padding: 6px 12px;
+  background: linear-gradient(135deg, #ffc107, #ff9800);
+  color: #000;
+  padding: 0.5rem 1rem;
   font-size: 0.9rem;
 }
+
 .btn-cancel:hover {
-  background-color: #c82333;
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
 }
 
-/* ========================================
-   ESTADOS (Loading, Erro, Vazio)
-   ======================================== */
-.loading-indicator,
-.error-message,
+/* ======= ESTADOS DE LOADING E ERRO ======= */
+.loading-indicator {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #6c757d;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.error-message {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+
 .no-data {
   text-align: center;
-  padding: 2rem;
-  font-size: 1.1rem;
-  color: var(--color-secondary);
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #6c757d;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-top: 2rem;
 }
-.error-message {
-  color: var(--color-danger);
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
+
+/* ======= LISTA DE AGENDAMENTOS ======= */
+.agendamentos-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.agendamento-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.agendamento-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Status específicos */
+.status-agendado .card-header {
+  background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.status-concluido .card-header {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.status-cancelado .card-header {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.card-header {
+  padding: 1rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-badge {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-body p {
+  margin: 0.75rem 0;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.card-body strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.card-footer {
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ======= RESPONSIVIDADE ======= */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+    margin: 1rem auto;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .header-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .agendamentos-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
 }
