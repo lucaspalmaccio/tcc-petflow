@@ -37,30 +37,32 @@ public class AuthService {
     /**
      * TESTE AUTOMÁTICO AO INICIAR A APLICAÇÃO
      */
-    @PostConstruct
-    public void gerarHashDefinitivo() {
-        System.out.println("\n" + "=".repeat(60));
-        System.out.println("🔐 GERANDO HASH BCRYPT DEFINITIVO");
-        System.out.println("=".repeat(60));
-
-        String senhaTexto = "123456";
-
-        // Gera 3 hashes diferentes para testar
-        for (int i = 1; i <= 3; i++) {
-            String hash = passwordEncoder.encode(senhaTexto);
-            boolean valido = passwordEncoder.matches(senhaTexto, hash);
-
-            System.out.println("\nHash #" + i + ":");
-            System.out.println("  " + hash);
-            System.out.println("  Válido? " + valido);
-        }
-
-        //System.out.println("\n📋 ESCOLHA UM DOS HASHES ACIMA E EXECUTE:");
-        //System.out.println("UPDATE usuarios SET senha = 'COLE_O_HASH_AQUI'");
-        //System.out.println("WHERE email = 'admin@petflow.com';");
-        //System.out.println("=".repeat(60) + "\n");
-    }
-
+    //    /**
+//     * TESTE AUTOMÁTICO AO INICIAR A APLICAÇÃO
+//     */
+//    @PostConstruct
+//    public void gerarHashDefinitivo() {
+//        System.out.println("\n" + "=".repeat(60));
+//        System.out.println("🔐 GERANDO HASH BCRYPT DEFINITIVO");
+//        System.out.println("=".repeat(60));
+//
+//        String senhaTexto = "123456";
+//
+//        // Gera 3 hashes diferentes para testar
+//        for (int i = 1; i <= 3; i++) {
+//            String hash = passwordEncoder.encode(senhaTexto);
+//            boolean valido = passwordEncoder.matches(senhaTexto, hash);
+//
+//            System.out.println("\nHash #" + i + ":");
+//            System.out.println("  " + hash);
+//            System.out.println("  Válido? " + valido);
+//        }
+//
+//        //System.out.println("\n📋 ESCOLHA UM DOS HASHES ACIMA E EXECUTE:");
+//        //System.out.println("UPDATE usuarios SET senha = 'COLE_O_HASH_AQUI'");
+//        //System.out.println("WHERE email = 'admin@petflow.com';");
+//        //System.out.println("=".repeat(60) + "\n");
+//    }
 
     /**
      * Login com autenticação via Spring Security

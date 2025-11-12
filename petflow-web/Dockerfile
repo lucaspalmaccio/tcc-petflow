@@ -8,6 +8,13 @@ RUN npm run build --prod
 
 # Etapa 2: Servir via Nginx
 FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 81
+
+# 1. Copia o CONTEÚDO da pasta de build
+COPY --from=build /app/dist/petflow-web/ /usr/share/nginx/html
+
+# 2. Copia configuração do Nginx (CORRIGIDO: conf.d com ponto)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# O Nginx escuta na porta 80
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

@@ -35,7 +35,7 @@ services:
     build: ./petflow-web
     container_name: petflow-web
     ports:
-      - "81:81"
+      - "81:80"
     depends_on:
       - api
 
