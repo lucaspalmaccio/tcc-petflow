@@ -3,6 +3,7 @@ package br.com.petflow.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,6 +14,7 @@ import java.util.HashSet;
 @Entity
 @Table(name = "servicos")
 @Data
+@EqualsAndHashCode(exclude = {"agendamentos", "produtosUsados"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Servico {

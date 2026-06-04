@@ -3,8 +3,8 @@ package br.com.petflow.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "agendamentos")
 @Data
+@EqualsAndHashCode(exclude = {"servicos", "cliente", "pet"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Agendamento {
