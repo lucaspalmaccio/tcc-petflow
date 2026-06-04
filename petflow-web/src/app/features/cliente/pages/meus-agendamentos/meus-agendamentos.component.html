@@ -26,8 +26,8 @@
     </div>
 
     <!-- Lista de Agendamentos -->
-    <div *ngIf="(agendamentos$ | async) as agendamentos; else noAgendamentosTemplate">
-        <div class="agendamentos-list" *ngIf="!isLoadingAgendamentos && agendamentos.length > 0">
+    <ng-container *ngIf="(agendamentos$ | async) as agendamentos">
+        <div class="agendamentos-list" *ngIf="agendamentos.length > 0; else noAgendamentosTemplate">
             <div class="agendamento-card" *ngFor="let ag of agendamentos" [ngClass]="'status-' + ag.status.toLowerCase()">
                 <div class="card-header">
                     <span class="status-badge">{{ ag.status }}</span>
@@ -45,14 +45,14 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Template para Lista Vazia -->
-    <ng-template #noAgendamentosTemplate>
-        <div *ngIf="!isLoadingAgendamentos" class="no-data">
-            Você ainda não possui agendamentos.
-        </div>
-    </ng-template>
+        <!-- Template para Lista Vazia -->
+        <ng-template #noAgendamentosTemplate>
+            <div *ngIf="!isLoadingAgendamentos" class="no-data">
+                Você ainda não possui agendamentos.
+            </div>
+        </ng-template>
+    </ng-container>
 </div>
 
 <!-- Modal de Novo Agendamento -->

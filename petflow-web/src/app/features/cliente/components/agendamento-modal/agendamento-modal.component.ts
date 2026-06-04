@@ -98,8 +98,8 @@ constructor(
 
     const formValue = this.agendamentoForm.value;
 
-    // Ajusta o formato da data/hora para ISO String (YYYY-MM-DDTHH:mm:ss)
-    const dataHoraISO = new Date(formValue.dataHora).toISOString().slice(0, 19);
+    // Mantém o horário local sem converter para UTC (backend usa LocalDateTime sem fuso)
+    const dataHoraISO = formValue.dataHora + ':00';
 
     const dto: AgendamentoRequestDTO = {
       clienteId: null, // O back-end pega do token do cliente

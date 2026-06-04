@@ -21,18 +21,17 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     @Query("SELECT DISTINCT a FROM Agendamento a " +
             "LEFT JOIN FETCH a.cliente " +
             "LEFT JOIN FETCH a.pet " +
+            "LEFT JOIN FETCH a.servicos " +
             "WHERE a.dataHora BETWEEN :inicio AND :fim " +
             "ORDER BY a.dataHora")
     List<Agendamento> findAllByDataHoraBetween(
             @Param("inicio") LocalDateTime inicio,
             @Param("fim") LocalDateTime fim);
 
-    /**
-     * CORREÇÃO: Query simplificada para buscar agendamentos do cliente
-     */
     @Query("SELECT DISTINCT a FROM Agendamento a " +
             "LEFT JOIN FETCH a.cliente c " +
             "LEFT JOIN FETCH a.pet " +
+            "LEFT JOIN FETCH a.servicos " +
             "WHERE c.usuario.email = :email " +
             "ORDER BY a.dataHora DESC")
     List<Agendamento> findAllByClienteUsuarioEmailOrderByDataHoraDesc(@Param("email") String email);

@@ -246,7 +246,7 @@ constructor(
       clienteId: +this.agendamentoForm.clienteId, // Converte string 'id' para number
       petId: +this.agendamentoForm.petId,         // Converte string 'id' para number
       servicoIds: this.agendamentoForm.servicoIds.map(id => +id), // Converte array de strings
-      dataHora: new Date(this.agendamentoForm.dataHora).toISOString() // Formata a data
+      dataHora: this.agendamentoForm.dataHora + ':00' // Mantém horário local (sem converter para UTC)
     };
 
     // Chama o serviço. O back-end agora entende essa requisição.
