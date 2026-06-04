@@ -36,3 +36,11 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Angular ###
+petflow-web/node_modules/
+petflow-web/dist/
+petflow-web/.angular/
+
+### Claude Code ###
+.claude/
