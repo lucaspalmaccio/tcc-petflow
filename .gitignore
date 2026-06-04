@@ -44,3 +44,7 @@ petflow-web/.angular/
 
 ### Claude Code ###
 .claude/
+
+### Ignorados localmente ###
+MATERIAL_ESTUDO_BANCA.md
+petflow-api/src/test/
