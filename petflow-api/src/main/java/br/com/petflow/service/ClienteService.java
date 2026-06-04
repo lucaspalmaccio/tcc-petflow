@@ -64,10 +64,6 @@ public class ClienteService {
 
         Cliente clienteSalvo = clienteRepository.save(novoCliente);
 
-        System.out.println("✅ Cliente cadastrado com sucesso!");
-        System.out.println("   Email: " + usuarioSalvo.getEmail());
-        System.out.println("   Senha hash: " + usuarioSalvo.getSenha().substring(0, 20) + "...");
-
         return new ClienteDTO(clienteSalvo);
     }
 

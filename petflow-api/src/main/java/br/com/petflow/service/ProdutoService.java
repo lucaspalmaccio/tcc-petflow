@@ -27,6 +27,11 @@ public class ProdutoService {
             throw new IllegalArgumentException("Já existe um produto com este nome.");
         }
 
+        // RN06 - Preço de venda deve ser >= preço de custo
+        if (produtoDTO.precoVenda().compareTo(produtoDTO.precoCusto()) < 0) {
+            throw new IllegalArgumentException("O preço de venda não pode ser menor que o preço de custo.");
+        }
+
         Produto novoProduto = new Produto();
         novoProduto.setNome(produtoDTO.nome());
         novoProduto.setDescricao(produtoDTO.descricao());
@@ -71,6 +76,11 @@ public class ProdutoService {
             throw new IllegalArgumentException("Já existe um produto com este nome.");
         }
 
+        // RN06 - Preço de venda deve ser >= preço de custo
+        if (produtoDTO.precoVenda().compareTo(produtoDTO.precoCusto()) < 0) {
+            throw new IllegalArgumentException("O preço de venda não pode ser menor que o preço de custo.");
+        }
+
         produtoExistente.setNome(produtoDTO.nome());
         produtoExistente.setDescricao(produtoDTO.descricao());
         produtoExistente.setPrecoCusto(produtoDTO.precoCusto());
@@ -88,8 +98,9 @@ public class ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + id));
 
-        // Fluxo de Exceção: Exclusão de Item com Histórico
-        // (Adicionar lógica de verificação de vendas/agendamentos aqui)
+        if (!produto.getServicosQueUsam().isEmpty()) {
+            throw new IllegalStateException("Não é possível excluir produto vinculado a serviços cadastrados.");
+        }
 
         produtoRepository.delete(produto);
     }
@@ -121,6 +132,14 @@ public class ProdutoService {
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + id + " para baixa de estoque."));
 
         int novoEstoque = produto.getQtdEstoque() - quantidade;
+
+        // RN03 - Impede conclusão se não há estoque suficiente
+        if (novoEstoque < 0) {
+            throw new IllegalStateException(
+                "Estoque insuficiente para o produto '" + produto.getNome() +
+                "'. Disponível: " + produto.getQtdEstoque() + ", necessário: " + quantidade + "."
+            );
+        }
 
         produto.setQtdEstoque(novoEstoque);
         produtoRepository.save(produto);

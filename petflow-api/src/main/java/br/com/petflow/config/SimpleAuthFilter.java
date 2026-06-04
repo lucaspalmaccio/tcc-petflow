@@ -38,11 +38,6 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        // DEBUG
-        System.out.println("=== SimpleAuthFilter DEBUG ===");
-        System.out.println("URI: " + request.getRequestURI());
-        System.out.println("Authorization Header: " + authHeader);
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -52,7 +47,6 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
         String email;
         try {
             email = jwtUtil.extractUsername(token);
-            System.out.println("Email extraído do token: " + email);
         } catch (ExpiredJwtException eje) {
             sendUnauthorized(response, "Token expirado");
             return;
@@ -87,10 +81,8 @@ public class SimpleAuthFilter extends OncePerRequestFilter {
                     );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("Autenticação configurada com sucesso para: " + usuario.getEmail());
         }
 
-        System.out.println("=== FIM DEBUG ===\n");
         filterChain.doFilter(request, response);
     }
 

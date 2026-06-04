@@ -44,7 +44,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .anyRequest().permitAll()
+                        // Cadastro público de clientes (tela de registro)
+                        .requestMatchers(HttpMethod.POST, "/api/clientes").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(simpleAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

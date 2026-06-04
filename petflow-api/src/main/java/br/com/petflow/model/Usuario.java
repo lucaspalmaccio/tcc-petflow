@@ -34,9 +34,6 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
-    @Column(name = "senha_normal")
-    private String senhaNormal;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PerfilUsuario perfil;

@@ -19,8 +19,8 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // TEMPORÁRIO: Chave hardcoded para teste
-    private String SECRET_KEY = "minhachavesupersecretajwtparaopetflowsistema2024muitoseguraabcdef123456";
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
 
     @Value("${jwt.expiration:86400000}")
     private Long EXPIRATION_TIME;
@@ -29,15 +29,7 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        System.out.println("\n================ JWT CONFIG (HARDCODED) ================");
-        System.out.println("⚠️  USANDO CHAVE HARDCODED PARA TESTE!");
-        System.out.println("🔑 Chave: " + SECRET_KEY.substring(0, 10) + "... (" + SECRET_KEY.length() + " chars)");
-
         this.signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-
-        System.out.println("✅ Chave JWT inicializada!");
-        System.out.println("⏳ Expiração: " + EXPIRATION_TIME + " ms");
-        System.out.println("======================================================\n");
     }
 
     private SecretKey getSigningKey() {

@@ -19,12 +19,12 @@ if (!authService.isAuthenticated()) {
   // 2. O usuário é um CLIENTE?
   // (Permitimos ADMIN também, caso ele precise acessar a visão do cliente)
   const role = authService.getUserRole();
-  if (role === 'ROLE_CLIENTE' || role === 'ROLE_ADMIN') {
+  if (role === 'CLIENTE' || role === 'ADMIN') {
     return true; // Permite acesso
   }
 
   // Se não for nenhum dos dois, nega o acesso.
-  console.error('Acesso negado. Requer ROLE_CLIENTE ou ROLE_ADMIN.');
+  console.error('Acesso negado. Requer CLIENTE ou ADMIN.');
   authService.logout(); // Desloga o usuário
   return false;
 };
