@@ -82,6 +82,11 @@ constructor(
   /**
    * Carrega os agendamentos do back-end (seu método atualizado)
    */
+  private toLocalISO(d: Date): string {
+    const adjusted = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+    return adjusted.toISOString().slice(0, 19);
+  }
+
   loadAgendamentos(): void {
     this.isLoading = true;
     this.errorMessage = null;
@@ -89,11 +94,9 @@ constructor(
     const inicio = startOfWeek(startOfMonth(this.viewDate));
     const fim = endOfWeek(endOfMonth(this.viewDate));
 
-    // Este método agora funciona para o Admin (retorna todos)
-    // graças à correção que fizemos no AgendamentoController.java
     this.agendamentoService.getAgendamentos(
-      inicio.toISOString(),
-      fim.toISOString()
+      this.toLocalISO(inicio),
+      this.toLocalISO(fim)
     ).subscribe({
       next: (data) => {
         this.events = data.map((ag: AgendamentoResponse) => {

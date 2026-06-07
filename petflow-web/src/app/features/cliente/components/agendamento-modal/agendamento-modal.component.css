@@ -47,8 +47,9 @@
 
 .modal-body {
   padding: 1.5rem;
-  overflow-y: auto; /* Permite scroll se o conteúdo for grande */
+  overflow-y: auto;
   flex-grow: 1;
+  min-height: 0; /* Necessário para flex + overflow funcionar corretamente */
 }
 
 .modal-footer {
