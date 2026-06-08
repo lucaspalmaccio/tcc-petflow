@@ -62,26 +62,25 @@
                 <p class="horario-info">Horário de funcionamento: Seg-Sex 9h às 18h, Sáb 9h às 14h.</p>
             </fieldset>
 
-            <!-- Resumo e Confirmação (UC05 [333]) -->
+        </div>
+
+        <!-- Rodapé fixo: valor estimado + botões -->
+        <div class="modal-footer-area">
             <div class="agendamento-resumo" *ngIf="valorTotal > 0">
                 <strong>Valor Total Estimado:</strong> {{ valorTotal | currency:'BRL' }}
             </div>
-
-            <!-- Mensagem de Erro Geral -->
             <div *ngIf="errorMessage" class="error-message">
                 {{ errorMessage }}
             </div>
+            <footer class="modal-footer">
+                <button type="button" class="btn-secondary" (click)="onClose()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-primary" [disabled]="isLoading || agendamentoForm.invalid || valorTotal === 0">
+                    {{ isLoading ? 'Solicitando...' : 'Confirmar Agendamento' }}
+                </button>
+            </footer>
         </div>
-
-        <!-- Rodapé com Botões -->
-        <footer class="modal-footer">
-            <button type="button" class="btn-secondary" (click)="onClose()">
-                Cancelar
-            </button>
-            <button type="submit" class="btn-primary" [disabled]="isLoading || agendamentoForm.invalid || valorTotal === 0">
-                {{ isLoading ? 'Solicitando...' : 'Confirmar Agendamento' }}
-            </button>
-        </footer>
     </form>
 </div>
 

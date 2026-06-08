@@ -53,13 +53,19 @@
   min-height: 0;
 }
 
+.modal-footer-area {
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-border);
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--color-border);
-  flex-shrink: 0; /* Impede o footer de encolher */
 }
 
 .btn-secondary {
@@ -125,9 +131,6 @@ input[type="datetime-local"] {
 
 /* Resumo do Valor */
 .agendamento-resumo {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px dashed var(--color-border);
   font-size: 1.1rem;
   text-align: right;
 }
