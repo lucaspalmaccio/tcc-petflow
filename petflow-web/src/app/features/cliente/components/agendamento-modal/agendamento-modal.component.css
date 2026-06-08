@@ -11,18 +11,19 @@
 
 .modal-container {
   position: fixed;
-  top: 50%;
+  top: 5vh;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%; /* Ajuste para ser mais responsivo */
-  max-width: 600px; /* Um pouco maior para caber mais info */
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 600px;
   background-color: var(--color-white);
   border-radius: 8px;
   box-shadow: var(--shadow-md);
   z-index: 1001;
   display: flex;
   flex-direction: column;
-  max-height: 90vh; /* Limita a altura em telas pequenas */
+  height: 90vh;
+  overflow: hidden;
 }
 
 .modal-header {
@@ -48,8 +49,8 @@
 .modal-body {
   padding: 1.5rem;
   overflow-y: auto;
-  flex-grow: 1;
-  min-height: 0; /* Necessário para flex + overflow funcionar corretamente */
+  flex: 1 1 0;
+  min-height: 0;
 }
 
 .modal-footer {
