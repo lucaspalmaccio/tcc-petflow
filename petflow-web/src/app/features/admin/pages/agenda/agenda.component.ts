@@ -137,7 +137,28 @@ constructor(
    */
   concluirAgendamento(event: CalendarEvent): void {
     const id = event.id as number;
-    if (!confirm(`Deseja realmente concluir este agendamento?\n\n"${event.title}"\n\nEsta ação dará baixa no estoque.`)) {
+    const agendamento = event.meta?.agendamento as AgendamentoResponse | undefined;
+    const clienteNome = agendamento?.cliente?.nome ?? 'Cliente não informado';
+    const petNome = agendamento?.pet?.nome ?? 'Pet não informado';
+    const servicos = agendamento?.servicos?.map(s => s.nome).join(', ') ?? 'Serviço não informado';
+    const dataHora = agendamento
+      ? new Date(agendamento.dataHora).toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      : 'Data/hora não informada';
+
+    if (!confirm(
+      `Deseja realmente concluir este agendamento?\n\n` +
+      `Cliente: ${clienteNome}\n` +
+      `Pet: ${petNome}\n` +
+      `Serviço: ${servicos}\n` +
+      `Data/Hora: ${dataHora}\n\n` +
+      `Esta ação dará baixa no agendamento.`
+    )) {
       return;
     }
     this.errorMessage = null;
