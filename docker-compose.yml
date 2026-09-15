@@ -30,7 +30,9 @@ services:
 
   # 🌐 Front-end (Angular/React)
   web:
-    image: palmacciolucas/petflow-web:latest
+    build:
+      context: ./petflow-web
+      dockerfile: Dockerfile
     container_name: petflow-web
     ports:
       - "81:80"
