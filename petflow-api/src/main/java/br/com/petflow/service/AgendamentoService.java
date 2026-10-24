@@ -5,6 +5,7 @@ import br.com.petflow.dto.AgendamentoResponseDTO;
 import br.com.petflow.model.*;
 import br.com.petflow.repository.*;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // <-- Import necessário
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import br.com.petflow.evento.AgendamentoConcluidoEvent;
 import br.com.petflow.service.cliente.ResolvedorClienteFactory;
 import br.com.petflow.service.preco.EstrategiaPreco;
 
@@ -30,6 +32,7 @@ public class AgendamentoService {
     private final ProdutoService produtoService;
     private final EstrategiaPreco estrategiaPreco;
     private final ResolvedorClienteFactory resolvedorClienteFactory;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AgendamentoService(
             AgendamentoRepository agendamentoRepository,
@@ -38,7 +41,8 @@ public class AgendamentoService {
             ServicoRepository servicoRepository,
             ProdutoService productService,
             EstrategiaPreco estrategiaPreco,
-            ResolvedorClienteFactory resolvedorClienteFactory
+            ResolvedorClienteFactory resolvedorClienteFactory,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.agendamentoRepository = agendamentoRepository;
         this.usuarioRepository = usuarioRepository;
@@ -47,6 +51,7 @@ public class AgendamentoService {
         this.produtoService = productService;
         this.estrategiaPreco = estrategiaPreco;
         this.resolvedorClienteFactory = resolvedorClienteFactory;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -195,6 +200,17 @@ public class AgendamentoService {
 
         Agendamento salvo = agendamentoRepository.save(agendamento);
 
+        // GoF Observer: avisa os ouvintes (executam após o commit da transação)
+        eventPublisher.publishEvent(criarEventoConclusao(salvo));
+
         return new AgendamentoResponseDTO(salvo);
+    }
+
+    private AgendamentoConcluidoEvent criarEventoConclusao(Agendamento agendamento) {
+        Usuario usuario = agendamento.getCliente() != null ? agendamento.getCliente().getUsuario() : null;
+        String emailCliente = usuario != null ? usuario.getEmail() : null;
+        String nomePet = agendamento.getPet() != null ? agendamento.getPet().getNome() : null;
+        return new AgendamentoConcluidoEvent(
+                agendamento.getId(), emailCliente, nomePet, agendamento.getDataHora());
     }
 }
