@@ -1,7 +1,6 @@
 package br.com.petflow.config;
 
 import br.com.petflow.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,11 +24,14 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private SimpleAuthFilter simpleAuthFilter;
+    private final SimpleAuthFilter simpleAuthFilter;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public SecurityConfig(SimpleAuthFilter simpleAuthFilter, UsuarioRepository usuarioRepository) {
+        this.simpleAuthFilter = simpleAuthFilter;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     /**
      * Configuração de segurança principal.

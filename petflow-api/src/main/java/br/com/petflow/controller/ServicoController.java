@@ -3,7 +3,6 @@ package br.com.petflow.controller;
 import br.com.petflow.dto.ServicoDTO;
 import br.com.petflow.service.ServicoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,12 @@ import java.util.List;
 @RequestMapping("/api/servicos") // Rota será protegida (ROLE_ADMIN)
 public class ServicoController {
 
-    @Autowired
-    private ServicoService servicoService;
+    private final ServicoService servicoService;
+
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ServicoController(ServicoService servicoService) {
+        this.servicoService = servicoService;
+    }
 
     /**
      * UC04 - Adicionar Serviço

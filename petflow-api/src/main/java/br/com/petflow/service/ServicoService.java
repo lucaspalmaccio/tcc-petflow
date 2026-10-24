@@ -5,7 +5,6 @@ import br.com.petflow.model.Servico;
 import br.com.petflow.repository.ServicoRepository;
 import br.com.petflow.repository.AgendamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +14,14 @@ import java.util.stream.Collectors;
 @Service
 public class ServicoService {
 
-    @Autowired
-    private ServicoRepository servicoRepository;
+    private final ServicoRepository servicoRepository;
+    private final AgendamentoRepository agendamentoRepository;
 
-    @Autowired
-    private AgendamentoRepository agendamentoRepository;
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ServicoService(ServicoRepository servicoRepository, AgendamentoRepository agendamentoRepository) {
+        this.servicoRepository = servicoRepository;
+        this.agendamentoRepository = agendamentoRepository;
+    }
 
     /**
      * UC04 - Adicionar Serviço

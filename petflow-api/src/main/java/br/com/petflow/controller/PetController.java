@@ -3,7 +3,6 @@ package br.com.petflow.controller;
 import br.com.petflow.dto.PetDTO;
 import br.com.petflow.service.PetService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,8 +15,12 @@ import java.util.List;
 @RequestMapping("/api/pets")
 public class PetController {
 
-    @Autowired
-    private PetService petService;
+    private final PetService petService;
+
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public PetController(PetService petService) {
+        this.petService = petService;
+    }
 
     /**
      * Endpoint para o CLIENTE logado buscar seus próprios pets.

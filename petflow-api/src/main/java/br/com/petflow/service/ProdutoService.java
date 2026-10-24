@@ -5,7 +5,6 @@ import br.com.petflow.dto.ProdutoDTO;
 import br.com.petflow.model.Produto;
 import br.com.petflow.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class ProdutoService {
 
-    @Autowired
-    private ProdutoRepository produtoRepository;
+    private final ProdutoRepository produtoRepository;
+
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ProdutoService(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
     /**
      * UC04 - Adicionar Produto

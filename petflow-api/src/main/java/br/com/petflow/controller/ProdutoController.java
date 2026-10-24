@@ -6,7 +6,6 @@ import br.com.petflow.dto.EstoqueRequestDTO;
 import br.com.petflow.dto.ProdutoDTO;
 import br.com.petflow.service.ProdutoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,12 @@ import java.util.List;
 @RequestMapping("/api/produtos") // Rota será protegida (ROLE_ADMIN)
 public class ProdutoController {
 
-    @Autowired
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
+
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ProdutoController(ProdutoService produtoService) {
+        this.produtoService = produtoService;
+    }
 
     /**
      * UC04 - Adicionar Produto

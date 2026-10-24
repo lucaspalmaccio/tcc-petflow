@@ -11,7 +11,6 @@ import br.com.petflow.repository.ClienteRepository;
 import br.com.petflow.repository.PetRepository;
 import br.com.petflow.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,17 +22,18 @@ import java.util.stream.Collectors;
 @Service
 public class PetService {
 
-    @Autowired
-    private PetRepository petRepository;
+    private final PetRepository petRepository;
+    private final ClienteRepository clienteRepository;
+    private final AgendamentoRepository agendamentoRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
-    private AgendamentoRepository agendamentoRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public PetService(PetRepository petRepository, ClienteRepository clienteRepository, AgendamentoRepository agendamentoRepository, UsuarioRepository usuarioRepository) {
+        this.petRepository = petRepository;
+        this.clienteRepository = clienteRepository;
+        this.agendamentoRepository = agendamentoRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
 
     // ============================================
     // MÉTODOS PARA ADMIN (Endpoints /api/pets)

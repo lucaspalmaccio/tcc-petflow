@@ -8,7 +8,6 @@ import br.com.petflow.repository.ClienteRepository;
 import br.com.petflow.repository.UsuarioRepository;
 import br.com.petflow.repository.AgendamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class ClienteService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AgendamentoRepository agendamentoRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AgendamentoRepository agendamentoRepository;
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ClienteService(ClienteRepository clienteRepository, UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, AgendamentoRepository agendamentoRepository) {
+        this.clienteRepository = clienteRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.agendamentoRepository = agendamentoRepository;
+    }
 
     @Transactional
     public ClienteDTO criarCliente(ClienteDTO clienteDTO) {

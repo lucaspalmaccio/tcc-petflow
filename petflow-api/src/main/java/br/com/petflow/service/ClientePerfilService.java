@@ -8,7 +8,6 @@ import br.com.petflow.model.Cliente;
 import br.com.petflow.model.Usuario;
 import br.com.petflow.repository.ClienteRepository;
 import br.com.petflow.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ClientePerfilService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ClientePerfilService(ClienteRepository clienteRepository, UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.clienteRepository = clienteRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     private Cliente buscarClientePorEmail(UserDetails userDetails) {
         String email = userDetails.getUsername();

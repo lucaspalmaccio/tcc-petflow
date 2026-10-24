@@ -8,7 +8,6 @@ import br.com.petflow.service.ClientePerfilService;
 import br.com.petflow.service.PetService;
 import br.com.petflow.service.AgendamentoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,14 +24,16 @@ import java.util.List;
 @RequestMapping("/api/clientes/me")
 public class ClientePerfilController {
 
-    @Autowired
-    private ClientePerfilService clientePerfilService;
+    private final ClientePerfilService clientePerfilService;
+    private final PetService petService;
+    private final AgendamentoService agendamentoService;
 
-    @Autowired
-    private PetService petService;
-
-    @Autowired
-    private AgendamentoService agendamentoService;
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ClientePerfilController(ClientePerfilService clientePerfilService, PetService petService, AgendamentoService agendamentoService) {
+        this.clientePerfilService = clientePerfilService;
+        this.petService = petService;
+        this.agendamentoService = agendamentoService;
+    }
 
     /**
      * Cliente busca seus próprios dados

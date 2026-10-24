@@ -3,7 +3,6 @@ package br.com.petflow.controller;
 import br.com.petflow.dto.ClienteDTO;
 import br.com.petflow.service.ClienteService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,12 @@ import java.util.List;
 @RequestMapping("/api/clientes") // Protegido por ROLE_ADMIN (ver SecurityConfig)
 public class ClienteController {
 
-    @Autowired
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
+
+    // GRASP Baixo Acoplamento: dependências explícitas via construtor
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
 
     /**
      * UC02 - Adicionar Cliente
