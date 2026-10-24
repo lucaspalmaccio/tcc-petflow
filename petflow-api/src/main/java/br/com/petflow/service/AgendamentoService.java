@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import br.com.petflow.service.ProdutoService;
+import br.com.petflow.service.preco.EstrategiaPreco;
 
 @Service
 public class AgendamentoService {
@@ -28,6 +28,7 @@ public class AgendamentoService {
     private final PetRepository petRepository;
     private final ServicoRepository servicoRepository;
     private final ProdutoService produtoService;
+    private final EstrategiaPreco estrategiaPreco;
 
     public AgendamentoService(
             AgendamentoRepository agendamentoRepository,
@@ -35,7 +36,8 @@ public class AgendamentoService {
             UsuarioRepository usuarioRepository,
             PetRepository petRepository,
             ServicoRepository servicoRepository,
-            ProdutoService productService
+            ProdutoService productService,
+            EstrategiaPreco estrategiaPreco
     ) {
         this.agendamentoRepository = agendamentoRepository;
         this.clienteRepository = clienteRepository;
@@ -43,6 +45,7 @@ public class AgendamentoService {
         this.petRepository = petRepository;
         this.servicoRepository = servicoRepository;
         this.produtoService = productService;
+        this.estrategiaPreco = estrategiaPreco;
     }
 
     /**
@@ -88,9 +91,7 @@ public class AgendamentoService {
         }
 
         // 5. Calcula o valor total
-        BigDecimal valorTotal = servicos.stream()
-                .map(Servico::getPreco)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal valorTotal = estrategiaPreco.calcular(servicos); // GoF Strategy
 
         // 6. Cria e salva o agendamento
         Agendamento agendamento = new Agendamento();
