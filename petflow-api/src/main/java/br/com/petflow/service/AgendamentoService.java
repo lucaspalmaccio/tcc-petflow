@@ -17,35 +17,36 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import br.com.petflow.service.cliente.ResolvedorClienteFactory;
 import br.com.petflow.service.preco.EstrategiaPreco;
 
 @Service
 public class AgendamentoService {
 
     private final AgendamentoRepository agendamentoRepository;
-    private final ClienteRepository clienteRepository;
     private final UsuarioRepository usuarioRepository;
     private final PetRepository petRepository;
     private final ServicoRepository servicoRepository;
     private final ProdutoService produtoService;
     private final EstrategiaPreco estrategiaPreco;
+    private final ResolvedorClienteFactory resolvedorClienteFactory;
 
     public AgendamentoService(
             AgendamentoRepository agendamentoRepository,
-            ClienteRepository clienteRepository,
             UsuarioRepository usuarioRepository,
             PetRepository petRepository,
             ServicoRepository servicoRepository,
             ProdutoService productService,
-            EstrategiaPreco estrategiaPreco
+            EstrategiaPreco estrategiaPreco,
+            ResolvedorClienteFactory resolvedorClienteFactory
     ) {
         this.agendamentoRepository = agendamentoRepository;
-        this.clienteRepository = clienteRepository;
         this.usuarioRepository = usuarioRepository;
         this.petRepository = petRepository;
         this.servicoRepository = servicoRepository;
         this.produtoService = productService;
         this.estrategiaPreco = estrategiaPreco;
+        this.resolvedorClienteFactory = resolvedorClienteFactory;
     }
 
     /**
@@ -58,19 +59,9 @@ public class AgendamentoService {
         Usuario usuarioLogado = usuarioRepository.findByEmail(emailUsuarioLogado)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário logado não encontrado com email: " + emailUsuarioLogado));
 
-        Cliente cliente;
-
-        // 2. Determina o cliente
-        if (usuarioLogado.getPerfil() == PerfilUsuario.ADMIN) {
-            if (dto.clienteId() == null) {
-                throw new IllegalArgumentException("O clienteId é obrigatório para o Admin criar agendamentos.");
-            }
-            cliente = clienteRepository.findById(dto.clienteId())
-                    .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + dto.clienteId()));
-        } else {
-            cliente = clienteRepository.findByUsuario(usuarioLogado)
-                    .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado para o usuário: " + emailUsuarioLogado));
-        }
+        // 2. Determina o cliente (GoF Factory Method: o resolvedor depende do perfil)
+        Cliente cliente = resolvedorClienteFactory.para(usuarioLogado.getPerfil())
+                .resolver(usuarioLogado, dto);
 
         // 3. Busca o Pet e valida
         Pet pet = petRepository.findById(dto.petId())
