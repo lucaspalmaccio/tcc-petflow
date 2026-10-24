@@ -44,6 +44,17 @@ public class Cliente {
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos = new ArrayList<>();
 
+    // GRASP Criador: Cliente agrega Pet, então ele é quem cria e vincula o Pet a si mesmo
+    public Pet adicionarPet(String nome, String especie, String raca) {
+        Pet pet = new Pet();
+        pet.setNome(nome);
+        pet.setEspecie(especie);
+        pet.setRaca(raca);
+        pet.setCliente(this);
+        this.pets.add(pet);
+        return pet;
+    }
+
     // Corrige hashCode e equals para evitar ciclo infinito
     @Override
     public boolean equals(Object o) {

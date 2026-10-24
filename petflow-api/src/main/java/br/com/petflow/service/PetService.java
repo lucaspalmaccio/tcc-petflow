@@ -47,11 +47,8 @@ public class PetService {
         Cliente cliente = clienteRepository.findById(petDTO.clienteId())
                 .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + petDTO.clienteId()));
 
-        Pet novoPet = new Pet();
-        novoPet.setNome(petDTO.nome());
-        novoPet.setEspecie(petDTO.especie());
-        novoPet.setRaca(petDTO.raca());
-        novoPet.setCliente(cliente);
+        // GRASP Criador: o Cliente cria o seu Pet
+        Pet novoPet = cliente.adicionarPet(petDTO.nome(), petDTO.especie(), petDTO.raca());
 
         Pet petSalvo = petRepository.save(novoPet);
         return new PetDTO(petSalvo);
@@ -144,11 +141,8 @@ public class PetService {
         Cliente cliente = clienteRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
-        Pet pet = new Pet();
-        pet.setNome(petDTO.nome());
-        pet.setEspecie(petDTO.especie());
-        pet.setRaca(petDTO.raca());
-        pet.setCliente(cliente);
+        // GRASP Criador: o Cliente cria o seu Pet
+        Pet pet = cliente.adicionarPet(petDTO.nome(), petDTO.especie(), petDTO.raca());
 
         Pet novoPet = petRepository.save(pet);
         return new PetDTO(novoPet);

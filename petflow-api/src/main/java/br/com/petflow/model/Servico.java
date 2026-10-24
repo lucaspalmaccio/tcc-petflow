@@ -47,4 +47,15 @@ public class Servico {
     )
     @JsonIgnore
     private Set<ServicoProduto> produtosUsados = new HashSet<>();
+
+    // GRASP Criador: Servico agrega ServicoProduto, então ele cria o vínculo (e a chave composta)
+    public ServicoProduto adicionarProduto(Produto produto, int quantidade) {
+        ServicoProduto vinculo = new ServicoProduto();
+        vinculo.setId(new ServicoProdutoId(this.id, produto.getId()));
+        vinculo.setServico(this);
+        vinculo.setProduto(produto);
+        vinculo.setQuantidade(quantidade);
+        this.produtosUsados.add(vinculo);
+        return vinculo;
+    }
 }
