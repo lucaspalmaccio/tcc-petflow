@@ -51,4 +51,27 @@ public class Agendamento {
             inverseJoinColumns = @JoinColumn(name = "servico_id")
     )
     private Set<Servico> servicos = new HashSet<>();
+
+    // GRASP Especialista na Informação: o agendamento conhece seu cliente e seu status,
+    // então ele mesmo responde a quem pertence e se pode mudar de estado.
+
+    public boolean pertenceAoEmail(String email) {
+        return cliente != null
+                && cliente.getUsuario() != null
+                && cliente.getUsuario().getEmail().equalsIgnoreCase(email);
+    }
+
+    public void cancelar() {
+        if (status == StatusAgendamento.CONCLUIDO) {
+            throw new IllegalStateException("Não é possível cancelar um agendamento já concluído.");
+        }
+        this.status = StatusAgendamento.CANCELADO;
+    }
+
+    public void concluir() {
+        if (status != StatusAgendamento.AGENDADO) {
+            throw new IllegalStateException("Apenas agendamentos com status 'AGENDADO' podem ser concluídos.");
+        }
+        this.status = StatusAgendamento.CONCLUIDO;
+    }
 }

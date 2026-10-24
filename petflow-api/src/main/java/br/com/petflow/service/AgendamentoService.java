@@ -167,21 +167,13 @@ public class AgendamentoService {
 
         // Regra de permissão
         if (usuarioLogado.getPerfil() == PerfilUsuario.CLIENTE) {
-            boolean pertenceAoCliente = agendamento.getCliente() != null &&
-                    agendamento.getCliente().getUsuario() != null &&
-                    agendamento.getCliente().getUsuario().getEmail().equalsIgnoreCase(emailUsuarioLogado);
-
-            if (!pertenceAoCliente) {
+            if (!agendamento.pertenceAoEmail(emailUsuarioLogado)) {
                 throw new IllegalStateException("Você não tem permissão para cancelar este agendamento.");
             }
         }
 
-        // Regra de Negócio
-        if (agendamento.getStatus() == StatusAgendamento.CONCLUIDO) {
-            throw new IllegalStateException("Não é possível cancelar um agendamento já concluído.");
-        }
-
-        agendamento.setStatus(StatusAgendamento.CANCELADO);
+        // Regra de Negócio (GRASP Especialista na Informação: validada na entidade)
+        agendamento.cancelar();
         Agendamento salvo = agendamentoRepository.save(agendamento);
 
         return new AgendamentoResponseDTO(salvo);
@@ -195,9 +187,8 @@ public class AgendamentoService {
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado com ID: " + id));
 
-        if (agendamento.getStatus() != StatusAgendamento.AGENDADO) {
-            throw new IllegalStateException("Apenas agendamentos com status 'AGENDADO' podem ser concluídos.");
-        }
+        // GRASP Especialista na Informação: a entidade valida a transição e muda o status
+        agendamento.concluir();
 
         // Lógica de baixa de estoque (Sprint 4)
         Set<Servico> servicosDoAgendamento = agendamento.getServicos();
@@ -210,7 +201,6 @@ public class AgendamentoService {
             }
         }
 
-        agendamento.setStatus(StatusAgendamento.CONCLUIDO);
         Agendamento salvo = agendamentoRepository.save(agendamento);
 
         return new AgendamentoResponseDTO(salvo);
