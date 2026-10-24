@@ -12,11 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// === CORREÇÃO: Importações para lidar com datas ISO ===
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime; // <-- NOVO
-import br.com.petflow.model.PerfilUsuario;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -62,40 +57,12 @@ public class AgendamentoController {
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<List<AgendamentoResponseDTO>> listarAgendamentos(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam(required = false) String inicio, // <-- MUDOU para String
-            @RequestParam(required = false) String fim) {   // <-- MUDOU para String
+            @RequestParam(required = false) String inicio,
+            @RequestParam(required = false) String fim) {  
 
-        String emailUsuario = userDetails.getUsername();
-
-        boolean isAdmin = userDetails.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-
-        List<AgendamentoResponseDTO> agendamentos;
-
-        if (isAdmin) {
-            LocalDateTime inicioDateTime = null;
-            LocalDateTime fimDateTime = null;
-
-            if (inicio != null && !inicio.isEmpty()) {
-                if (inicio.endsWith("Z")) {
-                    inicioDateTime = ZonedDateTime.parse(inicio).toLocalDateTime();
-                } else {
-                    inicioDateTime = LocalDateTime.parse(inicio);
-                }
-            }
-
-            if (fim != null && !fim.isEmpty()) {
-                if (fim.endsWith("Z")) {
-                    fimDateTime = ZonedDateTime.parse(fim).toLocalDateTime();
-                } else {
-                    fimDateTime = LocalDateTime.parse(fim);
-                }
-            }
-
-            agendamentos = agendamentoService.listarAgendamentos(inicioDateTime, fimDateTime);
-        } else {
-            agendamentos = agendamentoService.listarAgendamentosDoCliente(emailUsuario);
-        }
+        // GRASP Controlador: apenas delega; conversão de datas e decisão por perfil ficam no service
+        List<AgendamentoResponseDTO> agendamentos =
+                agendamentoService.listarAgendamentos(userDetails, inicio, fim);
 
         return ResponseEntity.ok(agendamentos);
     }

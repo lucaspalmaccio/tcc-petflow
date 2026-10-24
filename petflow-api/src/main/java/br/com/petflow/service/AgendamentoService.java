@@ -5,11 +5,13 @@ import br.com.petflow.dto.AgendamentoResponseDTO;
 import br.com.petflow.model.*;
 import br.com.petflow.repository.*;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // <-- Import necessário
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +103,31 @@ public class AgendamentoService {
 
         Agendamento salvo = agendamentoRepository.save(agendamento);
         return new AgendamentoResponseDTO(salvo);
+    }
+
+    /**
+     * Lista agendamentos conforme o perfil do usuário logado.
+     * GRASP Controlador: a decisão por perfil e a conversão das datas saem do controller.
+     */
+    @Transactional(readOnly = true)
+    public List<AgendamentoResponseDTO> listarAgendamentos(UserDetails userDetails, String inicio, String fim) {
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            return listarAgendamentos(converterData(inicio), converterData(fim));
+        }
+        return listarAgendamentosDoCliente(userDetails.getUsername());
+    }
+
+    private LocalDateTime converterData(String valor) {
+        if (valor == null || valor.isEmpty()) {
+            return null;
+        }
+        if (valor.endsWith("Z")) {
+            return ZonedDateTime.parse(valor).toLocalDateTime();
+        }
+        return LocalDateTime.parse(valor);
     }
 
     /**
