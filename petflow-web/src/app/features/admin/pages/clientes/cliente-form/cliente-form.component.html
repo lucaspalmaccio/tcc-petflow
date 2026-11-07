@@ -7,27 +7,27 @@
     <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()" class="form-section">
         <div class="form-row">
             <div class="form-group">
-                <label>Nome</label>
-                <input type="text" formControlName="nome" maxlength="100" autocomplete="name">
+                <label for="cliente-nome">Nome</label>
+                <input id="cliente-nome" type="text" formControlName="nome" maxlength="100" autocomplete="name">
             </div>
 
             <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" formControlName="email" maxlength="100" autocomplete="email">
+                <label for="cliente-email">E-mail</label>
+                <input id="cliente-email" type="email" formControlName="email" maxlength="100" autocomplete="email">
             </div>
         </div>
 
         <div class="form-row" *ngIf="!isEditMode">
             <div class="form-group">
-                <label>Senha</label>
-                <input type="password" formControlName="senha" maxlength="20" placeholder="Digite a senha">
+                <label for="cliente-senha">Senha</label>
+                <input id="cliente-senha" type="password" formControlName="senha" maxlength="20" placeholder="Digite a senha">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
-                <label>CPF</label>
-                <input type="text"
+                <label for="cliente-cpf">CPF</label>
+                <input id="cliente-cpf" type="text"
                        formControlName="cpf"
                        maxlength="14"
                        placeholder="000.000.000-00"
@@ -35,8 +35,8 @@
             </div>
 
             <div class="form-group">
-                <label>Telefone</label>
-                <input type="text"
+                <label for="cliente-telefone">Telefone</label>
+                <input id="cliente-telefone" type="text"
                        formControlName="telefone"
                        maxlength="15"
                        placeholder="(00) 00000-0000"
@@ -45,8 +45,8 @@
         </div>
 
         <div class="form-group">
-            <label>Endereço</label>
-            <input type="text" formControlName="endereco" maxlength="200" autocomplete="street-address">
+            <label for="cliente-endereco">Endereço</label>
+            <input id="cliente-endereco" type="text" formControlName="endereco" maxlength="200" autocomplete="street-address">
         </div>
 
         <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>

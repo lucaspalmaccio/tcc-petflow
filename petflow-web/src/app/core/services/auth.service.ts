@@ -100,7 +100,10 @@ constructor(private router: Router, private http: HttpClient) {
     }
 
     logout(): void {
-        localStorage.clear();
+        for (const key of ['petflow_auth_token', 'petflow_user_email', 'petflow_user_role',
+                           'petflow_user_name', 'petflow_token_expires']) {
+            localStorage.removeItem(key);
+        }
         this.currentUserRoleSubject.next(null);
         this.currentUserNameSubject.next(null);
         this.router.navigate(['/auth/login']);
