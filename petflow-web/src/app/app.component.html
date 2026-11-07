@@ -1,1 +1,18 @@
+<details class="reading-settings">
+  <summary>Opções de leitura</summary>
+  <div class="reading-settings-panel">
+    <label for="reading-size">Tamanho do texto</label>
+    <select id="reading-size" #size (change)="setFontSize(size.value)">
+      <option *ngFor="let value of fontSizes" [value]="value" [selected]="fontSize === value">
+        {{ value }}%
+      </option>
+    </select>
+    <label class="reading-choice" *ngFor="let option of options">
+      <input type="checkbox" #choice [checked]="activeOptions.has(option.key)"
+             (change)="setOption(option.key, choice.checked)">
+      {{ option.label }}
+    </label>
+    <button type="button" (click)="resetPreferences()">Restaurar padrão</button>
+  </div>
+</details>
 <router-outlet></router-outlet>
