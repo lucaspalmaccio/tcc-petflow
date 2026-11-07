@@ -9,7 +9,7 @@
                     id="email"
                     type="email"
                     formControlName="email"
-                    placeholder="Digite seu e-mail"
+                    placeholder="nome@exemplo.com"
                     [class.error]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
             >
             <div
@@ -28,7 +28,7 @@
                         id="senha"
                         [type]="showPassword ? 'text' : 'password'"
                         formControlName="senha"
-                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
                         [class.error]="loginForm.get('senha')?.touched && loginForm.get('senha')?.invalid"
                 >
                 <button type="button" class="toggle-password" (click)="togglePassword()">
@@ -44,7 +44,7 @@
         </div>
 
         <!-- Mensagem de erro geral -->
-        <div *ngIf="errorMessage" class="error-message alert alert-error">
+        <div *ngIf="errorMessage" role="alert" class="error-message alert alert-error">
             {{ errorMessage }}
         </div>
 

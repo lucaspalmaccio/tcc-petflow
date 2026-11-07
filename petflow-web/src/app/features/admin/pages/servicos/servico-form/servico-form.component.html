@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label for="preco" class="form-label">Preço (R$)</label>
                 <input id="preco" type="number" class="form-control" formControlName="preco"
-                       min="0.01" step="0.01" placeholder="ex: 50.00">
+                       min="0.01" step="0.01" placeholder="Ex.: 50.00">
                 <div *ngIf="servicoForm.get('preco')?.touched && servicoForm.get('preco')?.hasError('required')" class="text-danger">
                     Preço é obrigatório.
                 </div>

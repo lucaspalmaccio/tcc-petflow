@@ -1,6 +1,6 @@
 <div class="list-container">
     <header class="page-header">
-        <h1>Gerenciar Produtos</h1>
+        <h1>Produtos</h1>
         <button class="btn-primary btn-add" (click)="navigateToAdd()">
             + Novo Produto
         </button>
@@ -29,6 +29,9 @@
                 <td>{{ produto.nome }}</td>
                 <td [class.low-stock]="produto.qtdEstoque <= 0">
                     {{ produto.qtdEstoque }}
+                    <span *ngIf="produto.qtdEstoque <= 0" class="stock-warning">
+                        <span aria-hidden="true">&#9888;</span> Sem estoque
+                    </span>
                 </td>
                 <td>{{ produto.precoCusto | currency:'BRL' }}</td>
                 <td>{{ produto.precoVenda | currency:'BRL' }}</td>

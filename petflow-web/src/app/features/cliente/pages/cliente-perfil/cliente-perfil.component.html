@@ -1,18 +1,18 @@
 <div class="container my-4">
     <!-- Header com botão voltar -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Meu Perfil</h2>
+        <h2>Meu perfil</h2>
         <button class="btn btn-outline-primary" routerLink="/cliente/meus-agendamentos">
             <i class="bi bi-arrow-left"></i> Voltar para Agendamentos
         </button>
     </div>
 
     <!-- Mensagens -->
-    <div *ngIf="mensagem" class="alert alert-success alert-dismissible fade show">
+    <div *ngIf="mensagem" role="status" class="alert alert-success alert-dismissible fade show">
         {{ mensagem }}
         <button type="button" class="btn-close" (click)="mensagem = ''"></button>
     </div>
-    <div *ngIf="erro" class="alert alert-danger alert-dismissible fade show">
+    <div *ngIf="erro" role="alert" class="alert alert-danger alert-dismissible fade show">
         {{ erro }}
         <button type="button" class="btn-close" (click)="erro = ''"></button>
     </div>
@@ -137,7 +137,7 @@
                             </div>
                         </div>
                         <div *ngIf="pets.length === 0" class="col-12 text-center py-4">
-                            <p class="text-muted">Nenhum pet cadastrado ainda.</p>
+                            <p class="text-muted">Você ainda não cadastrou pets.</p>
                         </div>
                     </div>
 
@@ -152,12 +152,12 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Espécie</label>
                                 <input type="text" class="form-control" formControlName="especie"
-                                       placeholder="Ex: Cachorro, Gato">
+                                       placeholder="Ex.: Cachorro, Gato">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Raça</label>
                                 <input type="text" class="form-control" formControlName="raca"
-                                       placeholder="Ex: Golden Retriever, Persa">
+                                       placeholder="Ex.: Golden Retriever, Persa">
                             </div>
 
                             <div class="d-flex gap-2">

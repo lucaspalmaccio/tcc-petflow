@@ -1,8 +1,8 @@
 <div class="dashboard-container">
-    <h1>Dashboard Financeiro</h1>
-    <p>Visão geral da performance do seu petshop.</p>
+    <h1>Resumo financeiro</h1>
+    <p>Veja as receitas, os custos e o lucro do petshop.</p>
 
-    <div *ngIf="errorMessage$ | async as error" class="error-message">
+    <div *ngIf="errorMessage$ | async as error" class="error-message" role="alert">
         {{ error }}
     </div>
 
@@ -14,7 +14,7 @@
         <div class="kpi-grid">
 
             <div class="kpi-card faturamento">
-                <h3>Faturamento Total</h3>
+                <h3><span aria-hidden="true">&#8593;</span> Faturamento total</h3>
                 <div class="value">
                     {{ data.faturamentoTotal | currency:'BRL':'symbol':'1.2-2' }}
                 </div>
@@ -22,7 +22,7 @@
             </div>
 
             <div class="kpi-card custo">
-                <h3>Custo Total</h3>
+                <h3><span aria-hidden="true">&#8595;</span> Custo total</h3>
                 <div class="value">
                     {{ data.custoTotal | currency:'BRL':'symbol':'1.2-2' }}
                 </div>
@@ -30,7 +30,7 @@
             </div>
 
             <div class="kpi-card lucro">
-                <h3>Lucro Total</h3>
+                <h3><span aria-hidden="true">=</span> Lucro total</h3>
                 <div class="value">
                     {{ data.lucroTotal | currency:'BRL':'symbol':'1.2-2' }}
                 </div>
@@ -42,7 +42,7 @@
 
     <ng-template #noData>
         <div *ngIf="!isLoading && !(errorMessage$ | async)">
-            <p>Nenhum dado financeiro encontrado.</p>
+            <p>Ainda não há dados financeiros.</p>
         </div>
     </ng-template>
 

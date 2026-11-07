@@ -1,6 +1,6 @@
 <div class="form-container card">
     <div class="form-header">
-        <h1>{{ isEditMode ? 'Editar Cliente' : 'Cadastrar Novo Cliente' }}</h1>
+        <h1>{{ isEditMode ? 'Editar Cliente' : 'Cadastrar cliente' }}</h1>
         <button type="button" class="btn-back" (click)="goBack()">Voltar</button>
     </div>
 
@@ -8,12 +8,12 @@
         <div class="form-row">
             <div class="form-group">
                 <label>Nome</label>
-                <input type="text" formControlName="nome" maxlength="100" placeholder="Digite o nome">
+                <input type="text" formControlName="nome" maxlength="100" autocomplete="name">
             </div>
 
             <div class="form-group">
                 <label>E-mail</label>
-                <input type="email" formControlName="email" maxlength="100" placeholder="Digite o e-mail">
+                <input type="email" formControlName="email" maxlength="100" autocomplete="email">
             </div>
         </div>
 
@@ -46,7 +46,7 @@
 
         <div class="form-group">
             <label>Endereço</label>
-            <input type="text" formControlName="endereco" maxlength="200" placeholder="Digite o endereço">
+            <input type="text" formControlName="endereco" maxlength="200" autocomplete="street-address">
         </div>
 
         <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -61,7 +61,7 @@
 
     <div class="pet-section" *ngIf="cliente">
         <div class="page-header">
-            <h2>Pets do Cliente</h2>
+            <h2>Pets do cliente</h2>
         </div>
         <ul *ngIf="cliente.pets.length > 0; else noPets" class="pet-list">
             <li *ngFor="let pet of cliente.pets" class="pet-item">
