@@ -43,12 +43,12 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0056b3, #003d82);
+  background: linear-gradient(135deg, var(--color-primary-dark), #003d82);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
@@ -60,7 +60,7 @@ button {
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, #6c757d, #5a6268);
+  background: linear-gradient(135deg, var(--color-secondary), #5a6268);
   color: white;
 }
 
@@ -71,7 +71,7 @@ button {
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #dc3545, #c82333);
+  background: linear-gradient(135deg, var(--color-danger), #c82333);
   color: white;
 }
 
@@ -99,7 +99,7 @@ button {
   text-align: center;
   padding: 3rem;
   font-size: 1.2rem;
-  color: #6c757d;
+  color: var(--color-secondary);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -109,7 +109,7 @@ button {
 }
 
 .error-message {
-  background: linear-gradient(135deg, #dc3545, #c82333);
+  background: linear-gradient(135deg, var(--color-danger), #c82333);
   color: white;
   padding: 1rem;
   border-radius: 8px;
@@ -123,7 +123,7 @@ button {
   text-align: center;
   padding: 3rem;
   font-size: 1.2rem;
-  color: #6c757d;
+  color: var(--color-secondary);
   background: #f8f9fa;
   border-radius: 12px;
   margin-top: 2rem;
@@ -152,7 +152,7 @@ button {
 
 /* Status específicos */
 .status-agendado .card-header {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: linear-gradient(135deg, var(--color-success), #20c997);
 }
 
 .status-concluido .card-header {
@@ -160,7 +160,7 @@ button {
 }
 
 .status-cancelado .card-header {
-  background: linear-gradient(135deg, #dc3545, #c82333);
+  background: linear-gradient(135deg, var(--color-danger), #c82333);
 }
 
 .card-header {

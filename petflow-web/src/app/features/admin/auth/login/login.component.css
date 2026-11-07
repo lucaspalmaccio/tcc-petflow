@@ -52,7 +52,7 @@ button[type="submit"] {
 }
 
 button[disabled] {
-  background-color: #999;
+  background-color: var(--color-secondary);
   cursor: not-allowed;
 }
 

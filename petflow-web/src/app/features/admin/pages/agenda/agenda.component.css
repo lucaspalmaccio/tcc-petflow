@@ -59,7 +59,7 @@ mwl-calendar-week-view, mwl-calendar-day-view { display: block; height: 600px; }
 .modal-header h2 { margin: 0; font-size: 1.5rem; }
 .modal-close {
   background: transparent; border: none; font-size: 2rem;
-  font-weight: 300; line-height: 1; cursor: pointer; padding: 0; color: #777;
+  font-weight: 300; line-height: 1; cursor: pointer; padding: 0; color: var(--color-secondary);
 }
 .modal-body { padding: 24px; max-height: 60vh; overflow-y: auto; }
 .modal-footer {
@@ -96,7 +96,7 @@ mwl-calendar-week-view, mwl-calendar-day-view { display: block; height: 600px; }
 }
 .btn-primary:disabled { background-color: #a0a0a0; }
 .btn-secondary {
-  background-color: #6c757d; color: white; border: none;
+  background-color: var(--color-secondary); color: white; border: none;
   padding: 10px 16px; border-radius: 4px; cursor: pointer;
 }
 .btn-secondary:disabled { background-color: #a0a0a0; }

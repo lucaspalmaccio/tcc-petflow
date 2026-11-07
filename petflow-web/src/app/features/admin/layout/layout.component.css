@@ -50,13 +50,13 @@
 .sidebar-title {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #a8d5ff;
   margin: 0.5rem 0 0.25rem 0;
 }
 
 .sidebar-subtitle {
   font-size: 0.9rem;
-  color: var(--color-secondary);
+  color: #d2dce5;
   display: block;
 }
 
@@ -139,5 +139,50 @@
 
   .sidebar-title {
     font-size: 1.5rem;
+  }
+}
+.sidebar {
+  overflow-y: auto;
+}
+
+.main-content {
+  min-width: 0;
+}
+
+.main-header {
+  height: auto;
+  min-height: var(--header-height);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 64rem) {
+  .admin-layout {
+    display: block;
+  }
+
+  .sidebar {
+    position: static;
+    width: auto;
+    height: auto;
+  }
+
+  .sidebar-header {
+    padding: 0.5rem;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+    height: auto;
+  }
+
+  .page-content {
+    padding: 1rem;
   }
 }

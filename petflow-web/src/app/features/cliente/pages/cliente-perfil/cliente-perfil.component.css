@@ -27,11 +27,11 @@
 }
 
 .bg-primary {
-  background: linear-gradient(135deg, #007bff, #00a3ff) !important;
+  background: linear-gradient(135deg, var(--color-primary), #00a3ff) !important;
 }
 
 .bg-success {
-  background: linear-gradient(135deg, #00b37a, #00e093) !important;
+  background: linear-gradient(135deg, var(--color-success), #00e093) !important;
 }
 
 .bg-warning {
@@ -52,7 +52,7 @@
 }
 
 .form-control:focus {
-  border-color: #00b37a;
+  border-color: var(--color-success);
   box-shadow: 0 0 0 0.2rem rgba(0, 179, 122, 0.25);
 }
 
@@ -69,12 +69,12 @@ button {
 }
 
 .btn-outline-primary:hover {
-  background-color: #007bff;
+  background-color: var(--color-primary);
   color: #fff;
 }
 
 .btn-outline-danger:hover {
-  background-color: #dc3545;
+  background-color: var(--color-danger);
   color: #fff;
 }
 
@@ -87,7 +87,7 @@ button {
 
 /* ======= LISTA DE PETS - CORRIGIDO ======= */
 .card.border-success {
-  border: 2px solid #00b37a !important;
+  border: 2px solid var(--color-success) !important;
   border-radius: 12px;
   min-height: 180px; /* Garante altura mínima */
 }

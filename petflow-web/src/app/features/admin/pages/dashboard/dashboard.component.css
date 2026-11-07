@@ -52,15 +52,15 @@ p {
 
 /* Cores específicas dos Cards */
 .kpi-card.faturamento {
-  background: linear-gradient(135deg, #007bff, #0056b3); /* Azul */
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); /* Azul */
 }
 
 .kpi-card.custo {
-  background: linear-gradient(135deg, #dc3545, #a71d2a); /* Vermelho */
+  background: linear-gradient(135deg, var(--color-danger), #a71d2a); /* Vermelho */
 }
 
 .kpi-card.lucro {
-  background: linear-gradient(135deg, #28a745, #1e7e34); /* Verde */
+  background: linear-gradient(135deg, var(--color-success), #1e7e34); /* Verde */
 }
 
 /* Mensagens de Feedback */

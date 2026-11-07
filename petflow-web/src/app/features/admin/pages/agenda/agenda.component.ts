@@ -21,10 +21,16 @@ isSameMonth, addHours, startOfMonth, endOfWeek, startOfWeek,
 } from 'date-fns';
 
 // Cores (seu código original)
+const statusLabels: Record<string, string> = {
+  AGENDADO: 'Agendado',
+  CONCLUIDO: 'Concluído',
+  CANCELADO: 'Cancelado'
+};
+
 const colors: any = {
-AGENDADO: { primary: '#007bff', secondary: '#D1E7FD' },
+AGENDADO: { primary: '#005bb5', secondary: '#D1E7FD' },
 CONCLUIDO: { primary: '#198754', secondary: '#D1FAD0' },
-CANCELADO: { primary: '#6c757d', secondary: '#E2E3E5' },
+CANCELADO: { primary: '#525e69', secondary: '#E2E3E5' },
 };
 
 @Component({
@@ -114,7 +120,7 @@ constructor(
           return {
             id: ag.id,
             start: new Date(ag.dataHora),
-            title: `(${ag.status.substring(0, 3)}) ${ag.pet.nome} - ${ag.servicos.map(s => s.nome).join(', ')}`,
+            title: `${statusLabels[ag.status] ?? ag.status}: ${ag.pet.nome} - ${ag.servicos.map(s => s.nome).join(', ')}`,
             color: colors[ag.status] || colors.CANCELADO,
             allDay: false,
             actions: actions,
@@ -165,7 +171,7 @@ constructor(
     this.agendamentoService.concluirAgendamento(id).subscribe({
       next: (agendamentoAtualizado) => {
         event.meta.agendamento = agendamentoAtualizado;
-        event.title = `(CON) ${agendamentoAtualizado.pet.nome} - ${agendamentoAtualizado.servicos.map(s => s.nome).join(', ')}`;
+        event.title = `${statusLabels['CONCLUIDO']}: ${agendamentoAtualizado.pet.nome} - ${agendamentoAtualizado.servicos.map(s => s.nome).join(', ')}`;
         event.color = colors.CONCLUIDO;
         event.actions = [];
         this.refresh.next();

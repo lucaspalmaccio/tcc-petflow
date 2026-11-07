@@ -26,7 +26,7 @@
 .loading-indicator, .no-data {
   text-align: center;
   font-size: 1.2rem;
-  color: #777;
+  color: var(--color-secondary);
   padding: 40px;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .btn-delete {
-  background-color: #dc3545;
+  background-color: var(--color-danger);
   color: white;
   border: none;
   padding: 8px 12px;
@@ -107,7 +107,7 @@
 
 /* Destaque para estoque baixo/negativo */
 .low-stock {
-  color: #dc3545;
+  color: var(--color-danger);
   font-weight: bold;
 }
 
@@ -157,7 +157,7 @@
   line-height: 1;
   cursor: pointer;
   padding: 0;
-  color: #777;
+  color: var(--color-secondary);
 }
 
 .modal-body {
@@ -209,7 +209,7 @@
 }
 
 .btn-secondary {
-  background-color: #6c757d;
+  background-color: var(--color-secondary);
   color: white;
   border: none;
   padding: 10px 16px;

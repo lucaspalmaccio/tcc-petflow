@@ -153,7 +153,7 @@ button {
 }
 
 .btn-edit {
-  background-color: #3b82f6;
+  background-color: var(--color-primary);
   color: #fff;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
@@ -164,7 +164,7 @@ button {
 }
 
 .btn-delete {
-  background-color: #ef4444;
+  background-color: var(--color-danger);
   color: #fff;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
@@ -175,7 +175,7 @@ button {
 }
 
 .btn-add {
-  background-color: #10b981;
+  background-color: var(--color-success);
   color: #fff;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
@@ -183,11 +183,11 @@ button {
 }
 
 .btn-add:hover {
-  background-color: #059669;
+  background-color: var(--color-success);
 }
 
 .no-data {
   text-align: center;
-  color: #6b7280;
+  color: var(--color-secondary);
   padding: 1rem 0;
 }
