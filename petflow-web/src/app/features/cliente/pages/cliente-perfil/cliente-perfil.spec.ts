@@ -1,18 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClientePerfil } from './cliente-perfil';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ClientePerfilComponent } from './cliente-perfil.component';
 
 describe('ClientePerfil', () => {
-  let component: ClientePerfil;
-  let fixture: ComponentFixture<ClientePerfil>;
+  let component: ClientePerfilComponent;
+  let fixture: ComponentFixture<ClientePerfilComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClientePerfil]
+      declarations: [ClientePerfilComponent],
+      imports: [HttpClientTestingModule, ReactiveFormsModule, RouterTestingModule]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ClientePerfil);
+    fixture = TestBed.createComponent(ClientePerfilComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
