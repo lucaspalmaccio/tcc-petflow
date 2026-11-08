@@ -134,10 +134,14 @@ input, select, textarea {
 }
 
 .reading-contrast :is(main, header, aside, section, article, form, nav, table, th, td, input, select, textarea,
-                      h1, h2, h3, h4, p, label, a, button, .status-badge, .kpi-card, .cal-event-title) {
+                      h1, h2, h3, h4, p, label, a, button, .sidebar-subtitle, .status-badge, .kpi-card, .cal-event-title) {
   background-color: #fff !important;
   color: #111 !important;
   border-color: #333 !important;
+}
+
+.reading-contrast .kpi-card {
+  background-image: none !important;
 }
 
 .reading-contrast :is(a, .cal-event-title) {
@@ -152,8 +156,28 @@ input, select, textarea {
   background-color: #ffea88 !important;
 }
 
-.reading-colorVision :is(.status-badge, .stock-warning, .kpi-card, .cal-event-title) {
+.reading-colorVision:not(.reading-contrast) {
+  --color-primary: #174f91;
+  --color-primary-dark: #123565;
+  --color-success: #315366;
+  --color-danger: #922f05;
+  --color-link: #174f91;
+}
+
+.reading-colorVision :is(.status-badge, .stock-warning, .cal-event-title) {
   background-image: repeating-linear-gradient(135deg, transparent 0 8px, rgb(0 0 0 / 8%) 8px 10px);
+}
+
+.table-scroll, .calendar-container {
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 40rem) {
+  .page-header, .calendar-header, .calendar-header .btn-group {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

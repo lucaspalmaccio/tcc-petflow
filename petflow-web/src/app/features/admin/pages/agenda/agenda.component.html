@@ -64,7 +64,7 @@
         Carregando agendamentos...
     </div>
 
-    <div [ngSwitch]="view" class="calendar-container card">
+    <div [ngSwitch]="view" class="calendar-container card" role="region" aria-label="Calendário" tabindex="0">
         <mwl-calendar-month-view
                 *ngSwitchCase="CalendarView.Month"
                 [viewDate]="viewDate"

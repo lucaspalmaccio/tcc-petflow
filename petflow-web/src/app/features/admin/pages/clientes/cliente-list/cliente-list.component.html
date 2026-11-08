@@ -15,37 +15,39 @@
     </div>
 
     <div *ngIf="(clientes$ | async) as clientes">
-        <table class="data-table" *ngIf="!isLoading && clientes.length > 0">
-            <thead>
-            <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>CPF</th>
-                <th>Telefone</th>
-                <th>Pets</th>
-                <th>Ações</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let cliente of clientes">
-                <td>{{ cliente.nome }}</td>
-                <td>{{ cliente.email }}</td>
+        <div *ngIf="!isLoading && clientes.length > 0" class="table-scroll" role="region" aria-label="Tabela de clientes" tabindex="0">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>CPF</th>
+                    <th>Telefone</th>
+                    <th>Pets</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let cliente of clientes">
+                    <td>{{ cliente.nome }}</td>
+                    <td>{{ cliente.email }}</td>
 
-                <td>{{ formatarCPF(cliente.cpf) }}</td>
-                <td>{{ formatarTelefone(cliente.telefone) }}</td>
+                    <td>{{ formatarCPF(cliente.cpf) }}</td>
+                    <td>{{ formatarTelefone(cliente.telefone) }}</td>
 
-                <td>{{ cliente.pets.length || 0 }}</td>
-                <td class="action-buttons">
-                    <button class="btn-edit" (click)="navigateToEdit(cliente.id)">
-                        Editar
-                    </button>
-                    <button class="btn-delete" (click)="onDelete(cliente.id, cliente.nome)">
-                        Excluir
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    <td>{{ cliente.pets.length || 0 }}</td>
+                    <td class="action-buttons">
+                        <button class="btn-edit" (click)="navigateToEdit(cliente.id)">
+                            Editar
+                        </button>
+                        <button class="btn-delete" (click)="onDelete(cliente.id, cliente.nome)">
+                            Excluir
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
         <div *ngIf="!isLoading && clientes.length === 0" class="no-data">
             Nenhum cliente cadastrado ainda.

@@ -18,12 +18,13 @@ p {
 /* Grid para os Cards de KPI */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 20px;
 }
 
 /* Estilo base do Card */
 .kpi-card {
+  overflow-wrap: anywhere;
   border-radius: 8px;
   padding: 24px;
   color: #fff;

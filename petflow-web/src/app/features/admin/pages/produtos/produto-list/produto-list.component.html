@@ -15,40 +15,42 @@
     </div>
 
     <div *ngIf="(produtos$ | async) as produtos">
-        <table class="data-table" *ngIf="!isLoading && produtos.length > 0">
-            <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Estoque Atual</th> <th>Preço de Custo</th>
-                <th>Preço de Venda</th>
-                <th>Ações</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let produto of produtos">
-                <td>{{ produto.nome }}</td>
-                <td [class.low-stock]="produto.qtdEstoque <= 0">
-                    {{ produto.qtdEstoque }}
-                    <span *ngIf="produto.qtdEstoque <= 0" class="stock-warning">
-                        <span aria-hidden="true">&#9888;</span> Sem estoque
-                    </span>
-                </td>
-                <td>{{ produto.precoCusto | currency:'BRL' }}</td>
-                <td>{{ produto.precoVenda | currency:'BRL' }}</td>
-                <td class="action-buttons">
-                    <button class="btn-stock-add" (click)="openStockModal(produto)">
-                        Adic. Estoque
-                    </button>
-                    <button class="btn-edit" (click)="navigateToEdit(produto.id)">
-                        Editar
-                    </button>
-                    <button class="btn-delete" (click)="onDelete(produto.id, produto.nome)">
-                        Excluir
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div *ngIf="!isLoading && produtos.length > 0" class="table-scroll" role="region" aria-label="Tabela de produtos" tabindex="0">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Estoque Atual</th> <th>Preço de Custo</th>
+                    <th>Preço de Venda</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let produto of produtos">
+                    <td>{{ produto.nome }}</td>
+                    <td [class.low-stock]="produto.qtdEstoque <= 0">
+                        {{ produto.qtdEstoque }}
+                        <span *ngIf="produto.qtdEstoque <= 0" class="stock-warning">
+                            <span aria-hidden="true">&#9888;</span> Sem estoque
+                        </span>
+                    </td>
+                    <td>{{ produto.precoCusto | currency:'BRL' }}</td>
+                    <td>{{ produto.precoVenda | currency:'BRL' }}</td>
+                    <td class="action-buttons">
+                        <button class="btn-stock-add" (click)="openStockModal(produto)">
+                            Adic. Estoque
+                        </button>
+                        <button class="btn-edit" (click)="navigateToEdit(produto.id)">
+                            Editar
+                        </button>
+                        <button class="btn-delete" (click)="onDelete(produto.id, produto.nome)">
+                            Excluir
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
         <div *ngIf="!isLoading && produtos.length === 0" class="no-data">
             Nenhum produto cadastrado ainda.
