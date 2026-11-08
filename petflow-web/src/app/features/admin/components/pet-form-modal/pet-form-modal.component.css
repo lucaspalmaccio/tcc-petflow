@@ -99,10 +99,10 @@
   transition: background-color 0.2s;
 }
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
+  background-color: #0056b3;
 }
 .btn-primary:disabled {
-  background-color: var(--color-secondary);
+  background-color: #999;
   cursor: not-allowed;
 }
 

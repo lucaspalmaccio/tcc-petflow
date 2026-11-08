@@ -24,7 +24,7 @@
 }
 
 .btn-secondary.logout-btn {
-  background-color: var(--color-danger);
+  background-color: #f44336;
   color: white;
   border: none;
   padding: 8px 12px;

@@ -81,7 +81,7 @@ legend {
 }
 
 .form-control:focus {
-  border-color: var(--color-primary);
+  border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
   outline: none;
 }
@@ -146,7 +146,7 @@ textarea.form-control {
 .btn-back {
   background: none;
   border: none;
-  color: var(--color-primary);
+  color: #007bff;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -154,7 +154,7 @@ textarea.form-control {
   transition: color 0.2s;
 }
 .btn-back:hover {
-  color: var(--color-primary-dark);
+  color: #0056b3;
 }
 
 /* Botões de Ação no Rodapé */
@@ -169,20 +169,20 @@ button {
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background-color: #007bff;
   color: white;
 }
 .btn-primary:hover {
-  background-color: var(--color-primary-dark);
+  background-color: #0056b3;
 }
 .btn-primary:disabled {
-  background-color: var(--color-primary);
+  background-color: #007bff;
   opacity: 0.65;
   cursor: not-allowed;
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
+  background-color: #6c757d;
   color: white;
 }
 .btn-secondary:hover {

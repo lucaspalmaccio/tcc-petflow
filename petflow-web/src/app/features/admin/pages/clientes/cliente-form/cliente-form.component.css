@@ -64,7 +64,7 @@
 .form-group input {
   padding: 0.6rem 1rem;
   border-radius: 8px;
-  border: 1px solid var(--color-control-border);
+  border: 1px solid #ccc;
   font-size: 1rem;
   transition: all 0.2s;
 }
@@ -112,7 +112,7 @@ button {
 .btn-secondary {
   background-color: #f3f4f6;
   color: #333;
-  border: 1px solid var(--color-control-border);
+  border: 1px solid #ccc;
 }
 
 .btn-secondary:hover {
@@ -159,7 +159,7 @@ button {
 }
 
 .btn-edit {
-  background-color: var(--color-primary);
+  background-color: #3b82f6;
   color: #fff;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
@@ -170,7 +170,7 @@ button {
 }
 
 .btn-delete {
-  background-color: var(--color-danger);
+  background-color: #ef4444;
   color: #fff;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
@@ -181,7 +181,7 @@ button {
 }
 
 .btn-add {
-  background-color: var(--color-success);
+  background-color: #10b981;
   color: #fff;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
@@ -189,11 +189,11 @@ button {
 }
 
 .btn-add:hover {
-  background-color: var(--color-success);
+  background-color: #059669;
 }
 
 .no-data {
   text-align: center;
-  color: var(--color-secondary);
+  color: #6b7280;
   padding: 1rem 0;
 }

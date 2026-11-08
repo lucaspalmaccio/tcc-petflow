@@ -2,7 +2,7 @@
   position: fixed;
   inset-inline-end: 1rem;
   inset-block-end: 1rem;
-  z-index: 1000;
+  z-index: 900;
   max-inline-size: calc(100% - 2rem);
   border: 1px solid var(--color-control-border);
   border-radius: 0.5rem;

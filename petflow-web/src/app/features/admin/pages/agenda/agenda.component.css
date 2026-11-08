@@ -59,7 +59,7 @@ mwl-calendar-week-view, mwl-calendar-day-view { display: block; height: 600px; }
 .modal-header h2 { margin: 0; font-size: 1.5rem; }
 .modal-close {
   background: transparent; border: none; font-size: 2rem;
-  font-weight: 300; line-height: 1; cursor: pointer; padding: 0; color: var(--color-secondary);
+  font-weight: 300; line-height: 1; cursor: pointer; padding: 0; color: #777;
 }
 .modal-body { padding: 24px; max-height: 60vh; overflow-y: auto; }
 .modal-footer {
@@ -96,8 +96,13 @@ mwl-calendar-week-view, mwl-calendar-day-view { display: block; height: 600px; }
 }
 .btn-primary:disabled { background-color: #a0a0a0; }
 .btn-secondary {
-  background-color: var(--color-secondary); color: white; border: none;
+  background-color: #6c757d; color: white; border: none;
   padding: 10px 16px; border-radius: 4px; cursor: pointer;
 }
 .btn-secondary:disabled { background-color: #a0a0a0; }
 /* === FIM SPRINT 04 === */
+/* O rodapé continua acessível em telas baixas e com texto ampliado. */
+.modal-content { max-height: calc(100dvh - 2rem); display: flex; flex-direction: column; }
+.modal-content form { display: contents; }
+.modal-header, .modal-footer { flex-shrink: 0; flex-wrap: wrap; }
+.modal-body { min-height: 0; overflow-y: auto; }
