@@ -23,8 +23,8 @@ As opções de leitura estão disponíveis no canto inferior da tela. As prefer�
 
 Roteiro de validação:
 
-1. Abra o painel pelo teclado e percorra todos os controles. Teste os três aumentos de fonte, o espaçamento, o negrito, o realce e o sublinhado.
+1. Abra o painel pelo teclado e percorra todos os controles. Teste os aumentos de fonte, o espaçamento, o negrito, o realce e o sublinhado.
 2. Combine alto contraste e realce. Navegue entre páginas, recarregue e confira se as escolhas persistem. Use **Restaurar padrão** e confira novamente.
 3. Confira a leitura e as ações a 200% de zoom. Examine login, formulários, agenda, produtos e perfil em janela estreita.
 4. Compare texto e fundo nas telas principais. Use 4,5:1 para texto normal e 3:1 para texto grande e componentes gráficos essenciais.
-5. Confira se os estados da agenda, o aviso de estoque e os indicadores financeiros são compreensíveis em escala de cinza. Teste as preferências de movimento reduzido e cores forçadas do sistema.
+5. Confira se os estados da agenda, o aviso de estoque e os indicadores financeiros são compreensíveis em escala de cinza. Teste as preferências de movimento reduzido, contraste elevado e cores forçadas do sistema.

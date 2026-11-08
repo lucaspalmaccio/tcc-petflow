@@ -77,6 +77,9 @@ button {
     margin-top: 0.25rem;
 }
 a {
+  display: inline-block;
+  min-inline-size: 24px;
+  min-block-size: 24px;
   color: var(--color-link);
 }
 
@@ -113,12 +116,12 @@ input, select, textarea {
   font-weight: 700 !important;
 }
 
-.reading-highlight :is(h1, h2, h3, h4, a, strong) {
+.reading-highlight :is(h1, h2, h3, h4, h5, h6, a, strong) {
   color: #1b1b1b !important;
   background-color: #ffea88 !important;
 }
 
-.reading-underline :is(h1, h2, h3, h4, a, strong) {
+.reading-underline :is(h1, h2, h3, h4, h5, h6, a, strong) {
   text-decoration: underline !important;
   text-underline-offset: 0.2em;
 }
@@ -134,13 +137,13 @@ input, select, textarea {
 }
 
 .reading-contrast :is(main, header, aside, section, article, form, nav, table, th, td, input, select, textarea,
-                      h1, h2, h3, h4, p, label, a, button, .sidebar-subtitle, .status-badge, .kpi-card, .cal-event-title) {
+                      h1, h2, h3, h4, h5, h6, p, label, a, button, .sidebar-subtitle, .status-badge, .kpi-card, .cal-event-title) {
   background-color: #fff !important;
   color: #111 !important;
   border-color: #333 !important;
 }
 
-.reading-contrast .kpi-card {
+.reading-contrast :is(.kpi-card, button) {
   background-image: none !important;
 }
 
@@ -152,7 +155,7 @@ input, select, textarea {
   box-shadow: inset 0 0 0 1px #333;
 }
 
-.reading-contrast.reading-highlight :is(h1, h2, h3, h4, a, strong) {
+.reading-contrast.reading-highlight :is(h1, h2, h3, h4, h5, h6, a, strong) {
   background-color: #ffea88 !important;
 }
 

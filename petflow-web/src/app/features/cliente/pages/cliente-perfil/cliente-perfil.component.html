@@ -3,18 +3,18 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Meu perfil</h2>
         <button class="btn btn-outline-primary" routerLink="/cliente/meus-agendamentos">
-            <i class="bi bi-arrow-left"></i> Voltar para Agendamentos
+            <i class="bi bi-arrow-left"></i> Voltar aos agendamentos
         </button>
     </div>
 
     <!-- Mensagens -->
     <div *ngIf="mensagem" role="status" class="alert alert-success alert-dismissible fade show">
         {{ mensagem }}
-        <button type="button" class="btn-close" (click)="mensagem = ''"></button>
+        <button type="button" class="btn-close" aria-label="Fechar mensagem" (click)="mensagem = ''"></button>
     </div>
     <div *ngIf="erro" role="alert" class="alert alert-danger alert-dismissible fade show">
         {{ erro }}
-        <button type="button" class="btn-close" (click)="erro = ''"></button>
+        <button type="button" class="btn-close" aria-label="Fechar mensagem" (click)="erro = ''"></button>
     </div>
 
     <div class="row">
@@ -31,26 +31,26 @@
                 <div class="card-body">
                     <form [formGroup]="perfilForm">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Nome</label>
-                            <input type="text" class="form-control" formControlName="nome"
+                            <label for="perfil-nome" class="form-label fw-bold">Nome</label>
+                            <input id="perfil-nome" type="text" class="form-control" formControlName="nome"
                                    [readonly]="!editandoPerfil">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">CPF</label>
-                            <input type="text" class="form-control" [value]="perfil?.cpf" readonly>
+                            <label for="perfil-cpf" class="form-label fw-bold">CPF</label>
+                            <input id="perfil-cpf" type="text" class="form-control" [value]="perfil?.cpf" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Email</label>
-                            <input type="email" class="form-control" [value]="perfil?.email" readonly>
+                            <label for="perfil-email" class="form-label fw-bold">Email</label>
+                            <input id="perfil-email" type="email" class="form-control" [value]="perfil?.email" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Telefone</label>
-                            <input type="text" class="form-control" formControlName="telefone"
+                            <label for="perfil-telefone" class="form-label fw-bold">Telefone</label>
+                            <input id="perfil-telefone" type="text" class="form-control" formControlName="telefone"
                                    [readonly]="!editandoPerfil">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Endereço</label>
-                            <input type="text" class="form-control" formControlName="endereco"
+                            <label for="perfil-endereco" class="form-label fw-bold">Endereço</label>
+                            <input id="perfil-endereco" type="text" class="form-control" formControlName="endereco"
                                    [readonly]="!editandoPerfil">
                         </div>
 
@@ -80,17 +80,17 @@
                     <!-- Formulário Alterar Senha -->
                     <form *ngIf="editandoSenha" [formGroup]="senhaForm">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Senha Atual</label>
-                            <input type="password" class="form-control" formControlName="senhaAtual">
+                            <label for="perfil-senha-atual" class="form-label fw-bold">Senha Atual</label>
+                            <input id="perfil-senha-atual" type="password" class="form-control" formControlName="senhaAtual">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Nova Senha</label>
-                            <input type="password" class="form-control" formControlName="novaSenha">
+                            <label for="perfil-nova-senha" class="form-label fw-bold">Nova Senha</label>
+                            <input id="perfil-nova-senha" type="password" class="form-control" formControlName="novaSenha">
                             <small class="text-muted">Mínimo 6 caracteres</small>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Confirmar Nova Senha</label>
-                            <input type="password" class="form-control" formControlName="confirmarNovaSenha">
+                            <label for="perfil-confirmar-senha" class="form-label fw-bold">Confirmar Nova Senha</label>
+                            <input id="perfil-confirmar-senha" type="password" class="form-control" formControlName="confirmarNovaSenha">
                         </div>
 
                         <div class="d-flex gap-2">
@@ -146,17 +146,17 @@
                         <h6 class="mb-3">{{ editandoPet ? 'Editar Pet' : 'Novo Pet' }}</h6>
                         <form [formGroup]="petForm">
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Nome</label>
-                                <input type="text" class="form-control" formControlName="nome">
+                                <label for="pet-nome" class="form-label fw-bold">Nome</label>
+                                <input id="pet-nome" type="text" class="form-control" formControlName="nome">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Espécie</label>
-                                <input type="text" class="form-control" formControlName="especie"
+                                <label for="pet-especie" class="form-label fw-bold">Espécie</label>
+                                <input id="pet-especie" type="text" class="form-control" formControlName="especie"
                                        placeholder="Ex.: Cachorro, Gato">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-bold">Raça</label>
-                                <input type="text" class="form-control" formControlName="raca"
+                                <label for="pet-raca" class="form-label fw-bold">Raça</label>
+                                <input id="pet-raca" type="text" class="form-control" formControlName="raca"
                                        placeholder="Ex.: Golden Retriever, Persa">
                             </div>
 

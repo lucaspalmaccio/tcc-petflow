@@ -22,20 +22,21 @@
 .card-header {
   border-radius: 16px 16px 0 0 !important;
   font-weight: 600;
+  color: var(--color-white);
   font-size: 1.1rem;
   padding: 0.75rem 1.25rem;
 }
 
 .bg-primary {
-  background: linear-gradient(135deg, var(--color-primary), #00a3ff) !important;
+  background: var(--color-primary) !important;
 }
 
 .bg-success {
-  background: linear-gradient(135deg, var(--color-success), #00e093) !important;
+  background: var(--color-success) !important;
 }
 
 .bg-warning {
-  background: linear-gradient(135deg, #f7b733, #fc4a1a) !important;
+  background: #754200 !important;
   color: #fff;
 }
 
@@ -47,7 +48,7 @@
 
 .form-control {
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-control-border);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -64,7 +65,7 @@ button {
 }
 
 .btn-success:hover {
-  background-color: #00a26d;
+  background-color: var(--color-success);
   color: #fff;
 }
 

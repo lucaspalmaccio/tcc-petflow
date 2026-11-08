@@ -8,7 +8,7 @@
       </option>
     </select>
     <label class="reading-choice" *ngFor="let option of options">
-      <input type="checkbox" #choice [checked]="activeOptions.has(option.key)"
+      <input type="checkbox" #choice [checked]="isOptionEnabled(option.key)"
              (change)="setOption(option.key, choice.checked)">
       {{ option.label }}
     </label>
