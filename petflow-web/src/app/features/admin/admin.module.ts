@@ -19,6 +19,11 @@ import { AgendaComponent } from './pages/agenda/agenda.component';
 import { CadastrarAdminComponent } from './pages/cadastrar-admin/cadastrar-admin.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CalendarModule } from 'angular-calendar';
+import { ModalA11yDirective } from '../../shared/a11y/modal-a11y.directive';
+import { FocusInvalidDirective } from '../../shared/a11y/focus-invalid.directive';
+import { SkipLinkDirective } from '../../shared/a11y/skip-link.directive';
+import { FormA11yDirective } from '../../shared/a11y/form-a11y.directive';
+import { MainLandmarkDirective } from '../../shared/a11y/main-landmark.directive';
 
 @NgModule({
 declarations: [
@@ -41,7 +46,12 @@ AdminRoutingModule,
 HttpClientModule,
 FormsModule,
 ReactiveFormsModule,
-CalendarModule
+CalendarModule,
+ModalA11yDirective,
+FocusInvalidDirective,
+FormA11yDirective,
+MainLandmarkDirective,
+SkipLinkDirective
 ],
 exports: [
 ClienteFormComponent // ← exporta para o módulo cliente

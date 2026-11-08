@@ -33,7 +33,14 @@ constructor(
         }
     }
 
+    /** Campo inválido já tocado (ou formulário enviado): mostra erro e aria-invalid. */
+    hasError(campo: string): boolean {
+        const control = this.loginForm.get(campo);
+        return !!control && control.touched && control.invalid;
+    }
+
     onSubmit(): void {
+        this.loginForm.markAllAsTouched();
         if (this.loginForm.invalid) {
             this.errorMessage = "Por favor, preencha o e-mail e a senha.";
             return;

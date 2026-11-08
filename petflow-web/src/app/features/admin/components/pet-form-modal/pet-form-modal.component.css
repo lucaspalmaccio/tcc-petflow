@@ -75,7 +75,8 @@
 .modal-body input:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-  outline: none;
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 /* Rodapé do Modal */

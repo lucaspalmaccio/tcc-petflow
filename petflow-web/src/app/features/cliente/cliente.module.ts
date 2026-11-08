@@ -11,6 +11,11 @@ import { ClientePerfilComponent } from './pages/cliente-perfil/cliente-perfil.co
 
 // Importa AdminModule para usar ClienteFormComponent
 import { AdminModule } from '../admin/admin.module';
+import { ModalA11yDirective } from '../../shared/a11y/modal-a11y.directive';
+import { FocusInvalidDirective } from '../../shared/a11y/focus-invalid.directive';
+import { SkipLinkDirective } from '../../shared/a11y/skip-link.directive';
+import { FormA11yDirective } from '../../shared/a11y/form-a11y.directive';
+import { MainLandmarkDirective } from '../../shared/a11y/main-landmark.directive';
 
 @NgModule({
 declarations: [
@@ -25,7 +30,12 @@ FormsModule,
 ReactiveFormsModule,
 RouterModule,
 ClienteRoutingModule,
-AdminModule
+AdminModule,
+ModalA11yDirective,
+FocusInvalidDirective,
+FormA11yDirective,
+MainLandmarkDirective,
+SkipLinkDirective
 ]
 })
 export class ClienteModule { }

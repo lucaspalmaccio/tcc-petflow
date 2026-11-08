@@ -2,28 +2,30 @@
 <div class="modal-overlay" (click)="onClose()"></div>
 
 <!-- Conteúdo do Modal -->
-<div class="modal-container">
+<div class="modal-container" appModal appModalLabelledby="agendamento-modal-titulo" (appModalClose)="onClose()">
     <header class="modal-header">
-        <h2>Solicitar agendamento</h2>
-        <button class="btn-close" (click)="onClose()">×</button>
+        <h2 id="agendamento-modal-titulo">Solicitar agendamento</h2>
+        <button type="button" class="btn-close" aria-label="Fechar" (click)="onClose()"><span aria-hidden="true">×</span></button>
     </header>
 
-    <form [formGroup]="agendamentoForm" (ngSubmit)="submitForm()">
+    <form [formGroup]="agendamentoForm" (ngSubmit)="submitForm()" appFocusInvalid>
         <div class="modal-body">
 
             <!-- Etapa 1: Selecionar Pet (UC05 [329]) -->
             <fieldset class="form-section">
                 <legend>1. Selecione o Pet</legend>
                 <div class="form-group">
-                    <label for="pet" class="form-label">Pet</label>
-                    <select id="pet" class="form-control" formControlName="petId">
+                    <label for="pet" class="form-label">Pet <span class="required-hint">(obrigatório)</span></label>
+                    <select id="pet" class="form-control" formControlName="petId" aria-required="true"
+                            [attr.aria-invalid]="hasError('petId') ? 'true' : null"
+                            [attr.aria-describedby]="hasError('petId') ? 'pet-erro' : null">
                         <option [ngValue]="null" disabled>-- Selecione um Pet --</option>
                         <!-- Carrega os pets do cliente -->
                         <option *ngFor="let pet of (petsCliente$ | async)" [ngValue]="pet.id">
                             {{ pet.nome }} ({{ pet.especie }} - {{ pet.raca }})
                         </option>
                     </select>
-                    <div *ngIf="agendamentoForm.get('petId')?.touched && agendamentoForm.get('petId')?.hasError('required')" class="text-danger">
+                    <div *ngIf="hasError('petId')" id="pet-erro" class="text-danger field-error">
                         Selecione um pet.
                     </div>
                 </div>
@@ -31,7 +33,7 @@
 
             <!-- Etapa 2: Selecionar Serviços (UC05 [330]) -->
             <fieldset class="form-section">
-                <legend>2. Selecione os Serviços</legend>
+                <legend>2. Selecione os Serviços <span class="required-hint">(obrigatório)</span></legend>
                 <div class="form-group service-list">
                     <div *ngFor="let servico of (servicosDisponiveis$ | async)" class="service-item">
                         <input type="checkbox" [id]="'servico-' + servico.id" [value]="servico.id" (change)="onServicoChange($event)">
@@ -39,7 +41,7 @@
                             {{ servico.nome }} ({{ servico.preco | currency:'BRL' }})
                         </label>
                     </div>
-                    <div *ngIf="agendamentoForm.get('servicoIds')?.touched && agendamentoForm.get('servicoIds')?.hasError('required')" class="text-danger">
+                    <div *ngIf="agendamentoForm.get('servicoIds')?.touched && agendamentoForm.get('servicoIds')?.hasError('required')" id="servicos-erro" role="alert" class="text-danger field-error">
                         Selecione pelo menos um serviço.
                     </div>
                 </div>
@@ -49,13 +51,15 @@
             <fieldset class="form-section">
                 <legend>3. Escolha a Data e Hora</legend>
                 <div class="form-group">
-                    <label for="dataHora" class="form-label">Data e Horário</label>
+                    <label for="dataHora" class="form-label">Data e Horário <span class="required-hint">(obrigatório)</span></label>
                     <!-- (Input type datetime-local é simples, mas funciona) -->
-                    <input id="dataHora" type="datetime-local" class="form-control" formControlName="dataHora" [min]="minDate">
-                    <div *ngIf="agendamentoForm.get('dataHora')?.touched && agendamentoForm.get('dataHora')?.hasError('required')" class="text-danger">
+                    <input id="dataHora" type="datetime-local" class="form-control" formControlName="dataHora" [min]="minDate" aria-required="true"
+                           [attr.aria-invalid]="hasError('dataHora') ? 'true' : null"
+                           [attr.aria-describedby]="hasError('dataHora') ? 'dataHora-erro dataHora-erro-min' : null">
+                    <div *ngIf="agendamentoForm.get('dataHora')?.touched && agendamentoForm.get('dataHora')?.hasError('required')" id="dataHora-erro" class="text-danger field-error">
                         Selecione uma data e hora.
                     </div>
-                    <div *ngIf="agendamentoForm.get('dataHora')?.touched && agendamentoForm.get('dataHora')?.hasError('min')" class="text-danger">
+                    <div *ngIf="agendamentoForm.get('dataHora')?.touched && agendamentoForm.get('dataHora')?.hasError('min')" id="dataHora-erro-min" class="text-danger field-error">
                         A data deve ser no futuro.
                     </div>
                 </div>
@@ -69,14 +73,14 @@
             <div class="agendamento-resumo" *ngIf="valorTotal > 0">
                 <strong>Valor Total Estimado:</strong> {{ valorTotal | currency:'BRL' }}
             </div>
-            <div *ngIf="errorMessage" class="error-message">
+            <div *ngIf="errorMessage" role="alert" class="error-message field-error">
                 {{ errorMessage }}
             </div>
             <footer class="modal-footer">
                 <button type="button" class="btn-secondary" (click)="onClose()">
                     Cancelar
                 </button>
-                <button type="submit" class="btn-primary" [disabled]="isLoading || agendamentoForm.invalid || valorTotal === 0">
+                <button type="submit" class="btn-primary" [disabled]="isLoading">
                     {{ isLoading ? 'Solicitando...' : 'Confirmar Agendamento' }}
                 </button>
             </footer>

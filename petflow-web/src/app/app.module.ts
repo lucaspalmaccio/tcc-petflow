@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { TitleStrategy } from '@angular/router';
+import { PageTitleStrategy } from './shared/a11y/page-title.strategy';
+import { RouteAnnouncerComponent } from './shared/a11y/route-announcer.component';
+import { ReadingMaskComponent } from './shared/a11y/reading-mask.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -27,6 +31,8 @@ registerLocaleData(localePt);
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    RouteAnnouncerComponent,
+    ReadingMaskComponent,
     // === INÍCIO DA ATUALIZAÇÃO SPRINT 03 (Calendário) ===
     CalendarModule.forRoot({
       provide: DateAdapter,
@@ -35,6 +41,7 @@ registerLocaleData(localePt);
     // === FIM DA ATUALIZAÇÃO SPRINT 03 (Calendário) ===
   ],
   providers: [
+    { provide: TitleStrategy, useClass: PageTitleStrategy },
     // Registra o Interceptor
     {
       provide: HTTP_INTERCEPTORS,

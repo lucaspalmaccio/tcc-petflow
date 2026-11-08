@@ -1,6 +1,8 @@
 <div class="admin-layout">
 
-    <aside class="sidebar">
+    <a class="skip-link" href="#conteudo-principal" appSkipLink="conteudo-principal">Pular para o conteúdo principal</a>
+
+    <aside class="sidebar" aria-label="Navegação lateral">
         <div class="sidebar-header">
             <!-- Logo adicionada aqui -->
             <div class="logo-container">
@@ -9,35 +11,35 @@
             <span class="sidebar-subtitle">Admin</span>
         </div>
 
-        <nav class="sidebar-nav">
-            <a routerLink="/admin/clientes" routerLinkActive="active">
-                <i class="icon"></i> Clientes e Pets
+        <nav class="sidebar-nav" id="menu-principal" aria-label="Menu principal">
+            <a routerLink="/admin/clientes" routerLinkActive="active" ariaCurrentWhenActive="page">
+                <i class="icon" aria-hidden="true"></i> Clientes e Pets
             </a>
 
-            <a routerLink="/admin/servicos" routerLinkActive="active">
-                <i class="icon"></i>
+            <a routerLink="/admin/servicos" routerLinkActive="active" ariaCurrentWhenActive="page">
+                <i class="icon" aria-hidden="true"></i>
                 Serviços
             </a>
-            <a routerLink="/admin/produtos" routerLinkActive="active">
-                <i class="icon"></i>
+            <a routerLink="/admin/produtos" routerLinkActive="active" ariaCurrentWhenActive="page">
+                <i class="icon" aria-hidden="true"></i>
                 Produtos
             </a>
 
-            <a routerLink="/admin/agenda" routerLinkActive="active">
-                <i class="icon"></i>
+            <a routerLink="/admin/agenda" routerLinkActive="active" ariaCurrentWhenActive="page">
+                <i class="icon" aria-hidden="true"></i>
                 Agenda
             </a>
 
-            <a routerLink="/admin/dashboard" routerLinkActive="active">
-                <i class="icon"></i>
+            <a routerLink="/admin/dashboard" routerLinkActive="active" ariaCurrentWhenActive="page">
+                <i class="icon" aria-hidden="true"></i>
                 Dashboard
             </a>
         </nav>
     </aside>
 
-    <main class="main-content">
+    <main class="main-content" id="conteudo-principal" tabindex="-1">
 
-        <header class="main-header">
+        <header class="main-header" role="banner">
             <div class="header-welcome">
                 Olá, <strong>{{ userName || 'Administrador' }}</strong>
             </div>

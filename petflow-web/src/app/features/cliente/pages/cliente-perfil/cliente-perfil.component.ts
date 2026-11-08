@@ -82,6 +82,7 @@ constructor(
   }
 
   salvarPerfil(): void {
+    this.perfilForm.markAllAsTouched();
     if (!this.perfilForm.valid || !this.perfil) return;
 
     const perfilAtualizado = { ...this.perfil, ...this.perfilForm.value };
@@ -106,6 +107,7 @@ constructor(
   }
 
   alterarSenha(): void {
+    this.senhaForm.markAllAsTouched();
     if (!this.senhaForm.valid) return;
     const dados: AlterarSenha = this.senhaForm.value;
 

@@ -26,6 +26,7 @@ children: [
 // Dashboard
 {
 path: 'dashboard',
+title: 'Resumo financeiro',
 component: DashboardComponent,
 canActivate: [authGuard], // Protegendo a rota
 data: { roles: ['ADMIN'] }  // Apenas Admin pode ver
@@ -33,26 +34,27 @@ data: { roles: ['ADMIN'] }  // Apenas Admin pode ver
 // === FIM SPRINT 04 ===
 
 // Agenda
-{ path: 'agenda', component: AgendaComponent },
+{ path: 'agenda', title: 'Agenda', component: AgendaComponent },
 
 // Clientes
-{ path: 'clientes', component: ClienteListComponent },
-{ path: 'clientes/novo', component: ClienteFormComponent },
-{ path: 'clientes/editar/:id', component: ClienteFormComponent },
+{ path: 'clientes', title: 'Clientes', component: ClienteListComponent },
+{ path: 'clientes/novo', title: 'Cadastrar cliente', component: ClienteFormComponent },
+{ path: 'clientes/editar/:id', title: 'Editar cliente', component: ClienteFormComponent },
 
 // Serviços
-{ path: 'servicos', component: ServicoListComponent },
-{ path: 'servicos/novo', component: ServicoFormComponent },
-{ path: 'servicos/editar/:id', component: ServicoFormComponent },
+{ path: 'servicos', title: 'Serviços', component: ServicoListComponent },
+{ path: 'servicos/novo', title: 'Novo serviço', component: ServicoFormComponent },
+{ path: 'servicos/editar/:id', title: 'Editar serviço', component: ServicoFormComponent },
 
 // Produtos
-{ path: 'produtos', component: ProdutoListComponent },
-{ path: 'produtos/novo', component: ProdutoFormComponent },
-{ path: 'produtos/editar/:id', component: ProdutoFormComponent },
+{ path: 'produtos', title: 'Produtos', component: ProdutoListComponent },
+{ path: 'produtos/novo', title: 'Novo produto', component: ProdutoFormComponent },
+{ path: 'produtos/editar/:id', title: 'Editar produto', component: ProdutoFormComponent },
 
 // Cadastro de Admin (somente ADMIN)
 {
 path: 'cadastrar',
+title: 'Cadastrar administrador',
 component: CadastrarAdminComponent,
 canActivate: [authGuard],
 data: { roles: ['ADMIN'] }

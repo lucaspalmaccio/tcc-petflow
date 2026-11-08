@@ -1,9 +1,9 @@
-<div class="container my-4">
+<div class="container my-4" appMainLandmark>
     <!-- Header com botão voltar -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Meu perfil</h2>
+        <h1>Meu perfil</h1>
         <button class="btn btn-outline-primary" routerLink="/cliente/meus-agendamentos">
-            <i class="bi bi-arrow-left"></i> Voltar aos agendamentos
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar aos agendamentos
         </button>
     </div>
 
@@ -23,13 +23,13 @@
             <!-- Dados do Perfil -->
             <div class="card shadow-sm mb-3">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Dados Pessoais</h5>
+                    <h2 class="mb-0" style="font-size:0.83em">Dados Pessoais</h2>
                     <button *ngIf="!editandoPerfil" class="btn btn-sm btn-light" (click)="editarPerfil()">
                         Editar
                     </button>
                 </div>
                 <div class="card-body">
-                    <form [formGroup]="perfilForm">
+                    <form [formGroup]="perfilForm" appFormA11y>
                         <div class="mb-3">
                             <label for="perfil-nome" class="form-label fw-bold">Nome</label>
                             <input id="perfil-nome" type="text" class="form-control" formControlName="nome"
@@ -55,8 +55,7 @@
                         </div>
 
                         <div *ngIf="editandoPerfil" class="d-flex gap-2">
-                            <button type="button" class="btn btn-success" (click)="salvarPerfil()"
-                                    [disabled]="!perfilForm.valid">
+                            <button type="button" class="btn btn-success" (click)="salvarPerfil()">
                                 Salvar
                             </button>
                             <button type="button" class="btn btn-secondary" (click)="cancelarEdicaoPerfil()">
@@ -70,7 +69,7 @@
             <!-- Alterar Senha -->
             <div class="card shadow-sm">
                 <div class="card-header bg-warning">
-                    <h5 class="mb-0">Segurança</h5>
+                    <h2 class="mb-0" style="font-size:0.83em">Segurança</h2>
                 </div>
                 <div class="card-body">
                     <button *ngIf="!editandoSenha" class="btn btn-warning w-100" (click)="abrirAlterarSenha()">
@@ -78,7 +77,7 @@
                     </button>
 
                     <!-- Formulário Alterar Senha -->
-                    <form *ngIf="editandoSenha" [formGroup]="senhaForm">
+                    <form *ngIf="editandoSenha" [formGroup]="senhaForm" appFormA11y>
                         <div class="mb-3">
                             <label for="perfil-senha-atual" class="form-label fw-bold">Senha Atual</label>
                             <input id="perfil-senha-atual" type="password" class="form-control" formControlName="senhaAtual">
@@ -94,8 +93,7 @@
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-success" (click)="alterarSenha()"
-                                    [disabled]="!senhaForm.valid">
+                            <button type="button" class="btn btn-success" (click)="alterarSenha()">
                                 Confirmar
                             </button>
                             <button type="button" class="btn btn-secondary" (click)="cancelarAlterarSenha()">
@@ -111,7 +109,7 @@
         <div class="col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Meus Pets</h5>
+                    <h2 class="mb-0" style="font-size:0.83em">Meus Pets</h2>
                     <button class="btn btn-sm btn-light" (click)="abrirAdicionarPet()">
                         + Adicionar
                     </button>
@@ -122,7 +120,7 @@
                         <div class="col-md-6" *ngFor="let pet of pets">
                             <div class="card h-100 border-success">
                                 <div class="card-body">
-                                    <h6 class="card-title text-success">{{ pet.nome }}</h6>
+                                    <h3 class="card-title text-success" style="font-size:0.67em">{{ pet.nome }}</h3>
                                     <p class="card-text mb-1 small"><strong>Espécie:</strong> {{ pet.especie }}</p>
                                     <p class="card-text mb-3 small"><strong>Raça:</strong> {{ pet.raca }}</p>
                                     <div class="d-flex gap-2">
@@ -143,7 +141,7 @@
 
                     <!-- Formulário Adicionar/Editar Pet -->
                     <div *ngIf="adicionandoPet" class="mt-4 border-top pt-4">
-                        <h6 class="mb-3">{{ editandoPet ? 'Editar Pet' : 'Novo Pet' }}</h6>
+                        <h3 class="mb-3" style="font-size:0.67em">{{ editandoPet ? 'Editar Pet' : 'Novo Pet' }}</h3>
                         <form [formGroup]="petForm">
                             <div class="mb-3">
                                 <label for="pet-nome" class="form-label fw-bold">Nome</label>

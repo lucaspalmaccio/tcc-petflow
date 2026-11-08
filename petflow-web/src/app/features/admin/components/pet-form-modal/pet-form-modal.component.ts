@@ -46,7 +46,14 @@ constructor(
     }
   }
 
+  /** Campo inválido já tocado (ou formulário enviado): mostra erro e aria-invalid. */
+  hasError(campo: string): boolean {
+    const control = this.petForm.get(campo);
+    return !!control && control.touched && control.invalid;
+  }
+
   submitForm(): void {
+    this.petForm.markAllAsTouched();
     if (this.petForm.invalid || !this.clienteId) {
       this.errorMessage = "Todos os campos são obrigatórios.";
       return;

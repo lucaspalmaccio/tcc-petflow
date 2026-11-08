@@ -60,4 +60,35 @@ describe('Reading preferences', () => {
     expect(() => app.setFontSize('115')).not.toThrow();
     expect(root.style.fontSize).toBe('115%');
   });
+
+  it('applies the dyslexia and low-vision presets and persists new options', () => {
+    const app = new AppComponent(documentStub);
+    app.applyPreset(app.presets.find(p => p.key === 'dyslexia')!);
+    expect(root.style.fontSize).toBe('115%');
+    expect(root.classList.contains('reading-dyslexia')).toBeTrue();
+    expect(root.classList.contains('reading-mask')).toBeTrue();
+    expect(new AppComponent(documentStub).isOptionEnabled('wordSpacing')).toBeTrue();
+    app.applyPreset(app.presets.find(p => p.key === 'lowVision')!);
+    expect(root.style.fontSize).toBe('150%');
+    expect(root.classList.contains('reading-dyslexia')).toBeFalse();
+  });
+
+  it('enables width, alignment and mask size controls individually', () => {
+    const app = new AppComponent(documentStub);
+    ['narrowLine', 'leftAlign', 'maskLarge'].forEach(key => app.setOption(key, true));
+    ['narrowLine', 'leftAlign', 'maskLarge'].forEach(key =>
+      expect(root.classList.contains('reading-' + key)).toBeTrue());
+    app.setOption('narrowLine', false);
+    expect(root.classList.contains('reading-narrowLine')).toBeFalse();
+  });
+
+  it('opens and closes the hub with the keyboard shortcut and Esc', () => {
+    const app = new AppComponent(documentStub);
+    const shortcut = new KeyboardEvent('keydown', { key: 'A', altKey: true, shiftKey: true, cancelable: true });
+    app.onKeydown(shortcut);
+    expect(app.open).toBeTrue();
+    expect(shortcut.defaultPrevented).toBeTrue();
+    app.onKeydown(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(app.open).toBeFalse();
+  });
 });

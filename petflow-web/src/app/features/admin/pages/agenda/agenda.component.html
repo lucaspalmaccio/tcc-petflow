@@ -8,24 +8,40 @@
     </header>
 
     <div class="calendar-header">
-        <div class="btn-group">
+        <div class="btn-group" role="group" aria-label="Período">
             <button
+                    type="button"
                     class="btn-secondary"
                     (click)="setView(CalendarView.Month)"
+                    [attr.aria-pressed]="view === CalendarView.Month"
                     [class.active]="view === CalendarView.Month">
                 Mês
             </button>
             <button
+                    type="button"
                     class="btn-secondary"
                     (click)="setView(CalendarView.Week)"
+                    [attr.aria-pressed]="view === CalendarView.Week"
                     [class.active]="view === CalendarView.Week">
                 Semana
             </button>
             <button
+                    type="button"
                     class="btn-secondary"
                     (click)="setView(CalendarView.Day)"
+                    [attr.aria-pressed]="view === CalendarView.Day"
                     [class.active]="view === CalendarView.Day">
                 Dia
+            </button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Forma de exibição">
+            <button type="button" class="btn-secondary" (click)="setModo('calendario')"
+                    [attr.aria-pressed]="modo === 'calendario'" [class.active]="modo === 'calendario'">
+                Calendário
+            </button>
+            <button type="button" class="btn-secondary" (click)="setModo('lista')"
+                    [attr.aria-pressed]="modo === 'lista'" [class.active]="modo === 'lista'">
+                Lista
             </button>
         </div>
         <div class="btn-group">
@@ -53,18 +69,54 @@
                 Próximo
             </button>
         </div>
-        <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</h3>
+        <h2 aria-live="polite">{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</h2>
     </div>
 
-    <div *ngIf="errorMessage" class="error-message">
+    <div *ngIf="errorMessage" role="alert" class="error-message field-error">
         {{ errorMessage }}
     </div>
 
-    <div *ngIf="isLoading" class="loading-indicator">
+    <div *ngIf="isLoading" class="loading-indicator" role="status">
         Carregando agendamentos...
     </div>
 
-    <div [ngSwitch]="view" class="calendar-container card" role="region" aria-label="Calendário" tabindex="0">
+    <div class="table-scroll card" *ngIf="modo === 'lista'">
+        <table class="agenda-lista">
+            <caption>Agendamentos do período: {{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Data e hora</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Pet</th>
+                    <th scope="col">Serviços</th>
+                    <th scope="col">Situação</th>
+                    <th scope="col">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let evento of eventosDoPeriodo()">
+                    <td>{{ evento.start | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ evento.meta?.agendamento?.cliente?.nome }}</td>
+                    <td>{{ evento.meta?.agendamento?.pet?.nome }}</td>
+                    <td>
+                        <ng-container *ngFor="let servico of evento.meta?.agendamento?.servicos; let ultimo = last">{{ servico.nome }}{{ ultimo ? '' : ', ' }}</ng-container>
+                    </td>
+                    <td>{{ statusDe(evento) }}</td>
+                    <td>
+                        <button *ngIf="evento.meta?.agendamento?.status === 'AGENDADO'" type="button"
+                                class="btn-secondary" (click)="concluirAgendamento(evento)">
+                            Concluir<span class="visually-hidden"> agendamento de {{ evento.meta?.agendamento?.pet?.nome }}</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="eventosDoPeriodo().length === 0">
+                    <td colspan="6">Nenhum agendamento neste período.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="modo === 'calendario'" [ngSwitch]="view" class="calendar-container card" role="region" aria-label="Calendário" tabindex="0">
         <mwl-calendar-month-view
                 *ngSwitchCase="CalendarView.Month"
                 [viewDate]="viewDate"
@@ -95,18 +147,19 @@
 
 <div *ngIf="showAdminModal" class="modal-backdrop" (click)="closeAdminModal()"></div>
 
-<div *ngIf="showAdminModal" class="modal-content">
+<div *ngIf="showAdminModal" class="modal-content" appModal appModalLabelledby="agenda-modal-titulo"
+     (appModalClose)="!modalLoading && closeAdminModal()">
 
     <div class="modal-header">
-        <h2>Novo agendamento</h2>
-        <button class="modal-close" (click)="closeAdminModal()" [disabled]="modalLoading">&times;</button>
+        <h2 id="agenda-modal-titulo">Novo agendamento</h2>
+        <button type="button" class="modal-close" aria-label="Fechar" (click)="closeAdminModal()" [disabled]="modalLoading"><span aria-hidden="true">&times;</span></button>
     </div>
 
     <form (ngSubmit)="onAdminSubmit()">
         <div class="modal-body">
 
             <div class="form-group">
-                <label for="cliente">Cliente:</label>
+                <label for="cliente">Cliente: <span class="required-hint">(obrigatório)</span></label>
                 <select id="cliente" [(ngModel)]="agendamentoForm.clienteId" name="cliente"
                         (change)="onClienteChange($event)" required>
                     <option value="" disabled>Selecione um cliente...</option>
@@ -117,7 +170,7 @@
             </div>
 
             <div class="form-group">
-                <label for="pet">Pet:</label>
+                <label for="pet">Pet: <span class="required-hint">(obrigatório)</span></label>
                 <select id="pet" [(ngModel)]="agendamentoForm.petId" name="pet"
                         [disabled]="petsDoCliente.length === 0" required>
                     <option value="" disabled>Selecione um pet...</option>
@@ -128,7 +181,7 @@
             </div>
 
             <div class="form-group">
-                <label for="servicos">Serviços:</label>
+                <label for="servicos">Serviços: <span class="required-hint">(obrigatório)</span></label>
                 <select id="servicos" [(ngModel)]="agendamentoForm.servicoIds" name="servicos"
                         multiple required size="4">
                     <option *ngFor="let servico of (servicos$ | async)" [value]="servico.id">
@@ -138,12 +191,12 @@
             </div>
 
             <div class="form-group">
-                <label for="dataHora">Data e Hora:</label>
+                <label for="dataHora">Data e Hora: <span class="required-hint">(obrigatório)</span></label>
                 <input type="datetime-local" id="dataHora" [(ngModel)]="agendamentoForm.dataHora"
                        name="dataHora" required />
             </div>
 
-            <div *ngIf="modalError" class="modal-error-message">
+            <div *ngIf="modalError" role="alert" class="modal-error-message field-error">
                 {{ modalError }}
             </div>
         </div>

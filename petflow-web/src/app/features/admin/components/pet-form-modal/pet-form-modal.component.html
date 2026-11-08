@@ -1,43 +1,55 @@
 <div class="modal-overlay" (click)="onOverlayClick($event)"></div>
 
-<div class="modal-container" (click)="$event.stopPropagation()">
+<div class="modal-container" appModal appModalLabelledby="pet-modal-titulo"
+     (appModalClose)="close()" (click)="$event.stopPropagation()">
     <header class="modal-header">
-        <h2>{{ isEditMode ? 'Editar Pet' : 'Cadastrar pet' }}</h2>
-        <button type="button" class="btn-close" (click)="close()">×</button>
+        <h2 id="pet-modal-titulo">{{ isEditMode ? 'Editar Pet' : 'Cadastrar pet' }}</h2>
+        <button type="button" class="btn-close" aria-label="Fechar" (click)="close()">
+            <span aria-hidden="true">×</span>
+        </button>
     </header>
 
-    <form [formGroup]="petForm" (ngSubmit)="submitForm()">
+    <form [formGroup]="petForm" (ngSubmit)="submitForm()" appFocusInvalid>
         <div class="modal-body">
             <div class="form-group">
-                <label for="pet-nome" class="form-label">Nome do Pet</label>
-                <input id="pet-nome" type="text" class="form-control" formControlName="nome" />
-                <div *ngIf="petForm.get('nome')?.touched && petForm.get('nome')?.invalid" class="error-message">
+                <label for="pet-nome" class="form-label">Nome do Pet <span class="required-hint">(obrigatório)</span></label>
+                <input id="pet-nome" type="text" class="form-control" formControlName="nome"
+                       aria-required="true"
+                       [attr.aria-invalid]="hasError('nome') ? 'true' : null"
+                       [attr.aria-describedby]="hasError('nome') ? 'pet-nome-erro' : null" />
+                <div *ngIf="hasError('nome')" id="pet-nome-erro" class="error-message field-error">
                     Nome é obrigatório.
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="pet-especie" class="form-label">Espécie</label>
-                <input id="pet-especie" type="text" class="form-control" formControlName="especie" />
-                <div *ngIf="petForm.get('especie')?.touched && petForm.get('especie')?.invalid" class="error-message">
+                <label for="pet-especie" class="form-label">Espécie <span class="required-hint">(obrigatório)</span></label>
+                <input id="pet-especie" type="text" class="form-control" formControlName="especie"
+                       aria-required="true"
+                       [attr.aria-invalid]="hasError('especie') ? 'true' : null"
+                       [attr.aria-describedby]="hasError('especie') ? 'pet-especie-erro' : null" />
+                <div *ngIf="hasError('especie')" id="pet-especie-erro" class="error-message field-error">
                     Espécie é obrigatória.
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="pet-raca" class="form-label">Raça</label>
-                <input id="pet-raca" type="text" class="form-control" formControlName="raca" />
-                <div *ngIf="petForm.get('raca')?.touched && petForm.get('raca')?.invalid" class="error-message">
+                <label for="pet-raca" class="form-label">Raça <span class="required-hint">(obrigatório)</span></label>
+                <input id="pet-raca" type="text" class="form-control" formControlName="raca"
+                       aria-required="true"
+                       [attr.aria-invalid]="hasError('raca') ? 'true' : null"
+                       [attr.aria-describedby]="hasError('raca') ? 'pet-raca-erro' : null" />
+                <div *ngIf="hasError('raca')" id="pet-raca-erro" class="error-message field-error">
                     Raça é obrigatória.
                 </div>
             </div>
 
-            <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+            <div *ngIf="errorMessage" role="alert" class="error-message field-error">{{ errorMessage }}</div>
         </div>
 
         <footer class="modal-footer">
             <button type="button" class="btn-secondary" (click)="close()">Cancelar</button>
-            <button type="submit" class="btn-primary" [disabled]="isLoading || petForm.invalid">
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
                 {{ isLoading ? 'Salvando...' : 'Salvar Pet' }}
             </button>
         </footer>

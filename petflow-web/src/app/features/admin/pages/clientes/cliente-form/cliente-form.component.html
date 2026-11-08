@@ -1,10 +1,10 @@
-<div class="form-container card">
+<div class="form-container card" appMainLandmark>
     <div class="form-header">
         <h1>{{ isEditMode ? 'Editar Cliente' : 'Cadastrar cliente' }}</h1>
         <button type="button" class="btn-back" (click)="goBack()">Voltar</button>
     </div>
 
-    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()" class="form-section">
+    <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()" class="form-section" appFormA11y>
         <div class="form-row">
             <div class="form-group">
                 <label for="cliente-nome">Nome</label>
@@ -49,7 +49,7 @@
             <input id="cliente-endereco" type="text" formControlName="endereco" maxlength="200" autocomplete="street-address">
         </div>
 
-        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div *ngIf="errorMessage" role="alert" class="error-message field-error">{{ errorMessage }}</div>
 
         <div class="form-actions">
             <button type="submit" [disabled]="isLoading" class="btn-primary">

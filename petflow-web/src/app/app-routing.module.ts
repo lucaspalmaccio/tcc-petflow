@@ -19,7 +19,7 @@ loadChildren: () => import('./features/admin/auth/auth.module').then(m => m.Auth
   },
 
   // Rota pública de cadastro do cliente
-  { path: 'cliente/cadastro', component: ClienteFormComponent },
+  { path: 'cliente/cadastro', title: 'Cadastro de cliente', component: ClienteFormComponent },
 
   // Módulo cliente protegido (demais rotas)
   {

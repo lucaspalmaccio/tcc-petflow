@@ -1,13 +1,13 @@
 <div class="form-container">
 
     <header class="form-header">
-        <button (click)="goBack()" class="btn-back">
+        <button type="button" (click)="goBack()" class="btn-back">
             &larr; Voltar para a Lista
         </button>
         <h1>{{ isEditMode ? 'Editar Serviço' : 'Novo Serviço' }}</h1>
     </header>
 
-    <form [formGroup]="servicoForm" (ngSubmit)="onSubmit()" class="card">
+    <form [formGroup]="servicoForm" (ngSubmit)="onSubmit()" class="card" appFormA11y>
         <fieldset class="form-section">
             <legend>Dados do Serviço</legend>
 
@@ -39,11 +39,11 @@
         </fieldset>
 
         <footer class="form-actions">
-            <div *ngIf="errorMessage" class="error-message">
+            <div *ngIf="errorMessage" role="alert" class="error-message field-error">
                 {{ errorMessage }}
             </div>
             <button type="button" class="btn-secondary" (click)="goBack()">Cancelar</button>
-            <button type="submit" class="btn-primary" [disabled]="isLoading || servicoForm.invalid">
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
                 {{ isLoading ? 'Salvando...' : (isEditMode ? 'Salvar Alterações' : 'Cadastrar Serviço') }}
             </button>
         </footer>

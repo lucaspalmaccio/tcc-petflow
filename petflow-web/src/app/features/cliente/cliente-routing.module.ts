@@ -11,12 +11,14 @@ path: '',
 children: [
 {
 path: 'meus-agendamentos',
+title: 'Meus agendamentos',
 component: MeusAgendamentosComponent,
 canActivate: [authGuard],
 data: { roles: [Perfil.CLIENTE] }
 },
 {
 path: 'perfil',
+title: 'Meu perfil',
 component: ClientePerfilComponent,
 canActivate: [authGuard],
 data: { roles: [Perfil.CLIENTE] }

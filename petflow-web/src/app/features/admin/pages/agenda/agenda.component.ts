@@ -17,7 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CalendarEvent, CalendarEventAction, CalendarView } from 'angular-calendar';
 import {
 startOfDay, endOfDay, subDays, addDays, endOfMonth, isSameDay,
-isSameMonth, addHours, startOfMonth, endOfWeek, startOfWeek,
+isSameMonth, addHours, startOfMonth, endOfWeek, startOfWeek, isWithinInterval,
 } from 'date-fns';
 
 // Cores (seu código original)
@@ -46,6 +46,8 @@ CalendarView = CalendarView;
 viewDate: Date = new Date();
 locale: string = 'pt';
 events: CalendarEvent[] = [];
+/** Alternativa acessível ao calendário gráfico: lista/tabela dos agendamentos do período. */
+modo: 'calendario' | 'lista' = 'calendario';
 isLoading = true;
 refresh = new Subject<void>();
 errorMessage: string | null = null;
@@ -190,6 +192,26 @@ constructor(
 
   setView(view: CalendarView): void {
     this.view = view;
+  }
+
+  setModo(modo: 'calendario' | 'lista'): void {
+    this.modo = modo;
+  }
+
+  /** Agendamentos do período exibido (mês, semana ou dia), em ordem cronológica. */
+  eventosDoPeriodo(): CalendarEvent[] {
+    const [inicio, fim] =
+      this.view === CalendarView.Day ? [startOfDay(this.viewDate), endOfDay(this.viewDate)]
+      : this.view === CalendarView.Week ? [startOfWeek(this.viewDate), endOfWeek(this.viewDate)]
+      : [startOfMonth(this.viewDate), endOfMonth(this.viewDate)];
+    return this.events
+      .filter(event => isWithinInterval(event.start, { start: inicio, end: fim }))
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
+  }
+
+  statusDe(event: CalendarEvent): string {
+    const status = event.meta?.agendamento?.status as string | undefined;
+    return status ? (statusLabels[status] ?? status) : '';
   }
 
   // === INÍCIO SPRINT 04 (Lógica do Modal Admin) ===

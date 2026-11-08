@@ -83,11 +83,18 @@ constructor(
     }, 0);
   }
 
+  /** Campo inválido já tocado (ou formulário enviado): mostra erro e aria-invalid. */
+  hasError(campo: string): boolean {
+    const control = this.agendamentoForm.get(campo);
+    return !!control && control.touched && control.invalid;
+  }
+
   /**
    * Envia o formulário para criar o agendamento
    * UC05 - Fluxo Principal [150] a [152]
    */
   submitForm(): void {
+    this.agendamentoForm.markAllAsTouched();
     if (this.agendamentoForm.invalid || this.servicosFormArray.length === 0) {
       this.errorMessage = "Selecione o pet, a data/hora e pelo menos um serviço.";
       return;

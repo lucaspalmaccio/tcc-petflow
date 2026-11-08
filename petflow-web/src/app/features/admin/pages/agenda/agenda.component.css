@@ -9,7 +9,7 @@
   border-radius: 8px;
   box-shadow: var(--shadow-sm);
 }
-.calendar-header h3 { font-size: 1.5rem; font-weight: 500; margin: 0; }
+.calendar-header h2 { font-size: 1.5rem; font-weight: 500; margin: 0; }
 .btn-group { display: flex; gap: 0.25rem; }
 .btn-group .btn-secondary { background-color: var(--color-light); color: var(--color-dark); border: 1px solid var(--color-border); padding: 8px 12px; }
 .btn-group .btn-secondary:hover { background-color: #e2e6ea; }
@@ -106,3 +106,7 @@ mwl-calendar-week-view, mwl-calendar-day-view { display: block; height: 600px; }
 .modal-content form { display: contents; }
 .modal-header, .modal-footer { flex-shrink: 0; flex-wrap: wrap; }
 .modal-body { min-height: 0; overflow-y: auto; }
+
+.agenda-lista { width: 100%; border-collapse: collapse; }
+.agenda-lista caption { padding: 12px; text-align: left; font-weight: 600; }
+.agenda-lista th, .agenda-lista td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #dee2e6; }

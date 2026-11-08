@@ -60,11 +60,12 @@
 
 <div *ngIf="showStockModal" class="modal-backdrop" (click)="closeStockModal()"></div>
 
-<div *ngIf="showStockModal && selectedProduto" class="modal-content">
+<div *ngIf="showStockModal && selectedProduto" class="modal-content" appModal appModalLabelledby="estoque-modal-titulo"
+     (appModalClose)="!modalLoading && closeStockModal()">
 
     <div class="modal-header">
-        <h2>Adicionar Estoque</h2>
-        <button class="modal-close" (click)="closeStockModal()" [disabled]="modalLoading">&times;</button>
+        <h2 id="estoque-modal-titulo">Adicionar Estoque</h2>
+        <button type="button" class="modal-close" aria-label="Fechar" (click)="closeStockModal()" [disabled]="modalLoading"><span aria-hidden="true">&times;</span></button>
     </div>
 
     <form (ngSubmit)="onStockSubmit()">
@@ -73,7 +74,7 @@
             <p>Estoque Atual: <strong>{{ selectedProduto.qtdEstoque }}</strong></p>
 
             <div class="form-group">
-                <label for="quantidade">Quantidade a Adicionar:</label>
+                <label for="quantidade">Quantidade a Adicionar: <span class="required-hint">(obrigatório)</span></label>
                 <input
                         type="number"
                         id="quantidade"
@@ -81,10 +82,11 @@
                         name="quantidade"
                         min="1"
                         required
+                        aria-required="true"
                 />
             </div>
 
-            <div *ngIf="modalError" class="modal-error-message">
+            <div *ngIf="modalError" role="alert" class="modal-error-message field-error">
                 {{ modalError }}
             </div>
         </div>
